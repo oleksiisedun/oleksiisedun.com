@@ -7,8 +7,8 @@ const typerSpan = document.getElementById('typer');
 const commands = {
     help: "Available commands: <br> - <strong>about</strong>: Who am I?<br> - <strong>projects</strong>: View my work<br> - <strong>socials</strong>: Contact info<br> - <strong>clear</strong>: Clean the terminal",
     about: "I am an AQA Engineer based in Ukraine with over a decade of experience in the software industry. Currently, I focus on military service and automating complex testing ecosystems for the sports betting industry.",
-    projects: "1. <strong>CLI-Portfolio</strong>: This website.<br>2. <strong>Project Alpha</strong>: A cool React app.<br>3. <strong>Project Beta</strong>: Python automation scripts.",
-    socials: "GitHub: <a href='https://github.com/oleksiisedun' target='_blank'>@oleksiisedun</a><br>Instagram: <a href='https://www.instagram.com/oleksiisedun/' target='_blank'>@oleksiisedun</a><br>LinkedIn: <a href='https://www.linkedin.com/in/oleksiisedun/' target='_blank'>@oleksiisedun</a>",
+    projects: "Coming soon...",
+    socials: "<i class='fab fa-github'></i> <a href='https://github.com/oleksiisedun' target='_blank'>GitHub</a><br><i class='fab fa-instagram'></i> <a href='https://www.instagram.com/oleksiisedun/' target='_blank'>Instagram</a><br><i class='fab fa-linkedin'></i> <a href='https://www.linkedin.com/in/oleksiisedun/' target='_blank'>LinkedIn</a>",
     clear: "clear"
 };
 
