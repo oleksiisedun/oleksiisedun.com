@@ -3,6 +3,8 @@ const asciiDiv = document.getElementById('ascii-art');
 const hiddenInput = document.getElementById('hidden-input');
 const typerSpan = document.getElementById('typer');
 
+const PROMPT_TEXT = 'guest@oleksiisedun:~$';
+
 // Define commands
 const commands = {
     help: "Available commands: <br> - <strong>about</strong>: Who am I?<br> - <strong>projects</strong>: View my work<br> - <strong>socials</strong>: Contact info<br> - <strong>clear</strong>: Clean the terminal",
@@ -74,26 +76,37 @@ hiddenInput.addEventListener('input', function() {
 
 // Handle Enter Key
 hiddenInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-        const command = this.value.trim().toLowerCase();
-        
-        // Add command to history
-        outputDiv.innerHTML += `<div class="output-line"><span class="prompt">visitor@portfolio:~$</span> ${this.value}</div>`;
-        
-        if (commands[command]) {
-            if (command === 'clear') {
-                outputDiv.innerHTML = '';
-            } else {
-                outputDiv.innerHTML += `<div class="output-line">${commands[command]}</div>`;
-            }
-        } else if (command !== "") {
-            outputDiv.innerHTML += `<div class="output-line" style="color:var(--error-color)">Command not found: ${command}. Type 'help'.</div>`;
-        }
+    if (e.key !== 'Enter') return;
 
-        this.value = '';
-        typerSpan.textContent = ''; // Clear the visible span
-        window.scrollTo(0, document.body.scrollHeight);
+    const commandInput = this.value.trim();
+    const command = commandInput.toLowerCase();
+
+    // Add the executed command to the output history
+    const historyLine = document.createElement('div');
+    historyLine.className = 'output-line';
+    historyLine.innerHTML = `<span class="prompt">${PROMPT_TEXT}</span> `;
+    // Append user input as a text node to prevent HTML injection
+    historyLine.appendChild(document.createTextNode(commandInput));
+    outputDiv.appendChild(historyLine);
+
+    if (command === 'clear') {
+        outputDiv.innerHTML = '';
+    } else if (commands[command]) {
+        const resultLine = document.createElement('div');
+        resultLine.className = 'output-line';
+        resultLine.innerHTML = commands[command]; // Safe as it's from our own object
+        outputDiv.appendChild(resultLine);
+    } else if (command !== "") {
+        const errorLine = document.createElement('div');
+        errorLine.className = 'output-line';
+        errorLine.style.color = 'var(--error-color)';
+        errorLine.textContent = `Command not found: ${command}. Type 'help'.`;
+        outputDiv.appendChild(errorLine);
     }
+
+    this.value = '';
+    typerSpan.textContent = ''; // Clear the visible span
+    window.scrollTo(0, document.body.scrollHeight);
 });
 
 // Always focus hidden input
