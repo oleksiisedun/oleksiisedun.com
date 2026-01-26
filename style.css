@@ -28,7 +28,7 @@ body {
 #ascii-art {
     color: var(--art-color);
     font-weight: bold;
-    font-size: 12px;
+    font-size: 10px;
     white-space: pre;
     margin-bottom: 20px;
     line-height: 1.2;
