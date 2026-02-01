@@ -7,9 +7,9 @@ const PROMPT_TEXT = 'guest@oleksiisedun:~$';
 
 // Define commands
 const commands = {
-    help: "Available commands: <br> - <strong>about</strong>: Who am I?<br> - <strong>projects</strong>: View my work<br> - <strong>socials</strong>: Contact info<br> - <strong>clear</strong>: Clean the terminal",
+    help: "Available commands: <br> - <strong>about</strong>: Who am I?<br> - <strong>skills</strong>: View my main skills<br> - <strong>socials</strong>: Contact info<br> - <strong>clear</strong>: Clean the terminal",
     about: "I am an AQA Engineer based in Ukraine with over a decade of experience in the software industry. Currently, I focus on military service and automating complex testing ecosystems for the sports betting industry.",
-    projects: "Coming soon...",
+    skills: "<span class='iconify' data-icon='logos:javascript'></span> JavaScript<br><span class='iconify' data-icon='logos:typescript-icon'></span> TypeScript<br><span class='iconify' data-icon='logos:playwright'></span> Playwright<br><span class='iconify' data-icon='simple-icons:googleappsscript' style='color: #4285F4;'></span> Apps Script<br><span class='iconify' data-icon='simple-icons:googlesheets' style='color: #34A853;'></span> Google Sheets",
     socials: "<i class='fab fa-github'></i> <a href='https://github.com/oleksiisedun' target='_blank'>GitHub</a><br><i class='fab fa-instagram'></i> <a href='https://www.instagram.com/oleksiisedun/' target='_blank'>Instagram</a><br><i class='fab fa-linkedin'></i> <a href='https://www.linkedin.com/in/oleksiisedun/' target='_blank'>LinkedIn</a>",
     clear: "clear"
 };

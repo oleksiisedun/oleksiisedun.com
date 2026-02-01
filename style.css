@@ -94,3 +94,49 @@ body {
 
 a { color: inherit; text-decoration: underline; }
 a:hover { background-color: var(--text-color); color: var(--bg-color); text-decoration: none; }
+
+.iconify {
+    width: 18px;
+    height: 18px;
+    vertical-align: -0.2em; /* Aligns icon with text baseline */
+    margin-right: 8px;
+    display: inline-block;
+}
+
+/* --- ROLLING SCANLINE EFFECT --- */
+
+body::after {
+    content: "";
+    position: fixed; /* Stays on screen even if you scroll */
+    left: 0;
+    top: -100px; /* Start above the screen */
+    width: 100vw;
+    height: 100px; /* Height of the rolling bar */
+    
+    /* The bar is a gradient: transparent -> faint white -> transparent */
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.08), transparent);
+    
+    pointer-events: none; /* Click through it */
+    z-index: 999;
+    
+    /* Run the animation every 6 seconds */
+    animation: roll 10s linear infinite;
+}
+
+@keyframes roll {
+    0% {
+        top: -100px;
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    50% {
+        top: 110vh; /* Move below the screen */
+        opacity: 0;
+    }
+    100% {
+        top: 110vh; /* Stay below for the rest of the time (pause) */
+        opacity: 0;
+    }
+}
