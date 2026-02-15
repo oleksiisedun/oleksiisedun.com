@@ -1,142 +1,283 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
 
 :root {
-    --bg-color: #0d1117;
-    --text-color: #58a6ff;
-    --prompt-color: #3fb950;
-    --error-color: #ff7b72;
-    --art-color: #d2a8ff;
-    --font-stack: 'Fira Code', 'Courier New', monospace;
+  --bg-color: #0d1117;
+  --text-color: #58a6ff;
+  --prompt-color: #3fb950;
+  --error-color: #ff7b72;
+  --art-color: #d2a8ff;
+  --font-stack: 'Fira Code', 'Courier New', monospace;
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-family: var(--font-stack);
-    margin: 0;
-    padding: 20px;
-    font-size: 16px;
-    overflow-x: hidden;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-stack);
+  margin: 0;
+  padding: 20px;
+  font-size: 16px;
+  overflow-x: hidden;
 }
 
 #terminal {
-    max-width: 800px;
-    margin: 0 auto;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 /* ASCII Art Styling */
 #ascii-art {
-    color: var(--art-color);
-    font-weight: bold;
-    font-size: 10px;
-    white-space: pre;
-    margin-bottom: 20px;
-    line-height: 1.2;
+  color: var(--art-color);
+  font-weight: bold;
+  font-size: 10px;
+  white-space: pre;
+  margin-bottom: 20px;
+  line-height: 1.2;
 }
 
 .output-line {
-    margin-bottom: 5px;
-    white-space: pre-wrap;
-    line-height: 1.4;
+  margin-bottom: 5px;
+  white-space: pre-wrap;
+  line-height: 1.4;
 }
 
 .command-line {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .prompt {
-    color: var(--prompt-color);
-    margin-right: 10px;
-    font-weight: bold;
-    flex-shrink: 0;
+  color: var(--prompt-color);
+  margin-right: 10px;
+  font-weight: bold;
+  flex-shrink: 0;
 }
 
 .input-container {
-    position: relative;
-    display: flex;
-    align-items: center;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 /* The real input is hidden but keeps focus */
 #hidden-input {
-    position: absolute;
-    opacity: 0;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    cursor: default;
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: default;
 }
 
 /* The visible text mirroring the input */
 #typer {
-    outline: none;
-    border: none;
-    white-space: pre;
+  outline: none;
+  border: none;
+  white-space: pre;
 }
 
 /* The Block Cursor */
 .cursor {
-    display: inline-block;
-    width: 10px;
-    height: 1.2em;
-    background-color: var(--text-color);
-    animation: blink 1s step-end infinite;
-    vertical-align: middle;
-    margin-left: 1px;
+  display: inline-block;
+  width: 10px;
+  height: 1.2em;
+  background-color: var(--text-color);
+  animation: blink 1s step-end infinite;
+  vertical-align: middle;
+  margin-left: 1px;
 }
 
 @keyframes blink {
-    50% { opacity: 0; }
+  50% {
+    opacity: 0;
+  }
 }
 
-a { color: inherit; text-decoration: underline; }
-a:hover { background-color: var(--text-color); color: var(--bg-color); text-decoration: none; }
+a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+a:hover {
+  background-color: var(--text-color);
+  color: var(--bg-color);
+  text-decoration: none;
+}
 
 .iconify {
-    width: 18px;
-    height: 18px;
-    vertical-align: -0.2em; /* Aligns icon with text baseline */
-    margin-right: 8px;
-    display: inline-block;
+  width: 18px;
+  height: 18px;
+  vertical-align: -0.2em;
+  /* Aligns icon with text baseline */
+  margin-right: 8px;
+  display: inline-block;
 }
 
 /* --- ROLLING SCANLINE EFFECT --- */
 
 body::after {
-    content: "";
-    position: fixed; /* Stays on screen even if you scroll */
-    left: 0;
-    top: -100px; /* Start above the screen */
-    width: 100vw;
-    height: 100px; /* Height of the rolling bar */
-    
-    /* The bar is a gradient: transparent -> faint white -> transparent */
-    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.08), transparent);
-    
-    pointer-events: none; /* Click through it */
-    z-index: 999;
-    
-    /* Run the animation every 6 seconds */
-    animation: roll 10s linear infinite;
+  content: "";
+  position: fixed;
+  /* Stays on screen even if you scroll */
+  left: 0;
+  top: -100px;
+  /* Start above the screen */
+  width: 100vw;
+  height: 100px;
+  /* Height of the rolling bar */
+
+  /* The bar is a gradient: transparent -> faint white -> transparent */
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.08), transparent);
+
+  pointer-events: none;
+  /* Click through it */
+  z-index: 999;
+
+  /* Run the animation every 6 seconds */
+  animation: roll 10s linear infinite;
 }
 
 @keyframes roll {
-    0% {
-        top: -100px;
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-    }
-    50% {
-        top: 110vh; /* Move below the screen */
-        opacity: 0;
-    }
-    100% {
-        top: 110vh; /* Stay below for the rest of the time (pause) */
-        opacity: 0;
-    }
+  0% {
+    top: -100px;
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  50% {
+    top: 110vh;
+    /* Move below the screen */
+    opacity: 0;
+  }
+
+  100% {
+    top: 110vh;
+    /* Stay below for the rest of the time (pause) */
+    opacity: 0;
+  }
+}
+
+/* --- UPDATED STATUS BAR --- */
+#status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  /* Increased height */
+
+  /* Dark gray background to make the white robot pop */
+  background-color: #161b22;
+  border-top: 2px solid var(--prompt-color);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 1000;
+}
+
+.status-left,
+.status-right {
+  color: var(--text-color);
+  font-family: var(--font-stack);
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* Adjust the terminal so it doesn't hide behind the footer */
+#terminal {
+  padding-bottom: 50px;
+}
+
+/* --- MOCHI ROBOT (Dasai Style) --- */
+
+/* Wrapper to position the scaled robot in the footer */
+.mochi-wrapper {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px; /* Original width reserved space */
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Align to bottom */
+    pointer-events: none; /* Let clicks pass through */
+}
+
+/* The Head - SCALED DOWN */
+.mochi-head {
+    width: 300px;
+    height: 220px;
+    background-color: #1a1a1a;
+    border-radius: 40px;
+    position: relative;
+    box-shadow: 
+        0 0 0 4px #2a2a2a,
+        0 20px 50px rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #222 0%, #111 100%);
+    
+    /* SCALE IT DOWN TO FIT FOOTER */
+    transform: scale(0.35); 
+    transform-origin: center bottom;
+}
+
+/* The Screen Area */
+.mochi-screen {
+    width: 240px;
+    height: 140px;
+    background-color: #000;
+    border-radius: 20px;
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    overflow: hidden;
+}
+
+/* Teal Eyes */
+.eye {
+    width: 60px;
+    height: 80px;
+    background-color: #00ffcc; /* Classic Mochi Teal */
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 
+        0 0 15px #00ffcc,
+        0 0 30px rgba(0, 255, 204, 0.4);
+    will-change: transform; /* Smoother animation */
+}
+
+/* Screen Glint Reflection */
+.glint {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    width: 40px;
+    height: 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    transform: rotate(-15deg);
+    z-index: 2;
+}
+
+/* Blinking Animation */
+.blink {
+    animation: blinkAnim 0.15s ease-in-out forwards;
+}
+
+@keyframes blinkAnim {
+    0% { transform: scaleY(1); }
+    50% { transform: scaleY(0.1); }
+    100% { transform: scaleY(1); }
 }

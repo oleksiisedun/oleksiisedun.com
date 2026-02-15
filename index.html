@@ -1,30 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@oleksiisedun</title>
-    <meta name="description" content="Personal terminal-style portfolio">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛸</text></svg>">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@oleksiisedun</title>
+  <meta name="description" content="Personal terminal-style portfolio">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛸</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <div id="terminal">
-        <div id="ascii-art"></div>
-        <div id="output"></div>
-        
-        <div class="command-line">
-            <span class="prompt">guest@oleksiisedun:~$</span>
-            <div class="input-container">
-                <span id="typer"></span><span class="cursor">&nbsp;</span>
-                <input type="text" id="hidden-input" autocomplete="off" autofocus>
-            </div>
-        </div>
+  <div id="terminal">
+    <div id="ascii-art"></div>
+    <div id="output"></div>
+
+    <div class="command-line">
+      <span class="prompt">guest@oleksiisedun:~$</span>
+      <div class="input-container">
+        <span id="typer"></span><span class="cursor">&nbsp;</span>
+        <input type="text" id="hidden-input" autocomplete="off" autofocus>
+      </div>
+    </div>
+  </div>
+
+  <div id="status-bar">
+    <div class="status-left">
+      <span>SYSTEM: ONLINE</span><br>
     </div>
 
-    <script src="script.js"></script>
-    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <div class="mochi-wrapper">
+      <div class="mochi-head">
+        <div class="glint"></div>
+        <div class="mochi-screen">
+          <div class="eye"></div>
+          <div class="eye"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-right">
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </body>
+
 </html>
