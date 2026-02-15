@@ -117,55 +117,70 @@ document.addEventListener('click', () => {
 // Start
 loadAscii();
 
-/* --- MOCHI ROBOT LOGIC (Dasai Style) --- */
+/* --- MOCHI ROBOT LOGIC (Mouse + Touch) --- */
 const eyes = document.querySelectorAll('.eye');
 
-// 1. Mouse Tracking
+// 1. Unified Tracking Function
+function handleMove(clientX, clientY) {
+  eyes.forEach(eye => {
+    // Get the center of the eye
+    const rect = eye.getBoundingClientRect();
+    const eyeCenterX = rect.left + rect.width / 2;
+    const eyeCenterY = rect.top + rect.height / 2;
+
+    // Calculate distance from input to eye center
+    const deltaX = clientX - eyeCenterX;
+    const deltaY = clientY - eyeCenterY;
+
+    // Calculate angle
+    const angle = Math.atan2(deltaY, deltaX);
+
+    // Limit the movement distance (clamp)
+    // We use Math.min to ensure it doesn't go further than 15px
+    const distance = Math.min(15, Math.hypot(deltaX, deltaY) / 10);
+
+    // Calculate new X/Y based on angle and distance
+    const moveX = Math.cos(angle) * distance;
+    const moveY = Math.sin(angle) * distance;
+
+    // Apply transform
+    eye.style.transform = `translate(${moveX}px, ${moveY}px)`;
+  });
+}
+
+// 2. Mouse Listeners
 document.addEventListener('mousemove', (e) => {
-    eyes.forEach(eye => {
-        // Since the element is scaled via CSS, getBoundingClientRect 
-        // gives us the screen coordinates of the SCALED element.
-        const rect = eye.getBoundingClientRect();
-        const eyeCenterX = rect.left + rect.width / 2;
-        const eyeCenterY = rect.top + rect.height / 2;
-
-        // Calculate distance from mouse to eye center
-        const deltaX = e.clientX - eyeCenterX;
-        const deltaY = e.clientY - eyeCenterY;
-
-        // Calculate angle
-        const angle = Math.atan2(deltaY, deltaX);
-
-        // Limit movement (approx 15px max)
-        const distance = Math.min(15, Math.hypot(deltaX, deltaY) / 15);
-
-        const moveX = Math.cos(angle) * distance;
-        const moveY = Math.sin(angle) * distance;
-
-        // Apply movement (keeps existing blink transform if active)
-        if (!eye.classList.contains('blink')) {
-             eye.style.transform = `translate(${moveX}px, ${moveY}px)`;
-        }
-    });
+  handleMove(e.clientX, e.clientY);
 });
 
-// 2. Blinking Logic
+// 3. Touch Listeners (Mobile)
+document.addEventListener('touchmove', (e) => {
+  // Prevent scrolling while touching (optional, remove if annoying)
+  // e.preventDefault(); 
+  const touch = e.touches[0];
+  handleMove(touch.clientX, touch.clientY);
+}, { passive: false });
+
+document.addEventListener('touchstart', (e) => {
+  const touch = e.touches[0];
+  handleMove(touch.clientX, touch.clientY);
+}, { passive: false });
+
+
+// 4. Blinking Logic
 function triggerBlink() {
-    eyes.forEach(eye => {
-        // Temporarily reset transform to just handle the scaleY blink
-        const currentTransform = eye.style.transform;
-        eye.style.transform = 'translate(0, 0)'; 
-        eye.classList.add('blink');
+  eyes.forEach(eye => {
+    eye.classList.add('blink');
 
-        setTimeout(() => {
-            eye.classList.remove('blink');
-            // Restore position (tracking will update instantly on next mousemove)
-            eye.style.transform = currentTransform; 
-        }, 200);
-    });
+    // Remove class after animation finishes
+    setTimeout(() => {
+      eye.classList.remove('blink');
+    }, 200);
+  });
 
-    // Blink again in 2 to 6 seconds
-    setTimeout(triggerBlink, Math.random() * 4000 + 2000);
+  // Randomize next blink between 2 and 6 seconds
+  const nextBlink = Math.random() * 4000 + 2000;
+  setTimeout(triggerBlink, nextBlink);
 }
 
 // Start blinking
