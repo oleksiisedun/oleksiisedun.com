@@ -1,0 +1,11 @@
+{
+  "name": "oleksiisedun.com",
+  "version": "1.0.0",
+  "description": "Personal terminal-style portfolio",
+  "scripts": {
+    "dev": "serve ."
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}
