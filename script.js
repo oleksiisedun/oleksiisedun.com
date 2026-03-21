@@ -1,11 +1,6 @@
-const outputDiv = document.getElementById('output');
-const asciiDiv = document.getElementById('ascii-art');
-const hiddenInput = document.getElementById('hidden-input');
-const typerSpan = document.getElementById('typer');
-
+// --- CONFIGURATION ---
 const PROMPT_TEXT = 'guest@oleksiisedun:~$';
 
-// Define commands
 const commands = {
   help: "Available commands: <br> - <strong>about</strong>: Who am I?<br> - <strong>skills</strong>: View my main skills<br> - <strong>socials</strong>: Contact info<br> - <strong>clear</strong>: Clean the terminal",
   about: "I am an AQA Engineer based in Ukraine with over a decade of experience in the software industry. Currently, I focus on military service and automating complex testing ecosystems for the sports betting industry.",
@@ -14,7 +9,6 @@ const commands = {
   clear: "clear"
 };
 
-// ASCII Art Header
 const asciiHeader = `
 ██╗  ██╗██╗    ████████╗██╗  ██╗███████╗██████╗ ███████╗██╗
 ██║  ██║██║    ╚══██╔══╝██║  ██║██╔════╝██╔══██╗██╔════╝██║
@@ -23,165 +17,196 @@ const asciiHeader = `
 ██║  ██║██║       ██║   ██║  ██║███████╗██║  ██║███████╗██╗
 ╚═╝  ╚═╝╚═╝       ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚═╝`;
 
-// Initial welcome lines
 const welcomeMessage = [
   "Initializing secure connection...",
   "Loading command line...",
   "Type 'help' for a list of commands."
 ];
 
-let lineIndex = 0;
+// --- TERMINAL CLASS ---
+class Terminal {
+  constructor() {
+    this.outputDiv = document.getElementById('output');
+    this.asciiDiv = document.getElementById('ascii-art');
+    this.hiddenInput = document.getElementById('hidden-input');
+    this.typerSpan = document.getElementById('typer');
+    this.lineIndex = 0;
 
-// Typewriter effect
-function typeWriter(text, targetElement, speed, callback) {
-  let i = 0;
-  function type() {
-    if (i < text.length) {
-      if (targetElement.tagName === 'DIV') {
-        targetElement.innerHTML += text.charAt(i);
+    this.init();
+  }
+
+  init() {
+    this.loadAscii();
+    this.bindEvents();
+  }
+
+  typeWriter(text, targetElement, speed, callback) {
+    let i = 0;
+    const type = () => {
+      if (i < text.length) {
+        if (targetElement.tagName === 'DIV') {
+          targetElement.innerHTML += text.charAt(i);
+        } else {
+          targetElement.textContent += text.charAt(i);
+        }
+        i++;
+        setTimeout(type, speed);
       } else {
-        targetElement.textContent += text.charAt(i);
+        if (callback) callback();
       }
-      i++;
-      setTimeout(type, speed);
-    } else {
-      if (callback) callback();
+    };
+    type();
+  }
+
+  loadAscii() {
+    this.asciiDiv.textContent = asciiHeader;
+    this.runStartup(welcomeMessage);
+  }
+
+  runStartup(lines) {
+    if (this.lineIndex < lines.length) {
+      const p = document.createElement('div');
+      p.className = 'output-line';
+      this.outputDiv.appendChild(p);
+      this.typeWriter(lines[this.lineIndex], p, 20, () => {
+        this.lineIndex++;
+        this.runStartup(lines);
+      });
     }
   }
-  type();
-}
 
-function loadAscii() {
-  asciiDiv.textContent = asciiHeader;
-  runStartup(welcomeMessage);
-}
+  appendOutputLine(content, isHTML = false, isError = false) {
+    const line = document.createElement('div');
+    line.className = 'output-line';
+    if (isError) {
+      line.style.color = 'var(--error-color)';
+    }
 
-function runStartup(lines) {
-  if (lineIndex < lines.length) {
-    const p = document.createElement('div');
-    p.className = 'output-line';
-    outputDiv.appendChild(p);
-    typeWriter(lines[lineIndex], p, 20, () => {
-      lineIndex++;
-      runStartup(lines);
+    if (isHTML) {
+      line.innerHTML = content;
+    } else {
+      line.textContent = content;
+      if (content instanceof Node) {
+        line.innerHTML = '';
+        line.appendChild(content);
+      }
+    }
+    
+    this.outputDiv.appendChild(line);
+  }
+
+  handleCommand(commandInput) {
+    const command = commandInput.toLowerCase();
+
+    // Add user input securely
+    const historyLine = document.createElement('div');
+    historyLine.className = 'output-line';
+    historyLine.innerHTML = `<span class="prompt">${PROMPT_TEXT}</span> `;
+    historyLine.appendChild(document.createTextNode(commandInput));
+    this.outputDiv.appendChild(historyLine);
+
+    if (command === 'clear') {
+      this.outputDiv.innerHTML = '';
+    } else if (commands[command]) {
+      this.appendOutputLine(commands[command], true);
+    } else if (command !== "") {
+      this.appendOutputLine(`Command not found: ${command}. Type 'help'.`, false, true);
+    }
+
+    this.hiddenInput.value = '';
+    this.typerSpan.textContent = '';
+    window.scrollTo(0, document.body.scrollHeight);
+  }
+
+  bindEvents() {
+    this.hiddenInput.addEventListener('input', () => {
+      this.typerSpan.textContent = this.hiddenInput.value;
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    this.hiddenInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const commandInput = this.hiddenInput.value.trim();
+        this.handleCommand(commandInput);
+      }
+    });
+
+    document.addEventListener('click', () => {
+      this.hiddenInput.focus();
     });
   }
 }
 
-// Sync hidden input to visible span
-hiddenInput.addEventListener('input', function () {
-  typerSpan.textContent = this.value;
-  window.scrollTo(0, document.body.scrollHeight);
-});
+// --- MOCHI ROBOT CLASS ---
+class MochiRobot {
+  constructor() {
+    this.eyes = document.querySelectorAll('.eye');
+    if (!this.eyes.length) return; // Prevent errors if not in DOM
 
-// Handle Enter Key
-hiddenInput.addEventListener('keydown', function (e) {
-  if (e.key !== 'Enter') return;
-
-  const commandInput = this.value.trim();
-  const command = commandInput.toLowerCase();
-
-  // Add the executed command to the output history
-  const historyLine = document.createElement('div');
-  historyLine.className = 'output-line';
-  historyLine.innerHTML = `<span class="prompt">${PROMPT_TEXT}</span> `;
-  // Append user input as a text node to prevent HTML injection
-  historyLine.appendChild(document.createTextNode(commandInput));
-  outputDiv.appendChild(historyLine);
-
-  if (command === 'clear') {
-    outputDiv.innerHTML = '';
-  } else if (commands[command]) {
-    const resultLine = document.createElement('div');
-    resultLine.className = 'output-line';
-    resultLine.innerHTML = commands[command]; // Safe as it's from our own object
-    outputDiv.appendChild(resultLine);
-  } else if (command !== "") {
-    const errorLine = document.createElement('div');
-    errorLine.className = 'output-line';
-    errorLine.style.color = 'var(--error-color)';
-    errorLine.textContent = `Command not found: ${command}. Type 'help'.`;
-    outputDiv.appendChild(errorLine);
+    this.init();
   }
 
-  this.value = '';
-  typerSpan.textContent = ''; // Clear the visible span
-  window.scrollTo(0, document.body.scrollHeight);
-});
+  init() {
+    this.bindEvents();
+    this.startBlinking();
+  }
 
-// Always focus hidden input
-document.addEventListener('click', () => {
-  hiddenInput.focus();
-});
+  handleMove(clientX, clientY) {
+    this.eyes.forEach(eye => {
+      const rect = eye.getBoundingClientRect();
+      const eyeCenterX = rect.left + rect.width / 2;
+      const eyeCenterY = rect.top + rect.height / 2;
 
-// Start
-loadAscii();
+      const deltaX = clientX - eyeCenterX;
+      const deltaY = clientY - eyeCenterY;
 
-/* --- MOCHI ROBOT LOGIC (Mouse + Touch) --- */
-const eyes = document.querySelectorAll('.eye');
+      const angle = Math.atan2(deltaY, deltaX);
+      const distance = Math.min(15, Math.hypot(deltaX, deltaY) / 10);
 
-// 1. Unified Tracking Function
-function handleMove(clientX, clientY) {
-  eyes.forEach(eye => {
-    // Get the center of the eye
-    const rect = eye.getBoundingClientRect();
-    const eyeCenterX = rect.left + rect.width / 2;
-    const eyeCenterY = rect.top + rect.height / 2;
+      const moveX = Math.cos(angle) * distance;
+      const moveY = Math.sin(angle) * distance;
 
-    // Calculate distance from input to eye center
-    const deltaX = clientX - eyeCenterX;
-    const deltaY = clientY - eyeCenterY;
+      eye.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
+  }
 
-    // Calculate angle
-    const angle = Math.atan2(deltaY, deltaX);
+  bindEvents() {
+    // Mouse Listeners
+    document.addEventListener('mousemove', (e) => {
+      this.handleMove(e.clientX, e.clientY);
+    });
 
-    // Limit the movement distance (clamp)
-    // We use Math.min to ensure it doesn't go further than 15px
-    const distance = Math.min(15, Math.hypot(deltaX, deltaY) / 10);
+    // Touch Listeners
+    document.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      this.handleMove(touch.clientX, touch.clientY);
+    }, { passive: false });
 
-    // Calculate new X/Y based on angle and distance
-    const moveX = Math.cos(angle) * distance;
-    const moveY = Math.sin(angle) * distance;
+    document.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      this.handleMove(touch.clientX, touch.clientY);
+    }, { passive: false });
+  }
 
-    // Apply transform
-    eye.style.transform = `translate(${moveX}px, ${moveY}px)`;
-  });
+  triggerBlink = () => {
+    this.eyes.forEach(eye => {
+      eye.classList.add('blink');
+      setTimeout(() => {
+        eye.classList.remove('blink');
+      }, 200);
+    });
+
+    const nextBlink = Math.random() * 4000 + 2000;
+    setTimeout(this.triggerBlink, nextBlink);
+  };
+
+  startBlinking() {
+    setTimeout(this.triggerBlink, 2000);
+  }
 }
 
-// 2. Mouse Listeners
-document.addEventListener('mousemove', (e) => {
-  handleMove(e.clientX, e.clientY);
+// --- INITIALIZATION ---
+document.addEventListener('DOMContentLoaded', () => {
+  new Terminal();
+  new MochiRobot();
 });
-
-// 3. Touch Listeners (Mobile)
-document.addEventListener('touchmove', (e) => {
-  // Prevent scrolling while touching (optional, remove if annoying)
-  // e.preventDefault(); 
-  const touch = e.touches[0];
-  handleMove(touch.clientX, touch.clientY);
-}, { passive: false });
-
-document.addEventListener('touchstart', (e) => {
-  const touch = e.touches[0];
-  handleMove(touch.clientX, touch.clientY);
-}, { passive: false });
-
-
-// 4. Blinking Logic
-function triggerBlink() {
-  eyes.forEach(eye => {
-    eye.classList.add('blink');
-
-    // Remove class after animation finishes
-    setTimeout(() => {
-      eye.classList.remove('blink');
-    }, 200);
-  });
-
-  // Randomize next blink between 2 and 6 seconds
-  const nextBlink = Math.random() * 4000 + 2000;
-  setTimeout(triggerBlink, nextBlink);
-}
-
-// Start blinking
-setTimeout(triggerBlink, 2000);
