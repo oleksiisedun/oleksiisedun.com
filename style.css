@@ -178,6 +178,7 @@ body::after {
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
+  box-sizing: border-box;
   z-index: 1000;
 }
 
@@ -187,6 +188,25 @@ body::after {
   font-family: var(--font-stack);
   font-size: 12px;
   opacity: 0.8;
+}
+
+.status-right {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.status-right a {
+  text-decoration: none;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.status-right a:hover {
+  background-color: transparent;
+  color: #fff;
 }
 
 /* Adjust the terminal so it doesn't hide behind the footer */
