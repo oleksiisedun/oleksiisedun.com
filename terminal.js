@@ -102,20 +102,7 @@ export class Terminal {
           if (data.error) {
             this.appendOutputLine(`<span style='color: var(--error-color);'>Error fetching analytics: ${data.error}</span>`, true);
           } else {
-            let topRegion = "N/A";
-            let topRegionViews = "0";
-            if (data.topCountries && data.topCountries.length > 0) {
-              topRegion = data.topCountries[0].country;
-              topRegionViews = data.topCountries[0].views;
-            }
-            
-            const statsData = {
-              visitors: data.totalVisits || "0",
-              pageViews: data.totalViews || "0",
-              topRegion: topRegion,
-              topRegionViews: topRegionViews
-            };
-            const stats = generateAnalyticsTemplate(statsData);
+            const stats = generateAnalyticsTemplate(data);
             this.appendOutputLine(stats, true);
           }
         })
