@@ -139,6 +139,17 @@ export class Terminal {
       if (e.key === 'Enter') {
         const commandInput = this.hiddenInput.value.trim();
         this.handleCommand(commandInput);
+      } else if (e.key === 'Tab') {
+        e.preventDefault();
+        const currentInput = this.hiddenInput.value.toLowerCase();
+        if (currentInput) {
+          const availableCommands = Object.keys(commands);
+          const match = availableCommands.find(cmd => cmd.startsWith(currentInput));
+          if (match) {
+            this.hiddenInput.value = match;
+            this.typerSpan.textContent = match;
+          }
+        }
       }
     });
 
