@@ -1,4 +1,5 @@
 import { PROMPT_TEXT, commands, asciiHeader, welcomeMessage } from './config.js';
+import { generateAnalyticsTemplate, analyticsConnectingTemplate, analyticsSpinnerTemplate } from './templates.js';
 
 export class Terminal {
   constructor() {
@@ -82,6 +83,54 @@ export class Terminal {
 
     if (command === 'clear') {
       this.outputDiv.innerHTML = '';
+    } else if (command === 'analytics') {
+      this.appendOutputLine(analyticsConnectingTemplate(), true);
+      
+      const spinnerId = 'spinner-' + Date.now();
+      this.appendOutputLine(analyticsSpinnerTemplate(spinnerId), true);
+      
+      this.hiddenInput.disabled = true;
+
+      fetch('https://analytics.oleksiisedun.workers.dev/')
+        .then(response => response.json())
+        .then(data => {
+          const spinnerElement = document.getElementById(spinnerId);
+          if (spinnerElement && spinnerElement.parentElement) {
+            spinnerElement.parentElement.remove();
+          }
+
+          if (data.error) {
+            this.appendOutputLine(`<span style='color: var(--error-color);'>Error fetching analytics: ${data.error}</span>`, true);
+          } else {
+            let topRegion = "N/A";
+            let topRegionViews = "0";
+            if (data.topCountries && data.topCountries.length > 0) {
+              topRegion = data.topCountries[0].country;
+              topRegionViews = data.topCountries[0].views;
+            }
+            
+            const statsData = {
+              visitors: data.totalVisits || "0",
+              pageViews: data.totalViews || "0",
+              topRegion: topRegion,
+              topRegionViews: topRegionViews
+            };
+            const stats = generateAnalyticsTemplate(statsData);
+            this.appendOutputLine(stats, true);
+          }
+        })
+        .catch(err => {
+          const spinnerElement = document.getElementById(spinnerId);
+          if (spinnerElement && spinnerElement.parentElement) {
+            spinnerElement.parentElement.remove();
+          }
+          this.appendOutputLine(`<span style='color: var(--error-color);'>Connection failed: ${err.message}</span>`, true);
+        })
+        .finally(() => {
+          this.hiddenInput.disabled = false;
+          this.hiddenInput.focus();
+          window.scrollTo(0, document.body.scrollHeight);
+        });
     } else if (commands[command]) {
       this.appendOutputLine(commands[command], true);
     } else if (command !== "") {
