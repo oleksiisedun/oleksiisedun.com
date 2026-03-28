@@ -1,5 +1,5 @@
 export const generateAnalyticsTemplate = (data) => {
-  let template = `<div style="margin-top: 10px; margin-bottom: 10px; font-family: monospace; white-space: pre-wrap; color: var(--text-color);">`;
+  let template = `<div style="margin-top: 10px; margin-bottom: 10px; white-space: pre-wrap; color: var(--text-color);">`;
   template += `<span style="color: var(--art-color); font-weight: bold;">[Cloudflare Analytics]</span> (Last 30 Days)\n`;
   template += `\n`;
   template += `Unique Visitors : <span style="color: #fff;">${data.totalVisits || 0}</span>\n`;
