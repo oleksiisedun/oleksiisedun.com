@@ -2,10 +2,10 @@
 
 :root {
   --bg-color: #111;
-  --text-color: #33ff00;
-  --prompt-color: #33ff00;
+  --text-color: var(--main-color, #33ff00);
+  --prompt-color: var(--main-color, #33ff00);
   --error-color: #ff3333;
-  --art-color: #33ff00;
+  --art-color: var(--main-color, #33ff00);
   --font-stack: 'VT323', monospace;
 }
 
@@ -51,7 +51,7 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   font-size: var(--terminal-font-size, 2rem);
-  text-shadow: 0 0 3px #138a03, 0 0 8px #33ff00;
+  text-shadow: 0 0 3px var(--glow-color, #138a03), 0 0 8px var(--main-color, #33ff00);
   position: relative;
   z-index: 1;
   animation: flicker 0.15s infinite;
@@ -118,7 +118,7 @@ body {
   background-color: var(--text-color);
   vertical-align: middle;
   margin-left: 1px;
-  box-shadow: 0 0 5px #33ff00, 0 0 15px #33ff00;
+  box-shadow: 0 0 5px var(--main-color, #33ff00), 0 0 15px var(--main-color, #33ff00);
   animation: blink 1s step-end infinite;
 }
 
@@ -158,9 +158,9 @@ a:hover {
   bottom: 0;
   right: 0;
   background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-              linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+              linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(var(--main-color-rgb, 51, 255, 0), 0.02), rgba(0, 0, 255, 0.06));
   z-index: 2;
-  background-size: 100% 4px, 6px 100%;
+  background-size: 100% var(--scanline-height, 4px), var(--scanline-width, 6px) 100%;
   pointer-events: none;
 }
 
@@ -181,14 +181,14 @@ a:hover {
 
 @keyframes flicker {
   0% { opacity: 0.98; }
-  50% { opacity: 0.95; text-shadow: 0 0 2px #138a03, 0 0 5px #33ff00; }
+  50% { opacity: 0.95; text-shadow: 0 0 2px var(--glow-color, #138a03), 0 0 5px var(--main-color, #33ff00); }
   100% { opacity: 1; }
 }
 
 @keyframes scroll-line {
-  0% { transform: translateY(-100%); background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(51, 255, 0, 0.05) 50%, rgba(0,0,0,0) 100%); opacity: 1; }
+  0% { transform: translateY(-100%); background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(var(--main-color-rgb, 51, 255, 0), 0.05) 50%, rgba(0,0,0,0) 100%); opacity: 1; }
   10% { opacity: 0.3; }
-  100% { transform: translateY(100%); background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(51, 255, 0, 0.05) 50%, rgba(0,0,0,0) 100%); opacity: 0; }
+  100% { transform: translateY(100%); background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(var(--main-color-rgb, 51, 255, 0), 0.05) 50%, rgba(0,0,0,0) 100%); opacity: 0; }
 }
 
 /* --- UPDATED STATUS BAR --- */
