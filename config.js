@@ -1,4 +1,5 @@
 export const PROMPT_TEXT = 'guest@oleksiisedun:~$';
+export const STATUS_BAR_HEIGHT = 75;
 
 export const commands = {
   help: "Available commands: <br> - <strong>about</strong>: Who am I?<br> - <strong>skills</strong>: View my main skills<br> - <strong>analytics</strong>: View site statistics<br> - <strong>clear</strong>: Clean the terminal",

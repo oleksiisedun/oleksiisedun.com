@@ -7,7 +7,7 @@
     left: 50%;
     transform: translateX(-50%);
     width: 300px; /* Original width reserved space */
-    height: 100px;
+    height: var(--status-bar-height, 100px);
     display: flex;
     justify-content: center;
     align-items: flex-end; /* Align to bottom */
@@ -30,7 +30,7 @@
     background: linear-gradient(135deg, #222 0%, #111 100%);
     
     /* SCALE IT DOWN TO FIT FOOTER */
-    transform: scale(0.35); 
+    transform: scale(var(--mochi-scale, 0.35)); 
     transform-origin: center bottom;
 }
 

@@ -167,7 +167,7 @@ body::after {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 100px;
+  height: var(--status-bar-height, 100px);
   /* Increased height */
 
   /* Dark gray background to make the white robot pop */
