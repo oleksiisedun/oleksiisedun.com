@@ -1,10 +1,9 @@
-import { PROMPT_TEXT, commands, asciiHeader, welcomeMessage } from './config.js';
+import { PROMPT_TEXT, commands, welcomeMessage } from './config.js';
 import { generateAnalyticsTemplate, analyticsConnectingTemplate, analyticsSpinnerTemplate } from './templates.js';
 
 export class Terminal {
   constructor() {
     this.outputDiv = document.getElementById('output');
-    this.asciiDiv = document.getElementById('ascii-art');
     this.hiddenInput = document.getElementById('hidden-input');
     this.typerSpan = document.getElementById('typer');
     this.lineIndex = 0;
@@ -13,7 +12,7 @@ export class Terminal {
   }
 
   init() {
-    this.loadAscii();
+    this.runStartup(welcomeMessage);
     this.bindEvents();
   }
 
@@ -33,11 +32,6 @@ export class Terminal {
       }
     };
     type();
-  }
-
-  loadAscii() {
-    this.asciiDiv.textContent = asciiHeader;
-    this.runStartup(welcomeMessage);
   }
 
   runStartup(lines) {

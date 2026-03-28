@@ -57,15 +57,6 @@ body {
   animation: flicker 0.15s infinite;
 }
 
-/* ASCII Art Styling */
-#ascii-art {
-  color: var(--art-color);
-  font-weight: bold;
-  font-size: 10px;
-  white-space: pre;
-  margin-bottom: 20px;
-  line-height: 1.2;
-}
 
 .output-line {
   margin-bottom: 5px;
