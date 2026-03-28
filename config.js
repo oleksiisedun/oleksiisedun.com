@@ -1,5 +1,7 @@
 export const PROMPT_TEXT = 'guest@oleksiisedun:~$';
 export const STATUS_BAR_HEIGHT = 75;
+export const TERMINAL_FONT_SIZE = "1.5rem";
+export const STATUS_BAR_FONT_SIZE = "16px";
 
 export const commands = {
   help: "Available commands: <br> - <strong>about</strong>: Who am I?<br> - <strong>skills</strong>: View my main skills<br> - <strong>analytics</strong>: View site statistics<br> - <strong>clear</strong>: Clean the terminal",

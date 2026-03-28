@@ -1,12 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
 
 :root {
-  --bg-color: #0d1117;
-  --text-color: #58a6ff;
-  --prompt-color: #3fb950;
-  --error-color: #ff7b72;
-  --art-color: #d2a8ff;
-  --font-stack: 'Fira Code', 'Courier New', monospace;
+  --bg-color: #111;
+  --text-color: #33ff00;
+  --prompt-color: #33ff00;
+  --error-color: #ff3333;
+  --art-color: #33ff00;
+  --font-stack: 'VT323', monospace;
 }
 
 body {
@@ -14,14 +14,47 @@ body {
   color: var(--text-color);
   font-family: var(--font-stack);
   margin: 0;
-  padding: 20px;
-  font-size: 16px;
-  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.monitor {
+  width: 80vw;
+  height: 70vh;
+  background: #050505;
+  border-radius: 2rem;
+  padding: 2rem;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+  position: relative;
+  transform: translateY(-5vh);
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  background-color: #001100;
+  background-image: radial-gradient(circle at center, #002200 0%, #000000 100%);
+  border-radius: 1rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.9);
 }
 
 #terminal {
-  max-width: 800px;
-  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-size: var(--terminal-font-size, 2rem);
+  text-shadow: 0 0 3px #138a03, 0 0 8px #33ff00;
+  position: relative;
+  z-index: 1;
+  animation: flicker 0.15s infinite;
 }
 
 /* ASCII Art Styling */
@@ -80,18 +113,18 @@ body {
 /* The Block Cursor */
 .cursor {
   display: inline-block;
-  width: 10px;
+  width: 12px;
   height: 1.2em;
   background-color: var(--text-color);
-  animation: blink 1s step-end infinite;
   vertical-align: middle;
   margin-left: 1px;
+  box-shadow: 0 0 5px #33ff00, 0 0 15px #33ff00;
+  animation: blink 1s step-end infinite;
 }
 
 @keyframes blink {
-  50% {
-    opacity: 0;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
 a {
@@ -114,51 +147,48 @@ a:hover {
   display: inline-block;
 }
 
-/* --- ROLLING SCANLINE EFFECT --- */
+/* --- SCANLINES & CRT EFFECTS --- */
 
-body::after {
-  content: "";
-  position: fixed;
-  /* Stays on screen even if you scroll */
+.screen::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
   left: 0;
-  top: -100px;
-  /* Start above the screen */
-  width: 100vw;
-  height: 100px;
-  /* Height of the rolling bar */
-
-  /* The bar is a gradient: transparent -> faint white -> transparent */
-  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.08), transparent);
-
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 2;
+  background-size: 100% 4px, 6px 100%;
   pointer-events: none;
-  /* Click through it */
-  z-index: 999;
-
-  /* Run the animation every 6 seconds */
-  animation: roll 10s linear infinite;
 }
 
-@keyframes roll {
-  0% {
-    top: -100px;
-    opacity: 0;
-  }
+.screen::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(18, 16, 16, 0.1);
+  opacity: 0;
+  z-index: 2;
+  pointer-events: none;
+  animation: scroll-line 8s linear infinite;
+}
 
-  10% {
-    opacity: 1;
-  }
+@keyframes flicker {
+  0% { opacity: 0.98; }
+  50% { opacity: 0.95; text-shadow: 0 0 2px #138a03, 0 0 5px #33ff00; }
+  100% { opacity: 1; }
+}
 
-  50% {
-    top: 110vh;
-    /* Move below the screen */
-    opacity: 0;
-  }
-
-  100% {
-    top: 110vh;
-    /* Stay below for the rest of the time (pause) */
-    opacity: 0;
-  }
+@keyframes scroll-line {
+  0% { transform: translateY(-100%); background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(51, 255, 0, 0.05) 50%, rgba(0,0,0,0) 100%); opacity: 1; }
+  10% { opacity: 0.3; }
+  100% { transform: translateY(100%); background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(51, 255, 0, 0.05) 50%, rgba(0,0,0,0) 100%); opacity: 0; }
 }
 
 /* --- UPDATED STATUS BAR --- */
@@ -186,7 +216,7 @@ body::after {
 .status-right {
   color: var(--text-color);
   font-family: var(--font-stack);
-  font-size: 12px;
+  font-size: var(--status-bar-font-size, 12px);
   opacity: 0.8;
 }
 
@@ -209,9 +239,6 @@ body::after {
   color: #fff;
 }
 
-/* Adjust the terminal so it doesn't hide behind the footer */
-#terminal {
-  padding-bottom: 50px;
-}
+/* Terminal scrolling is handled inside the .screen block */
 
 
