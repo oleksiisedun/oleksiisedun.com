@@ -1,4 +1,4 @@
-export const PROMPT_TEXT = 'guest@oleksiisedun:~$';
+export const PROMPT_TEXT = 'guest@oleksiisedun:~';
 export const STATUS_BAR_HEIGHT = 75;
 export const TERMINAL_FONT_SIZE = "1.5rem";
 export const STATUS_BAR_FONT_SIZE = "16px";
