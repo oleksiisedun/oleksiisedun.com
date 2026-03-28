@@ -232,7 +232,7 @@ a:hover {
 
 /* Terminal scrolling is handled inside the .screen block */
 
-@media (max-width: 768px) {
+@media (hover: none) and (pointer: coarse) {
   body {
     align-items: flex-start;
   }
