@@ -7,6 +7,7 @@ export class Terminal {
     this.hiddenInput = document.getElementById('hidden-input');
     this.typerSpan = document.getElementById('typer');
     this.promptSpan = document.querySelector('.command-line .prompt');
+    this.commandLine = document.querySelector('.command-line');
     this.lineIndex = 0;
     this.commandHistory = [];
     this.historyIndex = 0;
@@ -16,8 +17,21 @@ export class Terminal {
 
   init() {
     this.promptSpan.textContent = PROMPT_TEXT;
+    this.setPromptReady(false);
     this.runStartup(welcomeMessage);
     this.bindEvents();
+  }
+
+  setPromptReady(isReady) {
+    if (isReady) {
+      this.commandLine.style.display = 'flex';
+      this.hiddenInput.disabled = false;
+      this.hiddenInput.focus();
+      window.scrollTo(0, document.body.scrollHeight);
+    } else {
+      this.commandLine.style.display = 'none';
+      this.hiddenInput.disabled = true;
+    }
   }
 
   typeWriter(text, targetElement, speed, callback) {
@@ -47,6 +61,8 @@ export class Terminal {
         this.lineIndex++;
         this.runStartup(lines);
       });
+    } else {
+      this.setPromptReady(true);
     }
   }
 
@@ -87,12 +103,11 @@ export class Terminal {
     if (command === 'clear') {
       this.outputDiv.innerHTML = '';
     } else if (command === 'analytics') {
+      this.setPromptReady(false);
       this.appendOutputLine(analyticsConnectingTemplate(), true);
       
       const spinnerId = 'spinner-' + Date.now();
       this.appendOutputLine(analyticsSpinnerTemplate(spinnerId), true);
-      
-      this.hiddenInput.disabled = true;
 
       fetch('https://analytics.oleksiisedun.workers.dev/')
         .then(response => response.json())
@@ -117,12 +132,10 @@ export class Terminal {
           this.appendOutputLine(`<span style='color: var(--error-color);'>Connection failed: ${err.message}</span>`, true);
         })
         .finally(() => {
-          this.hiddenInput.disabled = false;
-          this.hiddenInput.focus();
-          window.scrollTo(0, document.body.scrollHeight);
+          this.setPromptReady(true);
         });
     } else if (availableCommands.includes(command)) {
-      this.hiddenInput.disabled = true;
+      this.setPromptReady(false);
       fetch(`/commands/${command}.txt`)
         .then(response => {
           if (!response.ok) throw new Error("File not found");
@@ -135,9 +148,7 @@ export class Terminal {
           this.appendOutputLine(`<span style='color: var(--error-color);'>Error reading command: ${err.message}</span>`, true);
         })
         .finally(() => {
-          this.hiddenInput.disabled = false;
-          this.hiddenInput.focus();
-          window.scrollTo(0, document.body.scrollHeight);
+          this.setPromptReady(true);
         });
     } else if (command !== "") {
       this.appendOutputLine(`Command not found: ${command}. Type 'help'.`, false, true);
