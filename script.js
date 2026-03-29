@@ -1,6 +1,6 @@
 import { Terminal } from './terminal.js';
 import { MochiRobot } from './mochi.js';
-import { STATUS_BAR_HEIGHT, TERMINAL_FONT_SIZE, STATUS_BAR_FONT_SIZE, MAIN_COLOR, GLOW_COLOR, PIXEL_SIZE } from './config.js';
+import { STATUS_BAR_HEIGHT, TERMINAL_FONT_SIZE, STATUS_BAR_FONT_SIZE, MAIN_COLOR, GLOW_COLOR, PIXEL_SIZE, BACKGROUND_COLOR } from './config.js';
 
 function hexToRgbStr(hex) {
     hex = hex.replace(/^#/, '');
@@ -13,6 +13,7 @@ document.documentElement.style.setProperty('--mochi-scale', String(STATUS_BAR_HE
 document.documentElement.style.setProperty('--terminal-font-size', TERMINAL_FONT_SIZE);
 document.documentElement.style.setProperty('--status-bar-font-size', STATUS_BAR_FONT_SIZE);
 document.documentElement.style.setProperty('--main-color', MAIN_COLOR);
+document.documentElement.style.setProperty('--bg-color', BACKGROUND_COLOR);
 document.documentElement.style.setProperty('--main-color-rgb', hexToRgbStr(MAIN_COLOR));
 document.documentElement.style.setProperty('--glow-color', GLOW_COLOR);
 document.documentElement.style.setProperty('--scanline-width', `${PIXEL_SIZE * 3}px`);

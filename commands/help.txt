@@ -1,0 +1,5 @@
+Available commands:
+  - about: Who am I?
+  - skills: View my main skills
+  - analytics: View site statistics
+  - clear: Clean the terminal

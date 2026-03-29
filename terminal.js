@@ -1,4 +1,4 @@
-import { PROMPT_TEXT, commands, welcomeMessage } from './config.js';
+import { PROMPT_TEXT, availableCommands, welcomeMessage } from './config.js';
 import { generateAnalyticsTemplate, analyticsConnectingTemplate, analyticsSpinnerTemplate } from './templates.js';
 
 export class Terminal {
@@ -6,12 +6,16 @@ export class Terminal {
     this.outputDiv = document.getElementById('output');
     this.hiddenInput = document.getElementById('hidden-input');
     this.typerSpan = document.getElementById('typer');
+    this.promptSpan = document.querySelector('.command-line .prompt');
     this.lineIndex = 0;
+    this.commandHistory = [];
+    this.historyIndex = 0;
 
     this.init();
   }
 
   init() {
+    this.promptSpan.textContent = PROMPT_TEXT;
     this.runStartup(welcomeMessage);
     this.bindEvents();
   }
@@ -67,6 +71,11 @@ export class Terminal {
   }
 
   handleCommand(commandInput) {
+    if (commandInput.trim() !== '') {
+      this.commandHistory.push(commandInput);
+    }
+    this.historyIndex = this.commandHistory.length;
+
     const command = commandInput.toLowerCase();
 
     const historyLine = document.createElement('div');
@@ -112,8 +121,24 @@ export class Terminal {
           this.hiddenInput.focus();
           window.scrollTo(0, document.body.scrollHeight);
         });
-    } else if (commands[command]) {
-      this.appendOutputLine(commands[command], true);
+    } else if (availableCommands.includes(command)) {
+      this.hiddenInput.disabled = true;
+      fetch(`/commands/${command}.txt`)
+        .then(response => {
+          if (!response.ok) throw new Error("File not found");
+          return response.text();
+        })
+        .then(text => {
+          this.appendOutputLine(text, false);
+        })
+        .catch(err => {
+          this.appendOutputLine(`<span style='color: var(--error-color);'>Error reading command: ${err.message}</span>`, true);
+        })
+        .finally(() => {
+          this.hiddenInput.disabled = false;
+          this.hiddenInput.focus();
+          window.scrollTo(0, document.body.scrollHeight);
+        });
     } else if (command !== "") {
       this.appendOutputLine(`Command not found: ${command}. Type 'help'.`, false, true);
     }
@@ -133,11 +158,28 @@ export class Terminal {
       if (e.key === 'Enter') {
         const commandInput = this.hiddenInput.value.trim();
         this.handleCommand(commandInput);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (this.historyIndex > 0) {
+          this.historyIndex--;
+          this.hiddenInput.value = this.commandHistory[this.historyIndex];
+          this.typerSpan.textContent = this.commandHistory[this.historyIndex];
+        }
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (this.historyIndex < this.commandHistory.length - 1) {
+          this.historyIndex++;
+          this.hiddenInput.value = this.commandHistory[this.historyIndex];
+          this.typerSpan.textContent = this.commandHistory[this.historyIndex];
+        } else if (this.historyIndex === this.commandHistory.length - 1) {
+          this.historyIndex++;
+          this.hiddenInput.value = '';
+          this.typerSpan.textContent = '';
+        }
       } else if (e.key === 'Tab') {
         e.preventDefault();
         const currentInput = this.hiddenInput.value.toLowerCase();
         if (currentInput) {
-          const availableCommands = Object.keys(commands);
           const match = availableCommands.find(cmd => cmd.startsWith(currentInput));
           if (match) {
             this.hiddenInput.value = match;

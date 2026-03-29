@@ -55,8 +55,26 @@ body {
   position: relative;
   z-index: 1;
   animation: flicker 0.15s infinite;
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-color) rgba(0, 0, 0, 0.2);
 }
 
+/* Custom Scrollbar for WebKit */
+#terminal::-webkit-scrollbar {
+  width: 8px;
+}
+#terminal::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+#terminal::-webkit-scrollbar-thumb {
+  background: var(--text-color);
+  border-radius: 4px;
+  box-shadow: inset 0 0 5px var(--glow-color);
+}
+#terminal::-webkit-scrollbar-thumb:hover {
+  background: var(--glow-color);
+}
 
 .output-line {
   margin-bottom: 5px;
@@ -192,7 +210,7 @@ a:hover {
   /* Increased height */
 
   /* Dark gray background to make the white robot pop */
-  background-color: #161b22;
+  background-color: var(--bg-color);
   border-top: 2px solid var(--prompt-color);
 
   display: flex;
