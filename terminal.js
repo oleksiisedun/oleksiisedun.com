@@ -8,6 +8,7 @@ export class Terminal {
     this.typerSpan = document.getElementById('typer');
     this.promptSpan = document.querySelector('.command-line .prompt');
     this.commandLine = document.querySelector('.command-line');
+    this.terminalElement = document.getElementById('terminal');
     this.lineIndex = 0;
     this.commandHistory = [];
     this.historyIndex = 0;
@@ -27,7 +28,7 @@ export class Terminal {
       this.commandLine.style.display = 'flex';
       this.hiddenInput.disabled = false;
       this.hiddenInput.focus();
-      window.scrollTo(0, document.body.scrollHeight);
+      this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
     } else {
       this.commandLine.style.display = 'none';
       this.hiddenInput.disabled = true;
@@ -156,13 +157,13 @@ export class Terminal {
 
     this.hiddenInput.value = '';
     this.typerSpan.textContent = '';
-    window.scrollTo(0, document.body.scrollHeight);
+    this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
   }
 
   bindEvents() {
     this.hiddenInput.addEventListener('input', () => {
       this.typerSpan.textContent = this.hiddenInput.value;
-      window.scrollTo(0, document.body.scrollHeight);
+      this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
     });
 
     this.hiddenInput.addEventListener('keydown', (e) => {
