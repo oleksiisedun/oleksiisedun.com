@@ -1,5 +1,5 @@
 import { PROMPT_TEXT, availableCommands, welcomeMessage, TYPING_DELAY } from './config.js';
-import { generateAnalyticsTemplate, analyticsConnectingTemplate, analyticsSpinnerTemplate } from './templates.js';
+import { generateAnalyticsTemplate, analyticsConnectingTemplate } from './templates.js';
 
 export class Terminal {
   constructor() {
@@ -28,7 +28,11 @@ export class Terminal {
       this.commandLine.style.display = 'flex';
       this.hiddenInput.disabled = false;
       this.hiddenInput.focus();
-      this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
+      
+      // Delay scrolling slightly to allow DOM reflow for display:flex and mobile keyboard animation
+      setTimeout(() => {
+        this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
+      }, 50);
     } else {
       this.commandLine.style.display = 'none';
       this.hiddenInput.disabled = true;
@@ -139,20 +143,10 @@ export class Terminal {
       this.outputDiv.innerHTML = '';
       this.setPromptReady(true);
     } else if (command === 'analytics') {
-      let currentSpinnerId;
       this.appendOutputLine(analyticsConnectingTemplate(), true)
-        .then(() => {
-          currentSpinnerId = 'spinner-' + Date.now();
-          return this.appendOutputLine(analyticsSpinnerTemplate(currentSpinnerId), true);
-        })
         .then(() => fetch('https://analytics.oleksiisedun.workers.dev/'))
         .then(response => response.json())
         .then(data => {
-          const spinnerElement = document.getElementById(currentSpinnerId);
-          if (spinnerElement && spinnerElement.parentElement) {
-            spinnerElement.parentElement.remove();
-          }
-
           if (data.error) {
             return this.appendOutputLine(`<span style='color: var(--error-color);'>Error fetching analytics: ${data.error}</span>`, true);
           } else {
@@ -161,10 +155,6 @@ export class Terminal {
           }
         })
         .catch(err => {
-          const spinnerElement = document.getElementById(currentSpinnerId);
-          if (spinnerElement && spinnerElement.parentElement) {
-            spinnerElement.parentElement.remove();
-          }
           return this.appendOutputLine(`<span style='color: var(--error-color);'>Connection failed: ${err.message}</span>`, true);
         })
         .finally(() => {
@@ -197,6 +187,13 @@ export class Terminal {
     this.hiddenInput.addEventListener('input', () => {
       this.typerSpan.textContent = this.hiddenInput.value;
       this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
+    });
+
+    this.hiddenInput.addEventListener('focus', () => {
+      // Handle mobile keyboard popping up
+      setTimeout(() => {
+        this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
+      }, 300);
     });
 
     this.hiddenInput.addEventListener('keydown', (e) => {

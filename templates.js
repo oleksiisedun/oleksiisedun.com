@@ -19,5 +19,3 @@ export const generateAnalyticsTemplate = (data) => {
 };
 
 export const analyticsConnectingTemplate = () => `<span style='color: var(--art-color);'><i class='fas fa-chart-line'></i> Connecting to Analytics Data Network...</span>`;
-
-export const analyticsSpinnerTemplate = (spinnerId) => `<span id="${spinnerId}" style='color: var(--text-color);'>Establishing secure connection <i class="fas fa-circle-notch fa-spin"></i></span>`;
