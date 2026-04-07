@@ -6,6 +6,7 @@ export const MAIN_COLOR = "#33ff00";
 export const GLOW_COLOR = "#138a03";
 export const PIXEL_SIZE = 1;
 export const BACKGROUND_COLOR = "#111111";
+export const TYPING_DELAY = 10;
 
 export const availableCommands = ["help", "about", "skills", "analytics", "clear"];
 

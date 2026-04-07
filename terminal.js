@@ -1,4 +1,4 @@
-import { PROMPT_TEXT, availableCommands, welcomeMessage } from './config.js';
+import { PROMPT_TEXT, availableCommands, welcomeMessage, TYPING_DELAY } from './config.js';
 import { generateAnalyticsTemplate, analyticsConnectingTemplate, analyticsSpinnerTemplate } from './templates.js';
 
 export class Terminal {
@@ -35,17 +35,42 @@ export class Terminal {
     }
   }
 
-  typeWriter(text, targetElement, speed, callback) {
+  typeWriter(text, targetElement, speed, callback, isHTML = false) {
     let i = 0;
+    let currentOut = '';
     const type = () => {
       if (i < text.length) {
-        if (targetElement.tagName === 'DIV') {
-          targetElement.innerHTML += text.charAt(i);
+        let char = text.charAt(i);
+        let skipDelay = false;
+
+        if (isHTML && char === '<') {
+          let endIndex = text.indexOf('>', i);
+          if (endIndex !== -1) {
+            currentOut += text.substring(i, endIndex + 1);
+            i = endIndex;
+            skipDelay = true;
+          } else {
+            currentOut += char;
+          }
         } else {
-          targetElement.textContent += text.charAt(i);
+          currentOut += char;
         }
+
+        if (isHTML) {
+          targetElement.innerHTML = currentOut;
+        } else {
+          targetElement.textContent = currentOut;
+        }
+
+        this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
+
         i++;
-        setTimeout(type, speed);
+        
+        if (skipDelay) {
+          type();
+        } else {
+          setTimeout(type, speed);
+        }
       } else {
         if (callback) callback();
       }
@@ -58,33 +83,32 @@ export class Terminal {
       const p = document.createElement('div');
       p.className = 'output-line';
       this.outputDiv.appendChild(p);
-      this.typeWriter(lines[this.lineIndex], p, 20, () => {
+      this.typeWriter(lines[this.lineIndex], p, TYPING_DELAY, () => {
         this.lineIndex++;
         this.runStartup(lines);
-      });
+      }, true);
     } else {
       this.setPromptReady(true);
     }
   }
 
   appendOutputLine(content, isHTML = false, isError = false) {
-    const line = document.createElement('div');
-    line.className = 'output-line';
-    if (isError) {
-      line.style.color = 'var(--error-color)';
-    }
-
-    if (isHTML) {
-      line.innerHTML = content;
-    } else {
-      line.textContent = content;
-      if (content instanceof Node) {
-        line.innerHTML = '';
-        line.appendChild(content);
+    return new Promise((resolve) => {
+      const line = document.createElement('div');
+      line.className = 'output-line';
+      if (isError) {
+        line.style.color = 'var(--error-color)';
       }
-    }
-    
-    this.outputDiv.appendChild(line);
+
+      this.outputDiv.appendChild(line);
+
+      if (content instanceof Node) {
+        line.appendChild(content);
+        resolve();
+      } else {
+        this.typeWriter(content, line, TYPING_DELAY, resolve, isHTML);
+      }
+    });
   }
 
   handleCommand(commandInput) {
@@ -101,63 +125,72 @@ export class Terminal {
     historyLine.appendChild(document.createTextNode(commandInput));
     this.outputDiv.appendChild(historyLine);
 
+    this.hiddenInput.value = '';
+    this.typerSpan.textContent = '';
+    this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
+
+    if (command === '') {
+      return;
+    }
+
+    this.setPromptReady(false);
+
     if (command === 'clear') {
       this.outputDiv.innerHTML = '';
+      this.setPromptReady(true);
     } else if (command === 'analytics') {
-      this.setPromptReady(false);
-      this.appendOutputLine(analyticsConnectingTemplate(), true);
-      
-      const spinnerId = 'spinner-' + Date.now();
-      this.appendOutputLine(analyticsSpinnerTemplate(spinnerId), true);
-
-      fetch('https://analytics.oleksiisedun.workers.dev/')
+      let currentSpinnerId;
+      this.appendOutputLine(analyticsConnectingTemplate(), true)
+        .then(() => {
+          currentSpinnerId = 'spinner-' + Date.now();
+          return this.appendOutputLine(analyticsSpinnerTemplate(currentSpinnerId), true);
+        })
+        .then(() => fetch('https://analytics.oleksiisedun.workers.dev/'))
         .then(response => response.json())
         .then(data => {
-          const spinnerElement = document.getElementById(spinnerId);
+          const spinnerElement = document.getElementById(currentSpinnerId);
           if (spinnerElement && spinnerElement.parentElement) {
             spinnerElement.parentElement.remove();
           }
 
           if (data.error) {
-            this.appendOutputLine(`<span style='color: var(--error-color);'>Error fetching analytics: ${data.error}</span>`, true);
+            return this.appendOutputLine(`<span style='color: var(--error-color);'>Error fetching analytics: ${data.error}</span>`, true);
           } else {
             const stats = generateAnalyticsTemplate(data);
-            this.appendOutputLine(stats, true);
+            return this.appendOutputLine(stats, true);
           }
         })
         .catch(err => {
-          const spinnerElement = document.getElementById(spinnerId);
+          const spinnerElement = document.getElementById(currentSpinnerId);
           if (spinnerElement && spinnerElement.parentElement) {
             spinnerElement.parentElement.remove();
           }
-          this.appendOutputLine(`<span style='color: var(--error-color);'>Connection failed: ${err.message}</span>`, true);
+          return this.appendOutputLine(`<span style='color: var(--error-color);'>Connection failed: ${err.message}</span>`, true);
         })
         .finally(() => {
           this.setPromptReady(true);
         });
     } else if (availableCommands.includes(command)) {
-      this.setPromptReady(false);
       fetch(`/commands/${command}.txt`)
         .then(response => {
           if (!response.ok) throw new Error("File not found");
           return response.text();
         })
         .then(text => {
-          this.appendOutputLine(text, false);
+          return this.appendOutputLine(text, false);
         })
         .catch(err => {
-          this.appendOutputLine(`<span style='color: var(--error-color);'>Error reading command: ${err.message}</span>`, true);
+          return this.appendOutputLine(`<span style='color: var(--error-color);'>Error reading command: ${err.message}</span>`, true);
         })
         .finally(() => {
           this.setPromptReady(true);
         });
-    } else if (command !== "") {
-      this.appendOutputLine(`Command not found: ${command}. Type 'help'.`, false, true);
+    } else {
+      this.appendOutputLine(`Command not found: ${command}. Type 'help'.`, false, true)
+        .finally(() => {
+          this.setPromptReady(true);
+        });
     }
-
-    this.hiddenInput.value = '';
-    this.typerSpan.textContent = '';
-    this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
   }
 
   bindEvents() {
