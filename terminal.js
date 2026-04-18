@@ -1,4 +1,4 @@
-import { PROMPT_TEXT, availableCommands, welcomeMessage, TYPING_DELAY } from './config.js';
+import { PROMPT_TEXT, COMMANDS, welcomeMessage, TYPING_DELAY } from './config.js';
 import { generateAnalyticsTemplate, analyticsConnectingTemplate } from './templates.js';
 
 export class Terminal {
@@ -19,8 +19,14 @@ export class Terminal {
   init() {
     this.promptSpan.textContent = PROMPT_TEXT;
     this.setPromptReady(false);
+    // Safety valve: show prompt even if typewriter stalls
+    this._startupTimeout = setTimeout(() => this.setPromptReady(true), 30000);
     this.runStartup(welcomeMessage);
     this.bindEvents();
+  }
+
+  scrollToBottom() {
+    this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
   }
 
   setPromptReady(isReady) {
@@ -28,11 +34,8 @@ export class Terminal {
       this.commandLine.style.display = 'flex';
       this.hiddenInput.disabled = false;
       this.hiddenInput.focus();
-      
-      // Delay scrolling slightly to allow DOM reflow for display:flex and mobile keyboard animation
-      setTimeout(() => {
-        this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
-      }, 50);
+      // Delay slightly to allow DOM reflow for display:flex and mobile keyboard animation
+      setTimeout(() => this.scrollToBottom(), 50);
     } else {
       this.commandLine.style.display = 'none';
       this.hiddenInput.disabled = true;
@@ -40,43 +43,52 @@ export class Terminal {
   }
 
   typeWriter(text, targetElement, speed, callback, isHTML = false) {
-    let i = 0;
-    let currentOut = '';
-    const type = () => {
-      if (i < text.length) {
-        let char = text.charAt(i);
-        let skipDelay = false;
-
-        if (isHTML && char === '<') {
-          let endIndex = text.indexOf('>', i);
-          if (endIndex !== -1) {
-            currentOut += text.substring(i, endIndex + 1);
-            i = endIndex;
-            skipDelay = true;
-          } else {
-            currentOut += char;
-          }
-        } else {
-          currentOut += char;
-        }
-
-        if (isHTML) {
-          targetElement.innerHTML = currentOut;
-        } else {
-          targetElement.textContent = currentOut;
-        }
-
-        this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
-
-        i++;
-        
-        if (skipDelay) {
-          type();
-        } else {
+    if (!isHTML) {
+      let i = 0;
+      const type = () => {
+        if (i < text.length) {
+          targetElement.textContent += text.charAt(i++);
+          this.scrollToBottom();
           setTimeout(type, speed);
-        }
-      } else {
+        } else if (callback) callback();
+      };
+      type();
+      return;
+    }
+
+    // Tokenize HTML into tags and plain-text segments so tags are added
+    // instantly while visible characters are typed one by one
+    const tokens = [];
+    const regex = /(<[^>]*>|[^<]+)/g;
+    let m;
+    while ((m = regex.exec(text)) !== null) tokens.push(m[0]);
+
+    let ti = 0, ci = 0;
+    let currentOut = '';
+
+    const type = () => {
+      if (ti >= tokens.length) {
         if (callback) callback();
+        return;
+      }
+      const token = tokens[ti];
+      if (token.startsWith('<')) {
+        currentOut += token;
+        targetElement.innerHTML = currentOut;
+        this.scrollToBottom();
+        ti++;
+        setTimeout(type, 0);
+      } else {
+        if (ci < token.length) {
+          currentOut += token.charAt(ci++);
+          targetElement.innerHTML = currentOut;
+          this.scrollToBottom();
+          setTimeout(type, speed);
+        } else {
+          ci = 0;
+          ti++;
+          type();
+        }
       }
     };
     type();
@@ -92,6 +104,7 @@ export class Terminal {
         this.runStartup(lines);
       }, true);
     } else {
+      clearTimeout(this._startupTimeout);
       this.setPromptReady(true);
     }
   }
@@ -100,9 +113,7 @@ export class Terminal {
     return new Promise((resolve) => {
       const line = document.createElement('div');
       line.className = 'output-line';
-      if (isError) {
-        line.style.color = 'var(--error-color)';
-      }
+      if (isError) line.classList.add('error-text');
 
       this.outputDiv.appendChild(line);
 
@@ -131,11 +142,9 @@ export class Terminal {
 
     this.hiddenInput.value = '';
     this.typerSpan.textContent = '';
-    this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
+    this.scrollToBottom();
 
-    if (command === '') {
-      return;
-    }
+    if (command === '') return;
 
     this.setPromptReady(false);
 
@@ -148,58 +157,45 @@ export class Terminal {
         .then(response => response.json())
         .then(data => {
           if (data.error) {
-            return this.appendOutputLine(`<span style='color: var(--error-color);'>Error fetching analytics: ${data.error}</span>`, true);
-          } else {
-            const stats = generateAnalyticsTemplate(data);
-            return this.appendOutputLine(stats, true);
+            return this.appendOutputLine(`<span class="error-text">Error fetching analytics: ${data.error}</span>`, true);
           }
+          return this.appendOutputLine(generateAnalyticsTemplate(data), true);
         })
         .catch(err => {
-          return this.appendOutputLine(`<span style='color: var(--error-color);'>Connection failed: ${err.message}</span>`, true);
+          return this.appendOutputLine(`<span class="error-text">Connection failed: ${err.message}</span>`, true);
         })
-        .finally(() => {
-          this.setPromptReady(true);
-        });
-    } else if (availableCommands.includes(command)) {
-      fetch(`/commands/${command}.txt`)
+        .finally(() => this.setPromptReady(true));
+    } else if (COMMANDS[command]?.file) {
+      fetch(`/commands/${COMMANDS[command].file}`)
         .then(response => {
-          if (!response.ok) throw new Error("File not found");
+          if (!response.ok) throw new Error('File not found');
           return response.text();
         })
-        .then(text => {
-          return this.appendOutputLine(text, false);
+        .then(text => this.appendOutputLine(text, false))
+        .catch(() => {
+          return this.appendOutputLine(`<span class="error-text">Error loading command.</span>`, true);
         })
-        .catch(err => {
-          return this.appendOutputLine(`<span style='color: var(--error-color);'>Error reading command: ${err.message}</span>`, true);
-        })
-        .finally(() => {
-          this.setPromptReady(true);
-        });
+        .finally(() => this.setPromptReady(true));
     } else {
       this.appendOutputLine(`Command not found: ${command}. Type 'help'.`, false, true)
-        .finally(() => {
-          this.setPromptReady(true);
-        });
+        .finally(() => this.setPromptReady(true));
     }
   }
 
   bindEvents() {
     this.hiddenInput.addEventListener('input', () => {
       this.typerSpan.textContent = this.hiddenInput.value;
-      this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
+      this.scrollToBottom();
     });
 
     this.hiddenInput.addEventListener('focus', () => {
       // Handle mobile keyboard popping up
-      setTimeout(() => {
-        this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
-      }, 300);
+      setTimeout(() => this.scrollToBottom(), 300);
     });
 
     this.hiddenInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
-        const commandInput = this.hiddenInput.value.trim();
-        this.handleCommand(commandInput);
+        this.handleCommand(this.hiddenInput.value.trim());
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
         if (this.historyIndex > 0) {
@@ -221,18 +217,21 @@ export class Terminal {
       } else if (e.key === 'Tab') {
         e.preventDefault();
         const currentInput = this.hiddenInput.value.toLowerCase();
-        if (currentInput) {
-          const match = availableCommands.find(cmd => cmd.startsWith(currentInput));
-          if (match) {
-            this.hiddenInput.value = match;
-            this.typerSpan.textContent = match;
-          }
+        if (!currentInput) return;
+        const matches = Object.keys(COMMANDS).filter(cmd => cmd.startsWith(currentInput));
+        if (matches.length === 1) {
+          this.hiddenInput.value = matches[0];
+          this.typerSpan.textContent = matches[0];
+        } else if (matches.length > 1) {
+          const hint = document.createElement('div');
+          hint.className = 'output-line';
+          hint.textContent = matches.join('   ');
+          this.outputDiv.appendChild(hint);
+          this.scrollToBottom();
         }
       }
     });
 
-    document.addEventListener('click', () => {
-      this.hiddenInput.focus();
-    });
+    document.addEventListener('click', () => this.hiddenInput.focus());
   }
 }

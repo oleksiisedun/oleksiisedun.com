@@ -1,8 +1,9 @@
 export class MochiRobot {
   constructor() {
     this.eyes = document.querySelectorAll('.eye');
-    if (!this.eyes.length) return; 
+    if (!this.eyes.length) return;
 
+    this._blinkTimeout = null;
     this.init();
   }
 
@@ -23,10 +24,7 @@ export class MochiRobot {
       const angle = Math.atan2(deltaY, deltaX);
       const distance = Math.min(15, Math.hypot(deltaX, deltaY) / 10);
 
-      const moveX = Math.cos(angle) * distance;
-      const moveY = Math.sin(angle) * distance;
-
-      eye.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      eye.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
     });
   }
 
@@ -38,27 +36,28 @@ export class MochiRobot {
     document.addEventListener('touchmove', (e) => {
       const touch = e.touches[0];
       this.handleMove(touch.clientX, touch.clientY);
-    }, { passive: false });
+    }, { passive: true });
 
     document.addEventListener('touchstart', (e) => {
       const touch = e.touches[0];
       this.handleMove(touch.clientX, touch.clientY);
-    }, { passive: false });
+    }, { passive: true });
   }
 
   triggerBlink = () => {
     this.eyes.forEach(eye => {
       eye.classList.add('blink');
-      setTimeout(() => {
-        eye.classList.remove('blink');
-      }, 200);
+      setTimeout(() => eye.classList.remove('blink'), 200);
     });
-
     const nextBlink = Math.random() * 4000 + 2000;
-    setTimeout(this.triggerBlink, nextBlink);
+    this._blinkTimeout = setTimeout(this.triggerBlink, nextBlink);
   };
 
   startBlinking() {
-    setTimeout(this.triggerBlink, 2000);
+    this._blinkTimeout = setTimeout(this.triggerBlink, 2000);
+  }
+
+  destroy() {
+    clearTimeout(this._blinkTimeout);
   }
 }

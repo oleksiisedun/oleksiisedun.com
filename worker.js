@@ -1,17 +1,21 @@
+const ALLOWED_ORIGINS = ['https://oleksiisedun.com', 'https://www.oleksiisedun.com'];
+
+function getCorsHeaders(request) {
+  const origin = request.headers.get('Origin');
+  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+}
+
 export default {
   async fetch(request, env, ctx) {
-    // 1. Handle CORS Preflight
     if (request.method === 'OPTIONS') {
-      return new Response(null, {
-        headers: {
-          'Access-Control-Allow-Origin': 'https://oleksiisedun.com',
-          'Access-Control-Allow-Methods': 'GET, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type',
-        },
-      });
+      return new Response(null, { headers: getCorsHeaders(request) });
     }
 
-    // 2. Caching Setup
     const cacheUrl = new URL(request.url);
     const cacheKey = new Request(cacheUrl.toString(), request);
     const cache = caches.default;
@@ -19,12 +23,10 @@ export default {
     let response = await cache.match(cacheKey);
 
     if (!response) {
-      // 3. Cache Miss: Fetch fresh data
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       const dateString = thirtyDaysAgo.toISOString().split('T')[0];
 
-      // CORRECTED QUERY: Changed clientCountryName to just countryName
       const query = `
         query {
           viewer {
@@ -32,7 +34,7 @@ export default {
               analytics: rumPageloadEventsAdaptiveGroups(
                 limit: 1
                 filter: { siteTag: "${env.SITE_TAG}", datetime_geq: "${dateString}T00:00:00Z" }
-              ) { 
+              ) {
                 count
                 sum { visits }
               }
@@ -72,22 +74,20 @@ export default {
           throw new Error(`NO ACCOUNT DATA. CF RETURNED: ${JSON.stringify(result)}`);
         }
 
-        // Parse the payload using the correct dimension name
         const stats = {
           totalViews: accountData.analytics[0]?.count || 0,
           totalVisits: accountData.analytics[0]?.sum?.visits || 0,
           topCountries: accountData.topCountries.map(c => ({
             country: c.dimensions.countryName || 'Unknown',
-            views: c.count
-          }))
+            views: c.count,
+          })),
         };
 
-        // Cache for 5 minutes (300 seconds)
         response = new Response(JSON.stringify(stats), {
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': 'https://oleksiisedun.com',
-            'Cache-Control': 'public, max-age=300'
+            ...getCorsHeaders(request),
+            'Cache-Control': 'public, max-age=300',
           },
         });
 
@@ -98,12 +98,12 @@ export default {
           status: 500,
           headers: {
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': 'https://oleksiisedun.com'
-          }
+            ...getCorsHeaders(request),
+          },
         });
       }
     }
 
     return response;
-  }
+  },
 };

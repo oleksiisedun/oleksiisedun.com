@@ -8,7 +8,13 @@ export const PIXEL_SIZE = 1;
 export const BACKGROUND_COLOR = "#111111";
 export const TYPING_DELAY = 10;
 
-export const availableCommands = ["help", "about", "skills", "analytics", "clear"];
+export const COMMANDS = {
+  help:      { file: 'help.txt',   description: 'List available commands' },
+  about:     { file: 'about.txt',  description: 'About me' },
+  skills:    { file: 'skills.txt', description: 'My skills' },
+  analytics: { file: null,         description: 'Site analytics' },
+  clear:     { file: null,         description: 'Clear the terminal' },
+};
 
 export const welcomeMessage = [
   "Initializing secure connection...",

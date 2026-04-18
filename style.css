@@ -138,6 +138,19 @@ body {
   50% { opacity: 0; }
 }
 
+.error-text {
+  color: var(--error-color);
+}
+
+.analytics-header {
+  color: var(--art-color);
+  font-weight: bold;
+}
+
+.analytics-value {
+  color: #fff;
+}
+
 a {
   color: inherit;
   text-decoration: underline;
