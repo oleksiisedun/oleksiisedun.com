@@ -31,7 +31,7 @@ export default {
         query {
           viewer {
             accounts(filter: { accountTag: "${env.ACCOUNT_ID}" }) {
-              analytics: rumPageloadEventsGroups(
+              analytics: rumPageloadEventsAdaptiveGroups(
                 limit: 1
                 filter: { siteTag: "${env.SITE_TAG}", datetime_geq: "${dateString}T00:00:00Z" }
               ) {
@@ -39,7 +39,7 @@ export default {
                 sum { visits }
               }
 
-              topCountries: rumPageloadEventsGroups(
+              topCountries: rumPageloadEventsAdaptiveGroups(
                 limit: 5
                 filter: { siteTag: "${env.SITE_TAG}", datetime_geq: "${dateString}T00:00:00Z" }
                 orderBy: [count_DESC]
@@ -74,9 +74,10 @@ export default {
           throw new Error(`NO ACCOUNT DATA. CF RETURNED: ${JSON.stringify(result)}`);
         }
 
+        const analytics = accountData.analytics[0];
         const stats = {
-          totalViews: accountData.analytics[0]?.count || 0,
-          totalVisits: accountData.analytics[0]?.sum?.visits || 0,
+          totalViews: analytics?.count || 0,
+          totalVisits: analytics?.sum?.visits || 0,
           topCountries: accountData.topCountries.map(c => ({
             country: c.dimensions.countryName || 'Unknown',
             views: c.count,
