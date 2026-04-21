@@ -31,7 +31,7 @@ export default {
         query {
           viewer {
             accounts(filter: { accountTag: "${env.ACCOUNT_ID}" }) {
-              analytics: rumPageloadEventsAdaptiveGroups(
+              analytics: rumPageloadEventsGroups(
                 limit: 1
                 filter: { siteTag: "${env.SITE_TAG}", datetime_geq: "${dateString}T00:00:00Z" }
               ) {
@@ -39,7 +39,7 @@ export default {
                 sum { visits }
               }
 
-              topCountries: rumPageloadEventsAdaptiveGroups(
+              topCountries: rumPageloadEventsGroups(
                 limit: 5
                 filter: { siteTag: "${env.SITE_TAG}", datetime_geq: "${dateString}T00:00:00Z" }
                 orderBy: [count_DESC]
