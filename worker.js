@@ -42,9 +42,9 @@ export default {
               topCountries: rumPageloadEventsAdaptiveGroups(
                 limit: 5
                 filter: { siteTag: "${env.SITE_TAG}", datetime_geq: "${dateString}T00:00:00Z" }
-                orderBy: [count_DESC]
+                orderBy: [sum_visits_DESC]
               ) {
-                count
+                sum { visits }
                 dimensions { countryName }
               }
             }
@@ -80,7 +80,7 @@ export default {
           totalVisits: analytics?.sum?.visits || 0,
           topCountries: accountData.topCountries.map(c => ({
             country: c.dimensions.countryName || 'Unknown',
-            views: c.count,
+            views: c.sum?.visits || 0,
           })),
         };
 
