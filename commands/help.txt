@@ -2,4 +2,5 @@ Available commands:
   - about: Who am I?
   - skills: View my main skills
   - analytics: View site statistics
+  - snake-game: Play Snake
   - clear: Clean the terminal

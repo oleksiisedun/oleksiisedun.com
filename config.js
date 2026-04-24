@@ -12,8 +12,9 @@ export const COMMANDS = {
   help:      { file: 'help.txt',   description: 'List available commands' },
   about:     { file: 'about.txt',  description: 'About me' },
   skills:    { file: 'skills.txt', description: 'My skills' },
-  analytics: { file: null,         description: 'Site analytics' },
-  clear:     { file: null,         description: 'Clear the terminal' },
+  analytics:  { file: null,         description: 'Site analytics' },
+  'snake-game': { file: null,      description: 'Play Snake' },
+  clear:      { file: null,         description: 'Clear the terminal' },
 };
 
 export const welcomeMessage = [

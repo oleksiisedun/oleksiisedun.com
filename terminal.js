@@ -1,5 +1,6 @@
 import { PROMPT_TEXT, COMMANDS, welcomeMessage, TYPING_DELAY } from './config.js';
 import { generateAnalyticsTemplate, analyticsConnectingTemplate } from './templates.js';
+import { SnakeGame } from './snake-game.js';
 
 export class Terminal {
   constructor() {
@@ -165,6 +166,13 @@ export class Terminal {
           return this.appendOutputLine(`<span class="error-text">Connection failed: ${err.message}</span>`, true);
         })
         .finally(() => this.setPromptReady(true));
+    } else if (command === 'snake-game') {
+      const game = new SnakeGame(
+        this.outputDiv,
+        () => this.scrollToBottom(),
+        () => this.setPromptReady(true),
+      );
+      game.start();
     } else if (COMMANDS[command]?.file) {
       fetch(`/commands/${COMMANDS[command].file}`)
         .then(response => {
