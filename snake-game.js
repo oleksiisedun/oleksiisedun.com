@@ -208,32 +208,7 @@ export class SnakeGame {
     ctx.font = `${cell}px monospace`;
     ctx.fillText(`Score: ${this.score}`, (cols * cell) / 2, (rows * cell) / 2 + cell);
 
-    this._info.textContent = 'Game over!';
-
-    const btn = document.createElement('button');
-    btn.textContent = 'Continue';
-    btn.style.cssText = [
-      'display:block',
-      'margin-top:8px',
-      'background:none',
-      'border:1px solid #33ff00',
-      'color:#33ff00',
-      'padding:6px 20px',
-      'font-family:monospace',
-      'font-size:1rem',
-      'cursor:pointer',
-    ].join(';');
-    this._wrapper.appendChild(btn);
-    this.scroll();
-
-    const resume = () => {
-      btn.remove();
-      document.removeEventListener('keydown', keyResume);
-      this.onExit();
-    };
-    const keyResume = (e) => { if (e.key === 'Enter') resume(); };
-
-    btn.addEventListener('click', resume);
-    document.addEventListener('keydown', keyResume);
+    this._info.textContent = `Game over! Score: ${this.score}`;
+    this.onExit();
   }
 }
