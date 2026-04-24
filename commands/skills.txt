@@ -3,3 +3,4 @@ TypeScript
 Playwright
 Apps Script
 Google Sheets
+Regular Expressions

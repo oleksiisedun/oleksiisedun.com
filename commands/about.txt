@@ -1,1 +1,3 @@
 I am an AQA Engineer based in Ukraine with over a decade of experience in the software industry. Currently, I focus on military service and automating complex testing ecosystems for the sports betting industry.
+
+In the past, I had diverse experience in manual and automated testing of iOS, macOS, and web applications. Experienced in testing Augmentative and Alternative Communication (AAC) applications. Set up from scratch and maintained CI/CD for multiple projects. Created a custom solution for automatic App Store screenshot generation for iOS apps.
