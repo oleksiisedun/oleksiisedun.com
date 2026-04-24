@@ -17,6 +17,10 @@ export class SnakeGame {
     this.timer = null;
 
     this._keyHandler = this._onKey.bind(this);
+    this._touchStartHandler = this._onTouchStart.bind(this);
+    this._touchEndHandler = this._onTouchEnd.bind(this);
+    this._touchStartX = 0;
+    this._touchStartY = 0;
   }
 
   _calcDimensions() {
@@ -34,6 +38,7 @@ export class SnakeGame {
 
     const wrapper = document.createElement('div');
     wrapper.className = 'output-line';
+    this._wrapper = wrapper;
 
     this._info = document.createElement('div');
     this._info.textContent = 'Arrow keys / swipe: move';
@@ -42,7 +47,7 @@ export class SnakeGame {
     this.canvas = document.createElement('canvas');
     this.canvas.width = this.cols * this.cell;
     this.canvas.height = this.rows * this.cell;
-    this.canvas.style.cssText = 'display:block;border:1px solid #33ff00;margin:6px 0;max-width:100%;touch-action:none;';
+    this.canvas.style.cssText = 'display:block;border:1px solid #33ff00;margin:6px 0;max-width:100%;';
     wrapper.appendChild(this.canvas);
 
     this._scoreEl = document.createElement('div');
@@ -54,31 +59,34 @@ export class SnakeGame {
 
     this.ctx = this.canvas.getContext('2d');
     this._reset();
+
     document.addEventListener('keydown', this._keyHandler);
-    this._bindTouch();
+    document.addEventListener('touchstart', this._touchStartHandler, { passive: true });
+    document.addEventListener('touchend', this._touchEndHandler, { passive: true });
     this.timer = setInterval(() => this._tick(), 150);
   }
 
-  _bindTouch() {
-    let startX, startY;
-    this.canvas.addEventListener('touchstart', e => {
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      e.preventDefault();
-    }, { passive: false });
+  _onTouchStart(e) {
+    this._touchStartX = e.touches[0].clientX;
+    this._touchStartY = e.touches[0].clientY;
+  }
 
-    this.canvas.addEventListener('touchend', e => {
-      const dx = e.changedTouches[0].clientX - startX;
-      const dy = e.changedTouches[0].clientY - startY;
-      let d;
-      if (Math.abs(dx) >= Math.abs(dy)) {
-        d = dx > 0 ? { x: 1, y: 0 } : { x: -1, y: 0 };
-      } else {
-        d = dy > 0 ? { x: 0, y: 1 } : { x: 0, y: -1 };
-      }
-      if (d.x !== -this.dir.x || d.y !== -this.dir.y) this.next = d;
-      e.preventDefault();
-    }, { passive: false });
+  _onTouchEnd(e) {
+    const dx = e.changedTouches[0].clientX - this._touchStartX;
+    const dy = e.changedTouches[0].clientY - this._touchStartY;
+    if (Math.abs(dx) < 20 && Math.abs(dy) < 20) return;
+    let d;
+    if (Math.abs(dx) >= Math.abs(dy)) {
+      d = dx > 0 ? { x: 1, y: 0 } : { x: -1, y: 0 };
+    } else {
+      d = dy > 0 ? { x: 0, y: 1 } : { x: 0, y: -1 };
+    }
+    if (d.x !== -this.dir.x || d.y !== -this.dir.y) this.next = d;
+  }
+
+  _removeTouchListeners() {
+    document.removeEventListener('touchstart', this._touchStartHandler);
+    document.removeEventListener('touchend', this._touchEndHandler);
   }
 
   _reset() {
@@ -188,6 +196,7 @@ export class SnakeGame {
     this.running = false;
     clearInterval(this.timer);
     document.removeEventListener('keydown', this._keyHandler);
+    this._removeTouchListeners();
 
     const { ctx, cols, rows, cell } = this;
     ctx.fillStyle = 'rgba(0,0,0,0.65)';
@@ -199,14 +208,32 @@ export class SnakeGame {
     ctx.font = `${cell}px monospace`;
     ctx.fillText(`Score: ${this.score}`, (cols * cell) / 2, (rows * cell) / 2 + cell);
 
-    this._info.textContent = 'Game over! Press Enter to continue.';
+    this._info.textContent = 'Game over!';
 
-    const resume = (e) => {
-      if (e.key === 'Enter') {
-        document.removeEventListener('keydown', resume);
-        this.onExit();
-      }
+    const btn = document.createElement('button');
+    btn.textContent = 'Continue';
+    btn.style.cssText = [
+      'display:block',
+      'margin-top:8px',
+      'background:none',
+      'border:1px solid #33ff00',
+      'color:#33ff00',
+      'padding:6px 20px',
+      'font-family:monospace',
+      'font-size:1rem',
+      'cursor:pointer',
+    ].join(';');
+    this._wrapper.appendChild(btn);
+    this.scroll();
+
+    const resume = () => {
+      btn.remove();
+      document.removeEventListener('keydown', keyResume);
+      this.onExit();
     };
-    document.addEventListener('keydown', resume);
+    const keyResume = (e) => { if (e.key === 'Enter') resume(); };
+
+    btn.addEventListener('click', resume);
+    document.addEventListener('keydown', keyResume);
   }
 }
