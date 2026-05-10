@@ -1,6 +1,5 @@
 import { PROMPT_TEXT, COMMANDS, welcomeMessage, TYPING_DELAY, SMOKE_QUIT_DATE } from './config.js';
 import { generateAnalyticsTemplate, analyticsConnectingTemplate } from './templates.js';
-import { SnakeGame } from './snake-game.js';
 
 export class Terminal {
   constructor() {
@@ -186,13 +185,6 @@ export class Terminal {
       if (days > 0 || parts.length === 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
       this.appendOutputLine(`I haven't smoked for ${parts.join(' ')}`, false)
         .finally(() => this.setPromptReady(true));
-    } else if (command === 'snake-game') {
-      const game = new SnakeGame(
-        this.outputDiv,
-        () => this.scrollToBottom(),
-        () => this.setPromptReady(true),
-      );
-      game.start();
     } else if (COMMANDS[command]?.file) {
       fetch(`/commands/${COMMANDS[command].file}`)
         .then(response => {
