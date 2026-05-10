@@ -3,4 +3,5 @@ Available commands:
   - skills: View my main skills
   - analytics: View site statistics
   - snake-game: Play Snake
+  - smoke: Smoke-free tracker
   - clear: Clean the terminal

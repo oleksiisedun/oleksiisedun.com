@@ -1,4 +1,4 @@
-import { PROMPT_TEXT, COMMANDS, welcomeMessage, TYPING_DELAY } from './config.js';
+import { PROMPT_TEXT, COMMANDS, welcomeMessage, TYPING_DELAY, SMOKE_QUIT_DATE } from './config.js';
 import { generateAnalyticsTemplate, analyticsConnectingTemplate } from './templates.js';
 import { SnakeGame } from './snake-game.js';
 
@@ -165,6 +165,26 @@ export class Terminal {
         .catch(err => {
           return this.appendOutputLine(`<span class="error-text">Connection failed: ${err.message}</span>`, true);
         })
+        .finally(() => this.setPromptReady(true));
+    } else if (command === 'smoke') {
+      const quit = SMOKE_QUIT_DATE;
+      const now = new Date();
+      let years = now.getFullYear() - quit.getFullYear();
+      let months = now.getMonth() - quit.getMonth();
+      let days = now.getDate() - quit.getDate();
+      if (days < 0) {
+        months--;
+        days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+      }
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+      const parts = [];
+      if (years > 0) parts.push(`${years} year${years !== 1 ? 's' : ''}`);
+      if (months > 0) parts.push(`${months} month${months !== 1 ? 's' : ''}`);
+      if (days > 0 || parts.length === 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
+      this.appendOutputLine(`I haven't smoked for ${parts.join(' ')}`, false)
         .finally(() => this.setPromptReady(true));
     } else if (command === 'snake-game') {
       const game = new SnakeGame(

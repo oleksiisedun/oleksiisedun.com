@@ -7,14 +7,16 @@ export const GLOW_COLOR = "#138a03";
 export const PIXEL_SIZE = 1;
 export const BACKGROUND_COLOR = "#111111";
 export const TYPING_DELAY = 10;
+export const SMOKE_QUIT_DATE = new Date(2026, 1, 25);
 
 export const COMMANDS = {
-  help:      { file: 'help.txt',   description: 'List available commands' },
-  about:     { file: 'about.txt',  description: 'About me' },
-  skills:    { file: 'skills.txt', description: 'My skills' },
-  analytics:  { file: null,         description: 'Site analytics' },
-  'snake-game': { file: null,      description: 'Play Snake' },
-  clear:      { file: null,         description: 'Clear the terminal' },
+  help: { file: 'help.txt', description: 'List available commands' },
+  about: { file: 'about.txt', description: 'About me' },
+  skills: { file: 'skills.txt', description: 'My skills' },
+  analytics: { file: null, description: 'Site analytics' },
+  'snake-game': { file: null, description: 'Play Snake' },
+  smoke: { file: null, description: 'Smoke-free tracker' },
+  clear: { file: null, description: 'Clear the terminal' },
 };
 
 export const welcomeMessage = [
