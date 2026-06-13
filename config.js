@@ -15,6 +15,7 @@ export const COMMANDS = {
   skills: { file: 'skills.txt', description: 'My skills' },
   analytics: { file: null, description: 'Site analytics' },
   smoke: { file: null, description: 'Smoke-free tracker' },
+  sertificates: { file: null, description: 'My certificates' },
   clear: { file: null, description: 'Clear the terminal' },
 };
 

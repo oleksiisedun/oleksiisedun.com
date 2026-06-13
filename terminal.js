@@ -1,5 +1,5 @@
 import { PROMPT_TEXT, COMMANDS, welcomeMessage, TYPING_DELAY, SMOKE_QUIT_DATE } from './config.js';
-import { generateAnalyticsTemplate, analyticsConnectingTemplate } from './templates.js';
+import { generateAnalyticsTemplate, analyticsConnectingTemplate, generateCertificatesTemplate } from './templates.js';
 
 export class Terminal {
   constructor() {
@@ -184,6 +184,22 @@ export class Terminal {
       if (months > 0) parts.push(`${months} month${months !== 1 ? 's' : ''}`);
       if (days > 0 || parts.length === 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
       this.appendOutputLine(`I haven't smoked for ${parts.join(' ')}`, false)
+        .finally(() => this.setPromptReady(true));
+    } else if (command === 'sertificates') {
+      fetch('https://api.github.com/repos/oleksiisedun/oleksiisedun.com/contents/sertificates')
+        .then(response => {
+          if (!response.ok) throw new Error('Failed to list certificates');
+          return response.json();
+        })
+        .then(files => {
+          const certificates = files
+            .filter(f => f.type === 'file' && f.name.toLowerCase().endsWith('.pdf'))
+            .map(f => ({ name: f.name.replace(/\.pdf$/i, ''), url: f.download_url }));
+          return this.appendOutputLine(generateCertificatesTemplate(certificates), true);
+        })
+        .catch(() => {
+          return this.appendOutputLine(`<span class="error-text">Error loading certificates.</span>`, true);
+        })
         .finally(() => this.setPromptReady(true));
     } else if (COMMANDS[command]?.file) {
       fetch(`/commands/${COMMANDS[command].file}`)

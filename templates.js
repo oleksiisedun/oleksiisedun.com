@@ -21,3 +21,21 @@ export const generateAnalyticsTemplate = (data) => {
 
 export const analyticsConnectingTemplate = () =>
   `<span class="analytics-header"><i class='fas fa-chart-line'></i> Connecting to Analytics Data Network...</span>`;
+
+/**
+ * Renders a list of certificates as clickable links opening their PDFs in a new tab.
+ * @param {{ name: string, url: string }[]} certificates
+ * @returns {string}
+ */
+export const generateCertificatesTemplate = (certificates) => {
+  if (!certificates || certificates.length === 0) {
+    return `\nNo certificates found.\n`;
+  }
+
+  let template = `\n<span class="analytics-header">[Certificates]</span>\n\n`;
+  certificates.forEach(cert => {
+    template += `  - <a href="${cert.url}" target="_blank" rel="noopener">${cert.name}</a>\n`;
+  });
+  template += `\n`;
+  return template;
+};
