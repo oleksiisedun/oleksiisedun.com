@@ -14,4 +14,4 @@ Plain HTML, CSS, and vanilla JavaScript. No framework, no build step — just st
 
 ## Built with AI
 
-This site was built entirely with [Claude Code](https://claude.ai/code) — no manual coding. Every line of code was written by AI through conversation.
+This site was built entirely with [Claude Code](https://claude.ai/code).
