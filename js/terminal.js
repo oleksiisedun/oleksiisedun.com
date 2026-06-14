@@ -1,7 +1,10 @@
-import { PROMPT_TEXT, COMMANDS, welcomeMessage, TYPING_DELAY, SMOKE_QUIT_DATE } from './config.js';
-import { generateAnalyticsTemplate, analyticsConnectingTemplate, generateCertificatesTemplate } from './templates.js';
+import { PROMPT_TEXT, COMMANDS, welcomeMessage, TYPING_DELAY, STARTUP_FALLBACK_TIMEOUT, SCROLL_REFLOW_DELAY, MOBILE_KEYBOARD_DELAY, CSS_CLASS } from './config.js';
+import { COMMAND_HANDLERS, handleStaticCommand, handleUnknownCommand } from './handlers.js';
 
 export class Terminal {
+  /**
+   * Sets up DOM references and starts the boot sequence.
+   */
   constructor() {
     this.outputDiv = document.getElementById('output');
     this.hiddenInput = document.getElementById('hidden-input');
@@ -16,32 +19,56 @@ export class Terminal {
     this.init();
   }
 
+  /**
+   * Renders the prompt, runs the startup typewriter sequence, and binds input events.
+   * @returns {void}
+   */
   init() {
     this.promptSpan.textContent = PROMPT_TEXT;
     this.setPromptReady(false);
     // Safety valve: show prompt even if typewriter stalls
-    this._startupTimeout = setTimeout(() => this.setPromptReady(true), 30000);
+    this._startupTimeout = setTimeout(() => this.setPromptReady(true), STARTUP_FALLBACK_TIMEOUT);
     this.runStartup(welcomeMessage);
     this.bindEvents();
   }
 
+  /**
+   * Scrolls the terminal output to the bottom.
+   * @returns {void}
+   */
   scrollToBottom() {
     this.terminalElement.scrollTop = this.terminalElement.scrollHeight;
   }
 
+  /**
+   * Shows or hides the command prompt and toggles the hidden input accordingly.
+   * @param {boolean} isReady - Whether the prompt should be shown and accept input.
+   * @returns {void}
+   */
   setPromptReady(isReady) {
     if (isReady) {
       this.commandLine.style.display = 'flex';
       this.hiddenInput.disabled = false;
       this.hiddenInput.focus();
       // Delay slightly to allow DOM reflow for display:flex and mobile keyboard animation
-      setTimeout(() => this.scrollToBottom(), 50);
+      setTimeout(() => this.scrollToBottom(), SCROLL_REFLOW_DELAY);
     } else {
       this.commandLine.style.display = 'none';
       this.hiddenInput.disabled = true;
     }
   }
 
+  /**
+   * Animates text into `targetElement` one character at a time.
+   * When `isHTML` is true, the text is tokenized so HTML tags are inserted
+   * instantly while visible characters are still typed one by one.
+   * @param {string} text - The text (plain or HTML) to type out.
+   * @param {Element} targetElement - The element to type into.
+   * @param {number} speed - Delay in ms between each typed character.
+   * @param {() => void} [callback] - Called once typing finishes.
+   * @param {boolean} [isHTML=false] - Whether `text` contains HTML markup.
+   * @returns {void}
+   */
   typeWriter(text, targetElement, speed, callback, isHTML = false) {
     if (!isHTML) {
       let i = 0;
@@ -94,6 +121,11 @@ export class Terminal {
     type();
   }
 
+  /**
+   * Types out the startup message lines sequentially, then reveals the prompt.
+   * @param {string[]} lines - The lines of HTML to type out, in order.
+   * @returns {void}
+   */
   runStartup(lines) {
     if (this.lineIndex < lines.length) {
       const p = document.createElement('div');
@@ -109,11 +141,18 @@ export class Terminal {
     }
   }
 
+  /**
+   * Appends a new output line to the terminal, typing it out unless `content` is a DOM node.
+   * @param {string|Node} content - The text/HTML to type out, or a DOM node to insert directly.
+   * @param {boolean} [isHTML=false] - Whether `content` is HTML markup (ignored if `content` is a Node).
+   * @param {boolean} [isError=false] - Whether to style the line as an error.
+   * @returns {Promise<void>} Resolves once the content has been fully added.
+   */
   appendOutputLine(content, isHTML = false, isError = false) {
     return new Promise((resolve) => {
       const line = document.createElement('div');
       line.className = 'output-line';
-      if (isError) line.classList.add('error-text');
+      if (isError) line.classList.add(CSS_CLASS.ERROR_TEXT);
 
       this.outputDiv.appendChild(line);
 
@@ -126,6 +165,12 @@ export class Terminal {
     });
   }
 
+  /**
+   * Processes a submitted command: records it in history, echoes it to the output,
+   * and dispatches to the matching handler.
+   * @param {string} commandInput - The raw command text entered by the user.
+   * @returns {void}
+   */
   handleCommand(commandInput) {
     if (commandInput.trim() !== '') {
       this.commandHistory.push(commandInput);
@@ -151,73 +196,19 @@ export class Terminal {
     if (command === 'clear') {
       this.outputDiv.innerHTML = '';
       this.setPromptReady(true);
-    } else if (command === 'analytics') {
-      this.appendOutputLine(analyticsConnectingTemplate(), true)
-        .then(() => fetch('https://analytics.oleksiisedun.workers.dev/'))
-        .then(response => response.json())
-        .then(data => {
-          if (data.error) {
-            return this.appendOutputLine(`<span class="error-text">Error fetching analytics: ${data.error}</span>`, true);
-          }
-          return this.appendOutputLine(generateAnalyticsTemplate(data), true);
-        })
-        .catch(err => {
-          return this.appendOutputLine(`<span class="error-text">Connection failed: ${err.message}</span>`, true);
-        })
-        .finally(() => this.setPromptReady(true));
-    } else if (command === 'smoke') {
-      const quit = SMOKE_QUIT_DATE;
-      const now = new Date();
-      let years = now.getFullYear() - quit.getFullYear();
-      let months = now.getMonth() - quit.getMonth();
-      let days = now.getDate() - quit.getDate();
-      if (days < 0) {
-        months--;
-        days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
-      }
-      if (months < 0) {
-        years--;
-        months += 12;
-      }
-      const parts = [];
-      if (years > 0) parts.push(`${years} year${years !== 1 ? 's' : ''}`);
-      if (months > 0) parts.push(`${months} month${months !== 1 ? 's' : ''}`);
-      if (days > 0 || parts.length === 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
-      this.appendOutputLine(`I haven't smoked for ${parts.join(' ')}`, false)
-        .finally(() => this.setPromptReady(true));
-    } else if (command === 'sertificates') {
-      fetch('https://api.github.com/repos/oleksiisedun/oleksiisedun.com/contents/sertificates')
-        .then(response => {
-          if (!response.ok) throw new Error('Failed to list certificates');
-          return response.json();
-        })
-        .then(files => {
-          const certificates = files
-            .filter(f => f.type === 'file' && f.name.toLowerCase().endsWith('.pdf'))
-            .map(f => ({ name: f.name.replace(/\.pdf$/i, ''), url: f.download_url }));
-          return this.appendOutputLine(generateCertificatesTemplate(certificates), true);
-        })
-        .catch(() => {
-          return this.appendOutputLine(`<span class="error-text">Error loading certificates.</span>`, true);
-        })
-        .finally(() => this.setPromptReady(true));
+    } else if (COMMAND_HANDLERS[command]) {
+      COMMAND_HANDLERS[command](this).finally(() => this.setPromptReady(true));
     } else if (COMMANDS[command]?.file) {
-      fetch(`/commands/${COMMANDS[command].file}`)
-        .then(response => {
-          if (!response.ok) throw new Error('File not found');
-          return response.text();
-        })
-        .then(text => this.appendOutputLine(text, false))
-        .catch(() => {
-          return this.appendOutputLine(`<span class="error-text">Error loading command.</span>`, true);
-        })
-        .finally(() => this.setPromptReady(true));
+      handleStaticCommand(this, command).finally(() => this.setPromptReady(true));
     } else {
-      this.appendOutputLine(`Command not found: ${command}. Type 'help'.`, false, true)
-        .finally(() => this.setPromptReady(true));
+      handleUnknownCommand(this, command).finally(() => this.setPromptReady(true));
     }
   }
 
+  /**
+   * Wires up keyboard, focus, and click handlers for the hidden input.
+   * @returns {void}
+   */
   bindEvents() {
     this.hiddenInput.addEventListener('input', () => {
       this.typerSpan.textContent = this.hiddenInput.value;
@@ -226,7 +217,7 @@ export class Terminal {
 
     this.hiddenInput.addEventListener('focus', () => {
       // Handle mobile keyboard popping up
-      setTimeout(() => this.scrollToBottom(), 300);
+      setTimeout(() => this.scrollToBottom(), MOBILE_KEYBOARD_DELAY);
     });
 
     this.hiddenInput.addEventListener('keydown', (e) => {

@@ -3,5 +3,5 @@ Available commands:
   - skills: View my main skills
   - analytics: View site statistics
   - smoke: Smoke-free tracker
-  - sertificates: View my certificates
+  - certificates: View my certificates
   - clear: Clean the terminal

@@ -1,5 +1,13 @@
 const ALLOWED_ORIGINS = ['https://oleksiisedun.com', 'https://www.oleksiisedun.com'];
 
+// Number of trailing days of analytics data to query.
+const ANALYTICS_WINDOW_DAYS = 30;
+
+/**
+ * Builds CORS headers for a response, echoing back the request's origin if allowed.
+ * @param {Request} request - The incoming request.
+ * @returns {Record<string, string>} CORS headers to attach to the response.
+ */
 function getCorsHeaders(request) {
   const origin = request.headers.get('Origin');
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
@@ -11,6 +19,14 @@ function getCorsHeaders(request) {
 }
 
 export default {
+  /**
+   * Proxies Cloudflare's GraphQL Analytics API, returning cached page-view/visitor
+   * stats for the site. Handles CORS preflight and caches successful responses.
+   * @param {Request} request - The incoming request.
+   * @param {{ ACCOUNT_ID: string, SITE_TAG: string, CF_API_TOKEN: string }} env - Worker environment bindings.
+   * @param {ExecutionContext} ctx - The worker execution context.
+   * @returns {Promise<Response>} The analytics stats (or error) response.
+   */
   async fetch(request, env, ctx) {
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: getCorsHeaders(request) });
@@ -23,9 +39,9 @@ export default {
     let response = await cache.match(cacheKey);
 
     if (!response) {
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      const dateString = thirtyDaysAgo.toISOString().split('T')[0];
+      const windowStart = new Date();
+      windowStart.setDate(windowStart.getDate() - ANALYTICS_WINDOW_DAYS);
+      const dateString = windowStart.toISOString().split('T')[0];
 
       const query = `
         query {

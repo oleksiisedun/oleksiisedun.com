@@ -1,0 +1,109 @@
+import { ANALYTICS_ENDPOINT, CERTIFICATES_API_URL, COMMANDS, CSS_CLASS, SMOKE_QUIT_DATE } from './config.js';
+import { analyticsConnectingTemplate, generateAnalyticsTemplate, generateCertificatesTemplate } from './templates.js';
+
+/**
+ * Builds the "I haven't smoked for ..." message based on the time elapsed since the quit date.
+ * @param {Date} quitDate - The date smoking was quit.
+ * @returns {string} A human-readable elapsed-time message.
+ */
+export const getSmokeFreeMessage = (quitDate) => {
+  const now = new Date();
+  let years = now.getFullYear() - quitDate.getFullYear();
+  let months = now.getMonth() - quitDate.getMonth();
+  let days = now.getDate() - quitDate.getDate();
+
+  if (days < 0) {
+    months--;
+    days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+  }
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  const parts = [];
+  if (years > 0) parts.push(`${years} year${years !== 1 ? 's' : ''}`);
+  if (months > 0) parts.push(`${months} month${months !== 1 ? 's' : ''}`);
+  if (days > 0 || parts.length === 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
+
+  return `I haven't smoked for ${parts.join(' ')}`;
+};
+
+/**
+ * Fetches and renders Cloudflare Analytics data into the terminal.
+ * @param {import('./terminal.js').Terminal} terminal - The terminal instance to render output into.
+ * @returns {Promise<void>}
+ */
+const handleAnalytics = (terminal) =>
+  terminal.appendOutputLine(analyticsConnectingTemplate(), true)
+    .then(() => fetch(ANALYTICS_ENDPOINT))
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        return terminal.appendOutputLine(`<span class="${CSS_CLASS.ERROR_TEXT}">Error fetching analytics: ${data.error}</span>`, true);
+      }
+      return terminal.appendOutputLine(generateAnalyticsTemplate(data), true);
+    })
+    .catch(err => terminal.appendOutputLine(`<span class="${CSS_CLASS.ERROR_TEXT}">Connection failed: ${err.message}</span>`, true));
+
+/**
+ * Renders the smoke-free duration message into the terminal.
+ * @param {import('./terminal.js').Terminal} terminal - The terminal instance to render output into.
+ * @returns {Promise<void>}
+ */
+const handleSmoke = (terminal) =>
+  terminal.appendOutputLine(getSmokeFreeMessage(SMOKE_QUIT_DATE), false);
+
+/**
+ * Fetches the list of certificate PDFs from GitHub and renders them as links.
+ * @param {import('./terminal.js').Terminal} terminal - The terminal instance to render output into.
+ * @returns {Promise<void>}
+ */
+const handleCertificates = (terminal) =>
+  fetch(CERTIFICATES_API_URL)
+    .then(response => {
+      if (!response.ok) throw new Error('Failed to list certificates');
+      return response.json();
+    })
+    .then(files => {
+      const certificates = files
+        .filter(f => f.type === 'file' && f.name.toLowerCase().endsWith('.pdf'))
+        .map(f => ({ name: f.name.replace(/\.pdf$/i, ''), url: f.download_url }));
+      return terminal.appendOutputLine(generateCertificatesTemplate(certificates), true);
+    })
+    .catch(() => terminal.appendOutputLine(`<span class="${CSS_CLASS.ERROR_TEXT}">Error loading certificates.</span>`, true));
+
+/**
+ * Map of dynamic command names to their async handlers.
+ * Each handler renders its output into the given terminal and resolves when done.
+ * @type {Object<string, (terminal: import('./terminal.js').Terminal) => Promise<void>>}
+ */
+export const COMMAND_HANDLERS = {
+  analytics: handleAnalytics,
+  smoke: handleSmoke,
+  certificates: handleCertificates,
+};
+
+/**
+ * Fetches a static command's content file from `commands/` and renders it into the terminal.
+ * @param {import('./terminal.js').Terminal} terminal - The terminal instance to render output into.
+ * @param {string} command - The command name, used to look up its content file in `COMMANDS`.
+ * @returns {Promise<void>}
+ */
+export const handleStaticCommand = (terminal, command) =>
+  fetch(`/commands/${COMMANDS[command].file}`)
+    .then(response => {
+      if (!response.ok) throw new Error('File not found');
+      return response.text();
+    })
+    .then(text => terminal.appendOutputLine(text, false))
+    .catch(() => terminal.appendOutputLine(`<span class="${CSS_CLASS.ERROR_TEXT}">Error loading command.</span>`, true));
+
+/**
+ * Renders a "command not found" error message into the terminal.
+ * @param {import('./terminal.js').Terminal} terminal - The terminal instance to render output into.
+ * @param {string} command - The unrecognized command name.
+ * @returns {Promise<void>}
+ */
+export const handleUnknownCommand = (terminal, command) =>
+  terminal.appendOutputLine(`Command not found: ${command}. Type 'help'.`, false, true);

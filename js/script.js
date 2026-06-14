@@ -2,6 +2,12 @@ import { Terminal } from './terminal.js';
 import { MochiRobot } from './mochi.js';
 import { STATUS_BAR_HEIGHT, TERMINAL_FONT_SIZE, STATUS_BAR_FONT_SIZE, MAIN_COLOR, GLOW_COLOR, PIXEL_SIZE, BACKGROUND_COLOR } from './config.js';
 
+/**
+ * Converts a hex color (e.g. `#33ff00` or `#3f0`) to a `R, G, B` string
+ * suitable for use inside a CSS `rgb()`/`rgba()` function.
+ * @param {string} hex - The hex color, with or without a leading `#`.
+ * @returns {string} The color as a comma-separated `R, G, B` string.
+ */
 function hexToRgbStr(hex) {
     hex = hex.replace(/^#/, '');
     if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
