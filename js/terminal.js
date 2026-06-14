@@ -1,5 +1,6 @@
 import { PROMPT_TEXT, COMMANDS, welcomeMessage, TYPING_DELAY, STARTUP_FALLBACK_TIMEOUT, SCROLL_REFLOW_DELAY, MOBILE_KEYBOARD_DELAY, CSS_CLASS } from './config.js';
 import { COMMAND_HANDLERS, handleStaticCommand, handleUnknownCommand } from './handlers.js';
+import { openPdfPreview } from './pdf-viewer.js';
 
 export class Terminal {
   /**
@@ -260,5 +261,12 @@ export class Terminal {
     });
 
     document.addEventListener('click', () => this.hiddenInput.focus());
+
+    this.outputDiv.addEventListener('click', (e) => {
+      const link = e.target.closest(`.${CSS_CLASS.CERT_LINK}`);
+      if (!link) return;
+      e.preventDefault();
+      openPdfPreview(link.dataset.pdfUrl, link.dataset.pdfName);
+    });
   }
 }

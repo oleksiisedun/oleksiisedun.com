@@ -47,7 +47,7 @@ export const analyticsConnectingTemplate = () =>
   `<span class="${CSS_CLASS.ANALYTICS_HEADER}"><i class='fas fa-chart-line'></i> Connecting to Analytics Data Network...</span>`;
 
 /**
- * Renders a list of certificates as clickable links opening their PDFs in a new tab.
+ * Renders a list of certificates as clickable links that open their PDFs in a preview overlay.
  * @param {{ name: string, url: string }[]} certificates
  * @returns {string}
  */
@@ -58,7 +58,7 @@ export const generateCertificatesTemplate = (certificates) => {
 
   let template = `\n<span class="${CSS_CLASS.ANALYTICS_HEADER}">[Certificates]</span>\n\n`;
   certificates.forEach(cert => {
-    template += `  - <a href="${cert.url}" target="_blank" rel="noopener">${cert.name}</a>\n`;
+    template += `  - <a href="${cert.url}" class="${CSS_CLASS.CERT_LINK}" data-pdf-url="${cert.url}" data-pdf-name="${cert.name}">${cert.name}</a>\n`;
   });
   template += `\n`;
   return template;

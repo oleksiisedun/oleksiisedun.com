@@ -23,6 +23,7 @@ export const CSS_CLASS = {
   ANALYTICS_HEADER: 'analytics-header',
   ANALYTICS_VALUE: 'analytics-value',
   ERROR_TEXT: 'error-text',
+  CERT_LINK: 'cert-link',
 };
 
 // Mochi avatar tuning
