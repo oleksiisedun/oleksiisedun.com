@@ -265,6 +265,7 @@ export class Terminal {
     this.outputDiv.addEventListener('click', (e) => {
       const link = e.target.closest(`.${CSS_CLASS.CERT_LINK}`);
       if (!link) return;
+      if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
       e.preventDefault();
       openPdfPreview(link.dataset.pdfUrl, link.dataset.pdfName);
     });
