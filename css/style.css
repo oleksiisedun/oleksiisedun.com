@@ -343,6 +343,17 @@ a:hover {
   background: #fff;
 }
 
+.pdf-overlay-body {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-color);
+  font-family: var(--font-stack);
+  font-size: 1.5rem;
+  text-shadow: 0 0 3px var(--glow-color, #138a03), 0 0 8px var(--main-color, #33ff00);
+}
+
 @media (hover: none) and (pointer: coarse) {
   .pdf-overlay-content {
     width: 100vw;

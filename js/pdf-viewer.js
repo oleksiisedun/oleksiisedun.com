@@ -34,18 +34,21 @@ export const openPdfPreview = (url, name) => {
   closeButton.setAttribute('aria-label', 'Close');
   closeButton.innerHTML = '&times;';
 
-  const frame = document.createElement('iframe');
-  frame.className = 'pdf-overlay-frame';
-  frame.src = url;
+  const body = document.createElement('div');
+  body.className = 'pdf-overlay-body';
+  body.textContent = 'Loading...';
 
   actions.append(openLink, closeButton);
   header.append(title, actions);
-  content.append(header, frame);
+  content.append(header, body);
   overlay.appendChild(content);
   document.body.appendChild(overlay);
 
+  let objectUrl = null;
+
   const close = () => {
     document.removeEventListener('keydown', onKeydown);
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
     overlay.remove();
   };
 
@@ -59,4 +62,23 @@ export const openPdfPreview = (url, name) => {
   });
   closeButton.addEventListener('click', close);
   document.addEventListener('keydown', onKeydown);
+
+  // GitHub serves raw PDFs with Content-Disposition: attachment, which makes
+  // browsers download rather than render them in an iframe. Fetching as a
+  // blob and using an object URL avoids that header entirely.
+  fetch(url)
+    .then(response => {
+      if (!response.ok) throw new Error('Failed to load PDF');
+      return response.blob();
+    })
+    .then(blob => {
+      objectUrl = URL.createObjectURL(blob);
+      const frame = document.createElement('iframe');
+      frame.className = 'pdf-overlay-frame';
+      frame.src = objectUrl;
+      body.replaceWith(frame);
+    })
+    .catch(() => {
+      body.textContent = 'Failed to load PDF preview.';
+    });
 };
