@@ -63,16 +63,20 @@ export const openPdfPreview = (url, name) => {
   closeButton.addEventListener('click', close);
   document.addEventListener('keydown', onKeydown);
 
-  // GitHub serves raw PDFs with Content-Disposition: attachment, which makes
-  // browsers download rather than render them in an iframe. Fetching as a
-  // blob and using an object URL avoids that header entirely.
+  // GitHub serves raw PDFs with Content-Disposition: attachment and a
+  // Content-Type of application/octet-stream, both of which make browsers
+  // download rather than render them in an iframe. Fetching as a blob,
+  // forcing the type to application/pdf, and using an object URL avoids both.
   fetch(url)
     .then(response => {
       if (!response.ok) throw new Error('Failed to load PDF');
       return response.blob();
     })
     .then(blob => {
-      objectUrl = URL.createObjectURL(blob);
+      // Force the MIME type to application/pdf - GitHub serves raw PDFs as
+      // application/octet-stream, which browsers download rather than render.
+      const pdfBlob = blob.type === 'application/pdf' ? blob : blob.slice(0, blob.size, 'application/pdf');
+      objectUrl = URL.createObjectURL(pdfBlob);
       const frame = document.createElement('iframe');
       frame.className = 'pdf-overlay-frame';
       frame.src = objectUrl;
