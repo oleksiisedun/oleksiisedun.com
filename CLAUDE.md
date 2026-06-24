@@ -17,9 +17,11 @@ npm run dev   # serves the static site via `serve .`
 - `js/templates.js` — HTML snippet generators for command output (e.g. analytics).
 - `js/mochi.js` / `css/mochi.css` — the animated robot avatar in the status bar.
 - `js/script.js` — entry point; wires config values into CSS variables and bootstraps `Terminal`/`MochiRobot`.
+- `js/pdf-viewer.js` — `openPdfPreview()`: fullscreen overlay that previews a certificate PDF in an iframe (close on backdrop/Escape/button).
 - `css/style.css` — terminal/CRT visual styling.
 - `commands/*.txt` — static text content for simple commands (`about`, `help`, `skills`).
 - `worker/worker.js` — separate Cloudflare Worker (deployed independently) that proxies Cloudflare Analytics GraphQL API for the `analytics` command.
+- `certificates/*.pdf` — certificate files served from this repo; the `certificates` command lists them via the GitHub Contents API (`CERTIFICATES_API_URL` in `config.js`), not a local fetch.
 
 ## Adding a new terminal command
 
@@ -32,3 +34,8 @@ npm run dev   # serves the static site via `serve .`
 
 - Static site is deployed via GitHub Pages (custom domain configured in `CNAME`).
 - `worker/worker.js` is deployed separately to Cloudflare Workers and is not part of the static site build.
+
+## Gotchas
+
+- GitHub serves raw PDFs (`download_url`) as `application/octet-stream` with `Content-Disposition: attachment`, which makes browsers download them instead of rendering inline. `pdf-viewer.js` works around this by fetching the PDF as a blob, forcing its MIME type to `application/pdf`, and loading it via an object URL in an iframe.
+- The PDF preview overlay is skipped on touch devices (`matchMedia('(hover: none) and (pointer: coarse)')`) — cert links fall through to a normal direct download there instead.
