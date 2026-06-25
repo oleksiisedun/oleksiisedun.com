@@ -27,7 +27,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #222 0%, #111 100%);
+    background: linear-gradient(135deg, #222 0%, var(--bg-color) 100%);
     
     /* SCALE IT DOWN TO FIT FOOTER */
     transform: scale(var(--mochi-scale, 0.35)); 
