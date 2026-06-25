@@ -58,7 +58,7 @@ export const generateCertificatesTemplate = (certificates) => {
 
   let template = `\n<span class="${CSS_CLASS.ANALYTICS_HEADER}">[Certificates]</span>\n\n`;
   certificates.forEach(cert => {
-    template += `  - <a href="${cert.url}" class="${CSS_CLASS.CERT_LINK}" data-pdf-url="${cert.url}" data-pdf-name="${cert.name}">${cert.name}</a>\n`;
+    template += `  - <a href="${cert.url}" data-pdf-url="${cert.url}" data-pdf-name="${cert.name}">${cert.name}</a>\n`;
   });
   template += `\n`;
   return template;

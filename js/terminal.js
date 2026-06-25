@@ -263,7 +263,7 @@ export class Terminal {
     document.addEventListener('click', () => this.hiddenInput.focus());
 
     this.outputDiv.addEventListener('click', (e) => {
-      const link = e.target.closest(`.${CSS_CLASS.CERT_LINK}`);
+      const link = e.target.closest('[data-pdf-url]');
       if (!link) return;
       if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
       e.preventDefault();
