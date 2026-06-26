@@ -15,6 +15,27 @@ Live at [oleksiisedun.com](https://oleksiisedun.com).
 
 Plain HTML, CSS, and vanilla JavaScript. No framework, no build step — just static files served directly.
 
+## Architecture
+
+`script.js` bootstraps the app by reading `config.js` and wiring CSS variables, then instantiates `Terminal` and `MochiRobot`. `Terminal` dispatches typed commands: static commands fetch `.txt` files from `commands/`; dynamic ones delegate to handlers in `handlers.js`. The `certificates` handler hits the GitHub Contents API; `analytics` calls the Cloudflare Worker proxy; `smoke` is self-contained. Certificate links open a PDF preview via `pdf-viewer.js`.
+
+```mermaid
+graph TD
+  Entry["script.js\n(entry point)"] --> Config["config.js\n(COMMANDS registry,\ncolors, sizes)"]
+  Entry --> Terminal["terminal.js\n(Terminal class:\ninput, dispatch, output)"]
+  Entry --> Mochi["mochi.js + mochi.css\n(animated robot avatar)"]
+
+  Terminal -->|static commands| StaticFiles[("commands/*.txt\n(about, help, skills)")]
+  Terminal -->|dynamic commands| Handlers["handlers.js\n(COMMAND_HANDLERS)"]
+  Terminal -->|cert links| PDFViewer["pdf-viewer.js\n(fullscreen overlay)"]
+
+  Handlers -->|analytics| Worker["worker/worker.js\n(Cloudflare Worker)"]
+  Handlers -->|certificates| GitHubAPI[("GitHub Contents API")]
+  Worker -->|proxies| CFAnalytics[("Cloudflare\nAnalytics GraphQL")]
+
+  Handlers --> Templates["templates.js\n(HTML snippet generators)"]
+```
+
 ## Run locally
 
 ```
