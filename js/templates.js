@@ -63,3 +63,10 @@ export const generateCertificatesTemplate = (certificates) => {
   template += `\n`;
   return template;
 };
+
+/**
+ * Wraps a message in an error span.
+ * @param {string} message
+ * @returns {string}
+ */
+export const errorSpan = (message) => `<span class="${CSS_CLASS.ERROR_TEXT}">${message}</span>`;

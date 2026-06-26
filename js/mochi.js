@@ -60,15 +60,12 @@ export class MochiRobot {
       this.handleMove(e.clientX, e.clientY);
     });
 
-    document.addEventListener('touchmove', (e) => {
+    const onTouch = (e) => {
       const touch = e.touches[0];
       this.handleMove(touch.clientX, touch.clientY);
-    }, { passive: true });
-
-    document.addEventListener('touchstart', (e) => {
-      const touch = e.touches[0];
-      this.handleMove(touch.clientX, touch.clientY);
-    }, { passive: true });
+    };
+    document.addEventListener('touchmove', onTouch, { passive: true });
+    document.addEventListener('touchstart', onTouch, { passive: true });
   }
 
   /**

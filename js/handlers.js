@@ -1,5 +1,5 @@
-import { ANALYTICS_ENDPOINT, CERTIFICATES_API_URL, COMMANDS, CSS_CLASS, SMOKE_QUIT_DATE } from './config.js';
-import { analyticsConnectingTemplate, generateAnalyticsTemplate, generateCertificatesTemplate } from './templates.js';
+import { ANALYTICS_ENDPOINT, CERTIFICATES_API_URL, COMMANDS, SMOKE_QUIT_DATE } from './config.js';
+import { analyticsConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCertificatesTemplate } from './templates.js';
 
 /**
  * Builds the "I haven't smoked for ..." message based on the time elapsed since the quit date.
@@ -40,11 +40,11 @@ const handleAnalytics = (terminal) =>
     .then(response => response.json())
     .then(data => {
       if (data.error) {
-        return terminal.appendOutputLine(`<span class="${CSS_CLASS.ERROR_TEXT}">Error fetching analytics: ${data.error}</span>`, true);
+        return terminal.appendOutputLine(errorSpan(`Error fetching analytics: ${data.error}`), true);
       }
       return terminal.appendOutputLine(generateAnalyticsTemplate(data), true);
     })
-    .catch(err => terminal.appendOutputLine(`<span class="${CSS_CLASS.ERROR_TEXT}">Connection failed: ${err.message}</span>`, true));
+    .catch(err => terminal.appendOutputLine(errorSpan(`Connection failed: ${err.message}`), true));
 
 /**
  * Renders the smoke-free duration message into the terminal.
@@ -71,7 +71,7 @@ const handleCertificates = (terminal) =>
         .map(f => ({ name: f.name.replace(/\.pdf$/i, ''), url: f.download_url }));
       return terminal.appendOutputLine(generateCertificatesTemplate(certificates), true);
     })
-    .catch(() => terminal.appendOutputLine(`<span class="${CSS_CLASS.ERROR_TEXT}">Error loading certificates.</span>`, true));
+    .catch(() => terminal.appendOutputLine(errorSpan('Error loading certificates.'), true));
 
 /**
  * Map of dynamic command names to their async handlers.
@@ -97,7 +97,7 @@ export const handleStaticCommand = (terminal, command) =>
       return response.text();
     })
     .then(text => terminal.appendOutputLine(text, false))
-    .catch(() => terminal.appendOutputLine(`<span class="${CSS_CLASS.ERROR_TEXT}">Error loading command.</span>`, true));
+    .catch(() => terminal.appendOutputLine(errorSpan('Error loading command.'), true));
 
 /**
  * Renders a "command not found" error message into the terminal.

@@ -42,6 +42,16 @@ export class Terminal {
   }
 
   /**
+   * Sets the hidden input value and syncs the visible typer span.
+   * @param {string} value
+   * @returns {void}
+   */
+  setInput(value) {
+    this.hiddenInput.value = value;
+    this.typerSpan.textContent = value;
+  }
+
+  /**
    * Shows or hides the command prompt and toggles the hidden input accordingly.
    * @param {boolean} isReady - Whether the prompt should be shown and accept input.
    * @returns {void}
@@ -197,13 +207,11 @@ export class Terminal {
     if (command === 'clear') {
       this.outputDiv.innerHTML = '';
       this.setPromptReady(true);
-    } else if (COMMAND_HANDLERS[command]) {
-      COMMAND_HANDLERS[command](this).finally(() => this.setPromptReady(true));
-    } else if (COMMANDS[command]?.file) {
-      handleStaticCommand(this, command).finally(() => this.setPromptReady(true));
-    } else {
-      handleUnknownCommand(this, command).finally(() => this.setPromptReady(true));
+      return;
     }
+    const action = COMMAND_HANDLERS[command]?.(this)
+      ?? (COMMANDS[command]?.file ? handleStaticCommand(this, command) : handleUnknownCommand(this, command));
+    action.finally(() => this.setPromptReady(true));
   }
 
   /**
@@ -228,19 +236,16 @@ export class Terminal {
         e.preventDefault();
         if (this.historyIndex > 0) {
           this.historyIndex--;
-          this.hiddenInput.value = this.commandHistory[this.historyIndex];
-          this.typerSpan.textContent = this.commandHistory[this.historyIndex];
+          this.setInput(this.commandHistory[this.historyIndex]);
         }
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
         if (this.historyIndex < this.commandHistory.length - 1) {
           this.historyIndex++;
-          this.hiddenInput.value = this.commandHistory[this.historyIndex];
-          this.typerSpan.textContent = this.commandHistory[this.historyIndex];
+          this.setInput(this.commandHistory[this.historyIndex]);
         } else if (this.historyIndex === this.commandHistory.length - 1) {
           this.historyIndex++;
-          this.hiddenInput.value = '';
-          this.typerSpan.textContent = '';
+          this.setInput('');
         }
       } else if (e.key === 'Tab') {
         e.preventDefault();
@@ -248,8 +253,7 @@ export class Terminal {
         if (!currentInput) return;
         const matches = Object.keys(COMMANDS).filter(cmd => cmd.startsWith(currentInput));
         if (matches.length === 1) {
-          this.hiddenInput.value = matches[0];
-          this.typerSpan.textContent = matches[0];
+          this.setInput(matches[0]);
         } else if (matches.length > 1) {
           const hint = document.createElement('div');
           hint.className = 'output-line';
