@@ -263,6 +263,7 @@ a:hover {
 
 .status-right a:hover {
   color: var(--text-color);
+  background-color: transparent;
 }
 
 /* --- PDF PREVIEW OVERLAY --- */
