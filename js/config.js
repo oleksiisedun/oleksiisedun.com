@@ -45,7 +45,7 @@ export const COMMANDS = {
   about: { file: 'about.txt', description: 'About me' },
   skills: { file: 'skills.txt', description: 'My skills' },
   analytics: { file: null, description: 'Site analytics' },
-  smoke: { file: null, description: 'Smoke-free tracker' },
+  smoking: { file: null, description: 'Smoke-free tracker' },
   certificates: { file: null, description: 'My certificates' },
   clear: { file: null, description: 'Clear the terminal' },
 };

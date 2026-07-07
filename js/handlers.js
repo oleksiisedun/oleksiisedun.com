@@ -2,7 +2,7 @@ import { ANALYTICS_ENDPOINT, CERTIFICATES_API_URL, COMMANDS, SMOKE_QUIT_DATE } f
 import { analyticsConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCertificatesTemplate, generateUnknownCommandTemplate } from './templates.js';
 
 /**
- * Builds the "I haven't smoked for ..." message based on the time elapsed since the quit date.
+ * Builds the "Haven't smoked for ..." message based on the time elapsed since the quit date.
  * @param {Date} quitDate - The date smoking was quit.
  * @returns {string} A human-readable elapsed-time message.
  */
@@ -26,7 +26,7 @@ export const getSmokeFreeMessage = (quitDate) => {
   if (months > 0) parts.push(`${months} month${months !== 1 ? 's' : ''}`);
   if (days > 0 || parts.length === 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
 
-  return `I haven't smoked for ${parts.join(' ')}`;
+  return `Haven't smoked for ${parts.join(' ')}`;
 };
 
 /**
@@ -51,7 +51,7 @@ const handleAnalytics = (terminal) =>
  * @param {import('./terminal.js').Terminal} terminal - The terminal instance to render output into.
  * @returns {Promise<void>}
  */
-const handleSmoke = (terminal) =>
+const handleSmoking = (terminal) =>
   terminal.appendOutputLine(getSmokeFreeMessage(SMOKE_QUIT_DATE), false);
 
 /**
@@ -80,7 +80,7 @@ const handleCertificates = (terminal) =>
  */
 export const COMMAND_HANDLERS = {
   analytics: handleAnalytics,
-  smoke: handleSmoke,
+  smoking: handleSmoking,
   certificates: handleCertificates,
 };
 

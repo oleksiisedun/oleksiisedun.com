@@ -7,7 +7,7 @@ Live at [oleksiisedun.com](https://oleksiisedun.com).
 ## Features
 
 - Terminal-style UI with a retro CRT monitor aesthetic
-- Commands: `help`, `about`, `skills`, `analytics`, `smoke`, `certificates`, `clear`
+- Commands: `help`, `about`, `skills`, `analytics`, `smoking`, `certificates`, `clear`
 - Site analytics proxied through a Cloudflare Worker
 - Certificate PDFs previewed in an in-page overlay
 
@@ -17,7 +17,7 @@ Plain HTML, CSS, and vanilla JavaScript. No framework, no build step — just st
 
 ## Architecture
 
-`script.js` bootstraps the app by reading `config.js` and wiring CSS variables, then instantiates `Terminal` and `MochiRobot`. `Terminal` dispatches typed commands: static commands fetch `.txt` files from `commands/`; dynamic ones delegate to handlers in `handlers.js`. The `certificates` handler hits the GitHub Contents API; `analytics` calls the Cloudflare Worker proxy; `smoke` is self-contained. Certificate links open a PDF preview via `pdf-viewer.js`.
+`script.js` bootstraps the app by reading `config.js` and wiring CSS variables, then instantiates `Terminal` and `MochiRobot`. `Terminal` dispatches typed commands: static commands fetch `.txt` files from `commands/`; dynamic ones delegate to handlers in `handlers.js`. The `certificates` handler hits the GitHub Contents API; `analytics` calls the Cloudflare Worker proxy; `smoking` is self-contained. Certificate links open a PDF preview via `pdf-viewer.js`.
 
 ```mermaid
 graph TD
