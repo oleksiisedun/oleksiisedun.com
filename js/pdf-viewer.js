@@ -22,13 +22,6 @@ export const openPdfPreview = (url, name) => {
   const actions = document.createElement('div');
   actions.className = 'pdf-overlay-actions';
 
-  const openLink = document.createElement('a');
-  openLink.href = url;
-  openLink.target = '_blank';
-  openLink.rel = 'noopener';
-  openLink.title = 'Open in new tab';
-  openLink.innerHTML = '<i class="fas fa-external-link-alt"></i>';
-
   const closeButton = document.createElement('button');
   closeButton.className = 'pdf-close-button';
   closeButton.setAttribute('aria-label', 'Close');
@@ -38,7 +31,7 @@ export const openPdfPreview = (url, name) => {
   body.className = 'pdf-overlay-body';
   body.textContent = 'Loading...';
 
-  actions.append(openLink, closeButton);
+  actions.append(closeButton);
   header.append(title, actions);
   content.append(header, body);
   overlay.appendChild(content);
