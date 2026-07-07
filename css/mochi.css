@@ -53,12 +53,12 @@
 .eye {
     width: 60px;
     height: 80px;
-    background-color: var(--main-color, #33ff00);
+    background-color: var(--main-color, #6A9955);
     border-radius: 12px;
     position: relative;
-    box-shadow: 
-        0 0 15px var(--main-color, #33ff00),
-        0 0 30px rgba(var(--main-color-rgb, 51, 255, 0), 0.4);
+    box-shadow:
+        0 0 8px var(--main-color, #6A9955),
+        0 0 18px rgba(var(--main-color-rgb, 106, 153, 85), 0.25);
     will-change: transform; /* Smoother animation */
 }
 
