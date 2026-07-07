@@ -10,7 +10,6 @@ export const TYPING_DELAY = 10;
 export const SMOKE_QUIT_DATE = new Date(2026, 1, 25);
 
 // Terminal timing
-export const STARTUP_FALLBACK_TIMEOUT = 30000; // ms safety valve if typewriter stalls
 export const SCROLL_REFLOW_DELAY = 50; // ms, allow DOM reflow before scrolling
 export const MOBILE_KEYBOARD_DELAY = 300; // ms, wait for mobile keyboard animation
 
@@ -49,9 +48,3 @@ export const COMMANDS = {
   certificates: { file: null, description: 'My certificates' },
   clear: { file: null, description: 'Clear the terminal' },
 };
-
-export const welcomeMessage = [
-  "Initializing secure connection...",
-  "Loading command line...",
-  "Type 'help' for a list of commands."
-];

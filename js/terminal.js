@@ -1,4 +1,4 @@
-import { PROMPT_TEXT, COMMANDS, welcomeMessage, TYPING_DELAY, STARTUP_FALLBACK_TIMEOUT, SCROLL_REFLOW_DELAY, MOBILE_KEYBOARD_DELAY, CSS_CLASS } from './config.js';
+import { PROMPT_TEXT, COMMANDS, TYPING_DELAY, SCROLL_REFLOW_DELAY, MOBILE_KEYBOARD_DELAY, CSS_CLASS } from './config.js';
 import { COMMAND_HANDLERS, handleStaticCommand, handleUnknownCommand } from './handlers.js';
 import { openPdfPreview } from './pdf-viewer.js';
 
@@ -13,7 +13,6 @@ export class Terminal {
     this.promptSpan = document.querySelector('.command-line .prompt');
     this.commandLine = document.querySelector('.command-line');
     this.terminalElement = document.getElementById('terminal');
-    this.lineIndex = 0;
     this.commandHistory = [];
     this.historyIndex = 0;
 
@@ -21,15 +20,12 @@ export class Terminal {
   }
 
   /**
-   * Renders the prompt, runs the startup typewriter sequence, and binds input events.
+   * Renders the prompt and binds input events.
    * @returns {void}
    */
   init() {
     this.promptSpan.textContent = PROMPT_TEXT;
-    this.setPromptReady(false);
-    // Safety valve: show prompt even if typewriter stalls
-    this._startupTimeout = setTimeout(() => this.setPromptReady(true), STARTUP_FALLBACK_TIMEOUT);
-    this.runStartup(welcomeMessage);
+    this.setPromptReady(true);
     this.bindEvents();
   }
 
@@ -130,26 +126,6 @@ export class Terminal {
       }
     };
     type();
-  }
-
-  /**
-   * Types out the startup message lines sequentially, then reveals the prompt.
-   * @param {string[]} lines - The lines of HTML to type out, in order.
-   * @returns {void}
-   */
-  runStartup(lines) {
-    if (this.lineIndex < lines.length) {
-      const p = document.createElement('div');
-      p.className = 'output-line';
-      this.outputDiv.appendChild(p);
-      this.typeWriter(lines[this.lineIndex], p, TYPING_DELAY, () => {
-        this.lineIndex++;
-        this.runStartup(lines);
-      }, true);
-    } else {
-      clearTimeout(this._startupTimeout);
-      this.setPromptReady(true);
-    }
   }
 
   /**
