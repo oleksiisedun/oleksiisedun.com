@@ -1,5 +1,5 @@
 import { ANALYTICS_ENDPOINT, CERTIFICATES_API_URL, COMMANDS, SMOKE_QUIT_DATE } from './config.js';
-import { analyticsConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCertificatesTemplate } from './templates.js';
+import { analyticsConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCertificatesTemplate, generateUnknownCommandTemplate } from './templates.js';
 
 /**
  * Builds the "I haven't smoked for ..." message based on the time elapsed since the quit date.
@@ -100,10 +100,10 @@ export const handleStaticCommand = (terminal, command) =>
     .catch(() => terminal.appendOutputLine(errorSpan('Error loading command.'), true));
 
 /**
- * Renders a "command not found" error message into the terminal.
+ * Renders a "command not found" error message into the terminal, listing available commands.
  * @param {import('./terminal.js').Terminal} terminal - The terminal instance to render output into.
  * @param {string} command - The unrecognized command name.
  * @returns {Promise<void>}
  */
 export const handleUnknownCommand = (terminal, command) =>
-  terminal.appendOutputLine(`Command not found: ${command}. Type 'help'.`, false, true);
+  terminal.appendOutputLine(generateUnknownCommandTemplate(command, COMMANDS), true);

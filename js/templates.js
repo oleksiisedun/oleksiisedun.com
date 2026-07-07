@@ -70,3 +70,26 @@ export const generateCertificatesTemplate = (certificates) => {
  * @returns {string}
  */
 export const errorSpan = (message) => `<span class="${CSS_CLASS.ERROR_TEXT}">${message}</span>`;
+
+/**
+ * Renders a "command not found" message with a grid of available commands.
+ * @param {string} command - The unrecognized command name.
+ * @param {Object<string, unknown>} commands - The COMMANDS registry (keys are command names).
+ * @returns {string} HTML markup for the error message.
+ */
+export const generateUnknownCommandTemplate = (command, commands) => {
+  const names = Object.keys(commands);
+  const maxLen = Math.max(...names.map(n => n.length));
+  const columns = 3;
+
+  let rows = '';
+  for (let i = 0; i < names.length; i += columns) {
+    rows += '  ' + names.slice(i, i + columns)
+      .map(n => `<span class="${CSS_CLASS.COMMAND_TOKEN}">${n.padEnd(maxLen)}</span>`)
+      .join('   ') + '\n';
+  }
+
+  return `${errorSpan(`Command not found: ${command}`)}\n\n` +
+    `Available commands:\n${rows}\n` +
+    `Type 'help' for more information.\n`;
+};

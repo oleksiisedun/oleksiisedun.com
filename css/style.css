@@ -154,6 +154,10 @@ body {
   color: #fff;
 }
 
+.command-token {
+  font-weight: bold;
+}
+
 a {
   color: inherit;
   text-decoration: underline;
