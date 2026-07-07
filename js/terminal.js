@@ -168,7 +168,7 @@ export class Terminal {
 
     const historyLine = document.createElement('div');
     historyLine.className = 'output-line';
-    historyLine.innerHTML = `<span class="prompt">${PROMPT_TEXT}</span> `;
+    historyLine.innerHTML = `<span class="prompt">${PROMPT_TEXT}</span>`;
     historyLine.appendChild(document.createTextNode(commandInput));
     this.outputDiv.appendChild(historyLine);
 
