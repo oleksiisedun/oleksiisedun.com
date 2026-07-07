@@ -1,7 +1,11 @@
 Available commands:
-  - about: Who am I?
-  - skills: View my main skills
-  - analytics: View site statistics
-  - smoke: Smoke-free tracker
-  - certificates: View my certificates
-  - clear: Clean the terminal
+
+  help          Show this list of commands
+  about         Who am I?
+  skills        View my main skills
+  analytics     View site statistics
+  smoke         Smoke-free tracker
+  certificates  View my certificates
+  clear         Clean the terminal
+
+Type a command name to run it.
