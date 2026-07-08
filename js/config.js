@@ -6,7 +6,8 @@ export const MAIN_COLOR = "#6A9955";
 export const GLOW_COLOR = "#3D5C33";
 export const PIXEL_SIZE = 1;
 export const BACKGROUND_COLOR = "#111111";
-export const TYPING_DELAY = 10;
+// Delay in ms between each typed character in the typewriter output effect; lower = faster
+export const TYPING_DELAY = 5;
 export const SMOKE_QUIT_DATE = new Date(2026, 1, 25);
 
 // Terminal timing
