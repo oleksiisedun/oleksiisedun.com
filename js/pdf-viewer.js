@@ -72,7 +72,9 @@ export const openPdfPreview = (url, name) => {
       objectUrl = URL.createObjectURL(pdfBlob);
       const frame = document.createElement('iframe');
       frame.className = 'pdf-overlay-frame';
-      frame.src = objectUrl;
+      // Chrome's built-in PDF viewer honors these legacy Acrobat "open
+      // parameters" in the URL fragment to hide its own toolbar/side panel.
+      frame.src = `${objectUrl}#toolbar=0&navpanes=0&scrollbar=0`;
       body.replaceWith(frame);
     })
     .catch(() => {
