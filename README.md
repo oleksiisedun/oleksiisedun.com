@@ -48,6 +48,3 @@ npm run dev   # serves the static site via `serve .`
 - The static site deploys via GitHub Pages (custom domain in `CNAME`).
 - `worker/worker.js` is a separate Cloudflare Worker, deployed independently — it's not part of the static site build.
 
-## Built with AI
-
-This site was built entirely with [Claude Code](https://claude.ai/code).
