@@ -303,7 +303,7 @@ a:hover {
   border-bottom: 2px solid var(--main-color, #6A9955);
   color: var(--text-color);
   font-family: var(--font-stack);
-  text-shadow: 0 0 1px var(--glow-color, #3D5C33), 0 0 3px var(--main-color, #6A9955);
+  text-shadow: 0 0 1px var(--glow-color, #3D5C33);
   flex-shrink: 0;
 }
 
@@ -354,7 +354,7 @@ a:hover {
   color: var(--text-color);
   font-family: var(--font-stack);
   font-size: 1.5rem;
-  text-shadow: 0 0 1px var(--glow-color, #3D5C33), 0 0 3px var(--main-color, #6A9955);
+  text-shadow: 0 0 1px var(--glow-color, #3D5C33);
 }
 
 @media (hover: none) and (pointer: coarse) {
