@@ -43,7 +43,6 @@ export const MOCHI_INITIAL_BLINK_DELAY = 2000;
 /** @type {Object<string, CommandConfig>} */
 export const COMMANDS = {
   help: { file: 'help.txt', description: 'List available commands' },
-  about: { file: 'about.txt', description: 'About me' },
   skills: { file: 'skills.txt', description: 'My skills' },
   analytics: { file: null, description: 'Site analytics' },
   smoking: { file: null, description: 'Smoke-free tracker' },

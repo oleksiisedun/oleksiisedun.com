@@ -1,7 +1,6 @@
 Available commands:
 
   help          Show this list of commands
-  about         Who am I?
   skills        View my main skills
   analytics     View site statistics
   smoking       Smoke-free tracker

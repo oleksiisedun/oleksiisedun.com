@@ -19,7 +19,7 @@ npm run dev   # serves the static site via `serve .`
 - `js/script.js` — entry point; wires config values into CSS variables and bootstraps `Terminal`/`MochiRobot`.
 - `js/pdf-viewer.js` — `openPdfPreview()`: fullscreen overlay that previews a certificate PDF in an iframe (close on backdrop/Escape/button).
 - `css/style.css` — terminal/CRT visual styling.
-- `commands/*.txt` — static text content for simple commands (`about`, `help`, `skills`).
+- `commands/*.txt` — static text content for simple commands (`help`, `skills`).
 - `worker/worker.js` — separate Cloudflare Worker (deployed independently) that proxies Cloudflare Analytics GraphQL API for the `analytics` command.
 - `certificates/*.pdf` — certificate files served from this repo; the `certificates` command lists them via the GitHub Contents API (`CERTIFICATES_API_URL` in `config.js`), not a local fetch.
 

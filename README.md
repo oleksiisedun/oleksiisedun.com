@@ -7,7 +7,7 @@ Live at [oleksiisedun.com](https://oleksiisedun.com).
 ## Features
 
 - Terminal-style UI with a retro CRT monitor aesthetic
-- Commands: `help`, `about`, `skills`, `analytics`, `smoking`, `certificates`, `clear`
+- Commands: `help`, `skills`, `analytics`, `smoking`, `certificates`, `clear`
 - Site analytics proxied through a Cloudflare Worker
 - Certificate PDFs previewed in an in-page overlay
 
@@ -25,7 +25,7 @@ graph TD
   Entry --> Terminal["terminal.js\n(Terminal class:\ninput, dispatch, output)"]
   Entry --> Mochi["mochi.js + mochi.css\n(animated robot avatar)"]
 
-  Terminal -->|static commands| StaticFiles[("commands/*.txt\n(about, help, skills)")]
+  Terminal -->|static commands| StaticFiles[("commands/*.txt\n(help, skills)")]
   Terminal -->|dynamic commands| Handlers["handlers.js\n(COMMAND_HANDLERS)"]
   Terminal -->|cert links| PDFViewer["pdf-viewer.js\n(fullscreen overlay)"]
 
