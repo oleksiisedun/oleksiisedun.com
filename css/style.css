@@ -153,7 +153,7 @@ body {
   font-weight: bold;
 }
 
-.analytics-value {
+.value-text {
   color: var(--value-color);
 }
 

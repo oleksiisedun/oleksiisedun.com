@@ -1,10 +1,10 @@
 import { ANALYTICS_ENDPOINT, CERTIFICATES_API_URL, COMMANDS, SMOKE_QUIT_DATE } from './config.js';
-import { analyticsConnectingTemplate, certificatesConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCertificatesTemplate, generateUnknownCommandTemplate, sectionHeader } from './templates.js';
+import { analyticsConnectingTemplate, certificatesConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCertificatesTemplate, generateUnknownCommandTemplate, sectionHeader, valueSpan } from './templates.js';
 
 /**
  * Builds the "Haven't smoked for ..." message based on the time elapsed since the quit date.
  * @param {Date} quitDate - The date smoking was quit.
- * @returns {string} A human-readable elapsed-time message.
+ * @returns {string} HTML markup for a human-readable elapsed-time message.
  */
 export const getSmokeFreeMessage = (quitDate) => {
   const now = new Date();
@@ -22,9 +22,9 @@ export const getSmokeFreeMessage = (quitDate) => {
   }
 
   const parts = [];
-  if (years > 0) parts.push(`${years} year${years !== 1 ? 's' : ''}`);
-  if (months > 0) parts.push(`${months} month${months !== 1 ? 's' : ''}`);
-  if (days > 0 || parts.length === 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
+  if (years > 0) parts.push(`${valueSpan(years)} year${years !== 1 ? 's' : ''}`);
+  if (months > 0) parts.push(`${valueSpan(months)} month${months !== 1 ? 's' : ''}`);
+  if (days > 0 || parts.length === 0) parts.push(`${valueSpan(days)} day${days !== 1 ? 's' : ''}`);
 
   return `Haven't smoked for ${parts.join(' ')}`;
 };

@@ -21,14 +21,21 @@ import { CSS_CLASS } from './config.js';
 export const sectionHeader = (label) => `<span class="${CSS_CLASS.SECTION_HEADER}">[${label}]</span>`;
 
 /**
+ * Renders a highlighted value (e.g. a number) in the terminal's value color.
+ * @param {string|number} value
+ * @returns {string}
+ */
+export const valueSpan = (value) => `<span class="${CSS_CLASS.VALUE_TEXT}">${value}</span>`;
+
+/**
  * Renders Cloudflare Analytics data as a terminal-style report.
  * @param {AnalyticsData} data - The analytics data to render.
  * @returns {string} HTML markup for the analytics report.
  */
 export const generateAnalyticsTemplate = (data) => {
   let template = `${sectionHeader('Cloudflare Analytics')} (Last 30 Days)\n\n`;
-  template += `Unique Visitors : <span class="${CSS_CLASS.ANALYTICS_VALUE}">${data.totalVisits || 0}</span>\n`;
-  template += `Page Views      : <span class="${CSS_CLASS.ANALYTICS_VALUE}">${data.totalViews || 0}</span>\n\n`;
+  template += `Unique Visitors : ${valueSpan(data.totalVisits || 0)}\n`;
+  template += `Page Views      : ${valueSpan(data.totalViews || 0)}\n\n`;
 
   if (data.topCountries && data.topCountries.length > 0) {
     const maxLen = Math.max(...data.topCountries.map(c => c.country.length));
@@ -37,7 +44,7 @@ export const generateAnalyticsTemplate = (data) => {
     template += `Views by Top Countries:\n`;
     template += `${separator}\n`;
     data.topCountries.forEach(c => {
-      template += `${c.country.padEnd(maxLen)} | <span class="${CSS_CLASS.ANALYTICS_VALUE}">${c.views}</span>\n`;
+      template += `${c.country.padEnd(maxLen)} | ${valueSpan(c.views)}\n`;
     });
     template += separator;
   }
