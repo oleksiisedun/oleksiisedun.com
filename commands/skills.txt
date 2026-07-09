@@ -1,9 +1,11 @@
-- Playwright
-- Node.js
-- TypeScript
-- JavaScript
-- RegEx
-- Apps Script
-- Anthropic Claude
-- Linux
-- CI/CD
+<span class="section-header">[Skills]</span>
+
+  - Playwright
+  - Node.js
+  - TypeScript
+  - JavaScript
+  - RegEx
+  - Apps Script
+  - Anthropic Claude
+  - Linux
+  - CI/CD

@@ -20,7 +20,7 @@ export const CERTIFICATES_API_URL = 'https://api.github.com/repos/oleksiisedun/o
 
 // Shared CSS class names (used by templates.js)
 export const CSS_CLASS = {
-  ANALYTICS_HEADER: 'analytics-header',
+  SECTION_HEADER: 'section-header',
   ANALYTICS_VALUE: 'analytics-value',
   ERROR_TEXT: 'error-text',
   COMMAND_TOKEN: 'command-token',

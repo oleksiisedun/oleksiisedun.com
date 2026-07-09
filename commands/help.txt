@@ -1,10 +1,10 @@
-Available commands:
+<span class="section-header">[Help]</span>
 
-  help          Show this list of commands
-  skills        View my main skills
-  analytics     View site statistics
-  smoking       Smoke-free tracker
-  certificates  View my certificates
-  clear         Clean the terminal
+  <span class="command-token">help</span>          List available commands
+  <span class="command-token">skills</span>        My skills
+  <span class="command-token">analytics</span>     Site analytics
+  <span class="command-token">smoking</span>       Smoke-free tracker
+  <span class="command-token">certificates</span>  My certificates
+  <span class="command-token">clear</span>         Clear the terminal
 
 Type a command name to run it.

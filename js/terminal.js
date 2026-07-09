@@ -185,6 +185,11 @@ export class Terminal {
       this.setPromptReady(true);
       return;
     }
+
+    const blankLine = document.createElement('div');
+    blankLine.className = 'output-line';
+    this.outputDiv.appendChild(blankLine);
+
     const action = COMMAND_HANDLERS[command]?.(this)
       ?? (COMMANDS[command]?.file ? handleStaticCommand(this, command) : handleUnknownCommand(this, command));
     action.finally(() => this.setPromptReady(true));

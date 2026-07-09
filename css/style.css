@@ -10,6 +10,7 @@
   --radius-lg: 2rem;
   --radius-md: 1rem;
   --radius-sm: 0.5rem;
+  --value-color: #fff;
 }
 
 body {
@@ -147,13 +148,13 @@ body {
   color: var(--error-color);
 }
 
-.analytics-header {
+.section-header {
   color: var(--art-color);
   font-weight: bold;
 }
 
 .analytics-value {
-  color: #fff;
+  color: var(--value-color);
 }
 
 .command-token {

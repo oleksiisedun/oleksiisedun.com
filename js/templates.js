@@ -14,12 +14,19 @@ import { CSS_CLASS } from './config.js';
  */
 
 /**
+ * Renders a bracketed, themed section header (e.g. `[Certificates]`).
+ * @param {string} label
+ * @returns {string}
+ */
+export const sectionHeader = (label) => `<span class="${CSS_CLASS.SECTION_HEADER}">[${label}]</span>`;
+
+/**
  * Renders Cloudflare Analytics data as a terminal-style report.
  * @param {AnalyticsData} data - The analytics data to render.
  * @returns {string} HTML markup for the analytics report.
  */
 export const generateAnalyticsTemplate = (data) => {
-  let template = `\n<span class="${CSS_CLASS.ANALYTICS_HEADER}">[Cloudflare Analytics]</span> (Last 30 Days)\n\n`;
+  let template = `${sectionHeader('Cloudflare Analytics')} (Last 30 Days)\n\n`;
   template += `Unique Visitors : <span class="${CSS_CLASS.ANALYTICS_VALUE}">${data.totalVisits || 0}</span>\n`;
   template += `Page Views      : <span class="${CSS_CLASS.ANALYTICS_VALUE}">${data.totalViews || 0}</span>\n\n`;
 
@@ -44,7 +51,14 @@ export const generateAnalyticsTemplate = (data) => {
  * @returns {string} HTML markup for the loading message.
  */
 export const analyticsConnectingTemplate = () =>
-  `<span class="${CSS_CLASS.ANALYTICS_HEADER}"><i class='fas fa-chart-line'></i> Connecting to Analytics Data Network...</span>`;
+  `<span class="${CSS_CLASS.SECTION_HEADER}"><i class='fas fa-chart-line'></i> Connecting to Analytics Data Network...</span>`;
+
+/**
+ * Renders the "loading certificates" message.
+ * @returns {string} HTML markup for the loading message.
+ */
+export const certificatesConnectingTemplate = () =>
+  `<span class="${CSS_CLASS.SECTION_HEADER}"><i class='fas fa-id-badge'></i> Loading Certificates...</span>`;
 
 /**
  * Renders a list of certificates as clickable links that open their PDFs in a preview overlay.
@@ -53,10 +67,10 @@ export const analyticsConnectingTemplate = () =>
  */
 export const generateCertificatesTemplate = (certificates) => {
   if (!certificates || certificates.length === 0) {
-    return `\nNo certificates found.\n`;
+    return `${sectionHeader('Certificates')}\n\nNo certificates found.\n`;
   }
 
-  let template = `\n<span class="${CSS_CLASS.ANALYTICS_HEADER}">[Certificates]</span>\n\n`;
+  let template = `${sectionHeader('Certificates')}\n\n`;
   certificates.forEach(cert => {
     template += `  - <a href="${cert.url}" data-pdf-url="${cert.url}" data-pdf-name="${cert.name}">${cert.name}</a>\n`;
   });

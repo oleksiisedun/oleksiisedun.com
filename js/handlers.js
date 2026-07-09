@@ -1,5 +1,5 @@
 import { ANALYTICS_ENDPOINT, CERTIFICATES_API_URL, COMMANDS, SMOKE_QUIT_DATE } from './config.js';
-import { analyticsConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCertificatesTemplate, generateUnknownCommandTemplate } from './templates.js';
+import { analyticsConnectingTemplate, certificatesConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCertificatesTemplate, generateUnknownCommandTemplate, sectionHeader } from './templates.js';
 
 /**
  * Builds the "Haven't smoked for ..." message based on the time elapsed since the quit date.
@@ -52,7 +52,7 @@ const handleAnalytics = (terminal) =>
  * @returns {Promise<void>}
  */
 const handleSmoking = (terminal) =>
-  terminal.appendOutputLine(getSmokeFreeMessage(SMOKE_QUIT_DATE), false);
+  terminal.appendOutputLine(`${sectionHeader('Smoke-Free Tracker')}\n\n${getSmokeFreeMessage(SMOKE_QUIT_DATE)}\n`, true);
 
 /**
  * Fetches the list of certificate PDFs from GitHub and renders them as links.
@@ -60,7 +60,8 @@ const handleSmoking = (terminal) =>
  * @returns {Promise<void>}
  */
 const handleCertificates = (terminal) =>
-  fetch(CERTIFICATES_API_URL)
+  terminal.appendOutputLine(certificatesConnectingTemplate(), true)
+    .then(() => fetch(CERTIFICATES_API_URL))
     .then(response => {
       if (!response.ok) throw new Error('Failed to list certificates');
       return response.json();
@@ -96,7 +97,7 @@ export const handleStaticCommand = (terminal, command) =>
       if (!response.ok) throw new Error('File not found');
       return response.text();
     })
-    .then(text => terminal.appendOutputLine(text, false))
+    .then(text => terminal.appendOutputLine(text, true))
     .catch(() => terminal.appendOutputLine(errorSpan('Error loading command.'), true));
 
 /**
