@@ -8,7 +8,7 @@ export const PIXEL_SIZE = 1;
 export const BACKGROUND_COLOR = "#111111";
 // Delay in ms between each typed character in the typewriter output effect; lower = faster
 export const TYPING_DELAY = 5;
-export const SMOKE_QUIT_DATE = new Date(2026, 1, 25);
+export const SMOKE_QUIT_DATE = '25.02.2026';
 
 // Terminal timing
 export const SCROLL_REFLOW_DELAY = 50; // ms, allow DOM reflow before scrolling

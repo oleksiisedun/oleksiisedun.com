@@ -51,8 +51,10 @@ const handleAnalytics = (terminal) =>
  * @param {import('./terminal.js').Terminal} terminal - The terminal instance to render output into.
  * @returns {Promise<void>}
  */
-const handleSmoking = (terminal) =>
-  terminal.appendOutputLine(`${sectionHeader('Smoke-Free Tracker')}\n\n${getSmokeFreeMessage(SMOKE_QUIT_DATE)}\n`, true);
+const handleSmoking = (terminal) => {
+  const [day, month, year] = SMOKE_QUIT_DATE.split('.').map(Number);
+  return terminal.appendOutputLine(`${sectionHeader('Smoke-Free Tracker')}\n\n${getSmokeFreeMessage(new Date(year, month - 1, day))}\n`, true);
+};
 
 /**
  * Fetches the list of certificate PDFs from GitHub and renders them as links.
