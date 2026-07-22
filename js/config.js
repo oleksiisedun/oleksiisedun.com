@@ -17,6 +17,8 @@ export const MOBILE_KEYBOARD_DELAY = 300; // ms, wait for mobile keyboard animat
 // External endpoints
 export const ANALYTICS_ENDPOINT = 'https://analytics.oleksiisedun.workers.dev/';
 export const CERTIFICATES_API_URL = 'https://api.github.com/repos/oleksiisedun/oleksiisedun.com/contents/certificates';
+export const CV_URL = 'https://docs.google.com/document/d/1efRpYiIXRPI25N7gRmi_7Q4_-C2c5ouLS8njl890wHQ/edit?usp=drive_link';
+export const GITHUB_PROFILE_URL = 'https://github.com/oleksiisedun';
 
 // Shared CSS class names (used by templates.js)
 export const CSS_CLASS = {
@@ -24,6 +26,7 @@ export const CSS_CLASS = {
   VALUE_TEXT: 'value-text',
   ERROR_TEXT: 'error-text',
   COMMAND_TOKEN: 'command-token',
+  NOTE_TEXT: 'note-text',
 };
 
 // Mochi avatar tuning
@@ -47,5 +50,6 @@ export const COMMANDS = {
   analytics: { file: null, description: 'Site analytics' },
   smoking: { file: null, description: 'Smoke-free tracker' },
   certificates: { file: null, description: 'My certificates' },
+  cv: { file: null, description: 'My CV / resume' },
   clear: { file: null, description: 'Clear the terminal' },
 };

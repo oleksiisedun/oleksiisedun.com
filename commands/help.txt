@@ -5,6 +5,7 @@
   <span class="command-token">analytics</span>     Site analytics
   <span class="command-token">smoking</span>       Smoke-free tracker
   <span class="command-token">certificates</span>  My certificates
+  <span class="command-token">cv</span>            My CV / resume
   <span class="command-token">clear</span>         Clear the terminal
 
 Type a command name to run it.

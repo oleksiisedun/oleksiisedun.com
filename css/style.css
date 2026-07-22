@@ -11,6 +11,7 @@
   --radius-md: 1rem;
   --radius-sm: 0.5rem;
   --value-color: #fff;
+  --note-color: rgba(var(--main-color-rgb, 106, 153, 85), 0.6);
 }
 
 body {
@@ -159,6 +160,11 @@ body {
 
 .command-token {
   font-weight: bold;
+}
+
+.note-text {
+  color: var(--note-color);
+  font-style: italic;
 }
 
 a {

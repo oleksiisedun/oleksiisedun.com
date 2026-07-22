@@ -1,5 +1,5 @@
 import { ANALYTICS_ENDPOINT, CERTIFICATES_API_URL, COMMANDS, SMOKE_QUIT_DATE } from './config.js';
-import { analyticsConnectingTemplate, certificatesConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCertificatesTemplate, generateUnknownCommandTemplate, sectionHeader, valueSpan } from './templates.js';
+import { analyticsConnectingTemplate, certificatesConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCertificatesTemplate, generateCvTemplate, generateUnknownCommandTemplate, sectionHeader, valueSpan } from './templates.js';
 
 /**
  * Builds the "Haven't smoked for ..." message based on the time elapsed since the quit date.
@@ -77,6 +77,13 @@ const handleCertificates = (terminal) =>
     .catch(() => terminal.appendOutputLine(errorSpan('Error loading certificates.'), true));
 
 /**
+ * Renders the CV link and an up-to-date-ness note into the terminal.
+ * @param {import('./terminal.js').Terminal} terminal - The terminal instance to render output into.
+ * @returns {Promise<void>}
+ */
+const handleCv = (terminal) => terminal.appendOutputLine(generateCvTemplate(), true);
+
+/**
  * Map of dynamic command names to their async handlers.
  * Each handler renders its output into the given terminal and resolves when done.
  * @type {Object<string, (terminal: import('./terminal.js').Terminal) => Promise<void>>}
@@ -85,6 +92,7 @@ export const COMMAND_HANDLERS = {
   analytics: handleAnalytics,
   smoking: handleSmoking,
   certificates: handleCertificates,
+  cv: handleCv,
 };
 
 /**

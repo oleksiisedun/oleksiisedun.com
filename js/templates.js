@@ -1,4 +1,4 @@
-import { CSS_CLASS } from './config.js';
+import { CSS_CLASS, CV_URL, GITHUB_PROFILE_URL } from './config.js';
 
 /**
  * @typedef {Object} CountryStat
@@ -84,6 +84,15 @@ export const generateCertificatesTemplate = (certificates) => {
   template += `\n`;
   return template;
 };
+
+/**
+ * Renders the CV command's output: a link to the CV plus a note pointing to GitHub for the latest work.
+ * @returns {string}
+ */
+export const generateCvTemplate = () =>
+  `${sectionHeader('CV')}\n\n` +
+  `View my CV: <a href="${CV_URL}" target="_blank" rel="noopener">${CV_URL}</a>\n\n` +
+  `<span class="${CSS_CLASS.NOTE_TEXT}">Note: I don't update this as often as GitHub — for my most current work, see my <a href="${GITHUB_PROFILE_URL}" target="_blank" rel="noopener">GitHub profile</a>.</span>\n`;
 
 /**
  * Wraps a message in an error span.
