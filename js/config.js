@@ -6,28 +6,17 @@ export const MAIN_COLOR = "#6A9955";
 export const GLOW_COLOR = "#3D5C33";
 export const PIXEL_SIZE = 1;
 export const BACKGROUND_COLOR = "#111111";
+
 // Delay in ms between each typed character in the typewriter output effect; lower = faster
 export const TYPING_DELAY = 5;
-export const SMOKE_QUIT_DATE = '25.02.2026';
 
-// Terminal timing
-export const SCROLL_REFLOW_DELAY = 50; // ms, allow DOM reflow before scrolling
-export const MOBILE_KEYBOARD_DELAY = 300; // ms, wait for mobile keyboard animation
+export const SMOKE_QUIT_DATE = '25.02.2026';
 
 // External endpoints
 export const ANALYTICS_ENDPOINT = 'https://analytics.oleksiisedun.workers.dev/';
 export const CERTIFICATES_API_URL = 'https://api.github.com/repos/oleksiisedun/oleksiisedun.com/contents/certificates';
 export const CV_URL = 'https://docs.google.com/document/d/1efRpYiIXRPI25N7gRmi_7Q4_-C2c5ouLS8njl890wHQ/edit?usp=drive_link';
 export const GITHUB_PROFILE_URL = 'https://github.com/oleksiisedun';
-
-// Shared CSS class names (used by templates.js)
-export const CSS_CLASS = {
-  SECTION_HEADER: 'section-header',
-  VALUE_TEXT: 'value-text',
-  ERROR_TEXT: 'error-text',
-  COMMAND_TOKEN: 'command-token',
-  NOTE_TEXT: 'note-text',
-};
 
 // Mochi avatar tuning
 export const MOCHI_EYE_MAX_DISTANCE = 15;
@@ -36,6 +25,10 @@ export const MOCHI_BLINK_DURATION = 200;
 export const MOCHI_BLINK_MIN_INTERVAL = 2000;
 export const MOCHI_BLINK_MAX_INTERVAL = 4000;
 export const MOCHI_INITIAL_BLINK_DELAY = 2000;
+
+// Terminal timing
+export const SCROLL_REFLOW_DELAY = 50; // ms, allow DOM reflow before scrolling
+export const MOBILE_KEYBOARD_DELAY = 300; // ms, wait for mobile keyboard animation
 
 /**
  * @typedef {Object} CommandConfig
@@ -52,4 +45,13 @@ export const COMMANDS = {
   certificates: { file: null, description: 'My certificates' },
   cv: { file: null, description: 'My CV / resume' },
   clear: { file: null, description: 'Clear the terminal' },
+};
+
+// Shared CSS class names (used by templates.js)
+export const CSS_CLASS = {
+  SECTION_HEADER: 'section-header',
+  VALUE_TEXT: 'value-text',
+  ERROR_TEXT: 'error-text',
+  COMMAND_TOKEN: 'command-token',
+  NOTE_TEXT: 'note-text',
 };
