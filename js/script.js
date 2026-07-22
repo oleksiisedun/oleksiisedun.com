@@ -1,6 +1,6 @@
 import { Terminal } from './terminal.js';
 import { MochiRobot } from './mochi.js';
-import { STATUS_BAR_HEIGHT, TERMINAL_FONT_SIZE, STATUS_BAR_FONT_SIZE, MAIN_COLOR, GLOW_COLOR, PIXEL_SIZE, BACKGROUND_COLOR } from './config.js';
+import { STATUS_BAR_HEIGHT, TERMINAL_FONT_SIZE, STATUS_BAR_FONT_SIZE, MAIN_COLOR, GLOW_COLOR, PIXEL_SIZE, BACKGROUND_COLOR, GITHUB_PROFILE_URL } from './config.js';
 
 /**
  * Converts a hex color (e.g. `#33ff00` or `#3f0`) to a `R, G, B` string
@@ -24,6 +24,7 @@ document.documentElement.style.setProperty('--main-color-rgb', hexToRgbStr(MAIN_
 document.documentElement.style.setProperty('--glow-color', GLOW_COLOR);
 document.documentElement.style.setProperty('--scanline-width', `${PIXEL_SIZE * 3}px`);
 document.documentElement.style.setProperty('--scanline-height', `${PIXEL_SIZE * 2}px`);
+document.getElementById('github-link').href = GITHUB_PROFILE_URL;
 
 new Terminal();
 new MochiRobot();
