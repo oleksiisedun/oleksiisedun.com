@@ -18,10 +18,14 @@ npm run dev   # serves the static site via `serve .`
 - `js/mochi.js` / `css/mochi.css` — the animated robot avatar in the status bar.
 - `js/script.js` — entry point; wires config values into CSS variables and bootstraps `Terminal`/`MochiRobot`.
 - `js/pdf-viewer.js` — `openPdfPreview()`: fullscreen overlay that previews a certificate PDF in an iframe (close on backdrop/Escape/button).
+- `js/pwa.js` — `registerServiceWorker()`: registers `sw.js` on `window.load`, called from `script.js`.
 - `css/style.css` — terminal/CRT visual styling.
 - `commands/*.txt` — static text content for simple commands (`help`, `skills`).
 - `worker/worker.js` — separate Cloudflare Worker (deployed independently) that proxies Cloudflare Analytics GraphQL API for the `analytics` command.
 - `certificates/*.pdf` — certificate files served from this repo; the `certificates` command lists them via the GitHub Contents API (`CERTIFICATES_API_URL` in `config.js`), not a local fetch.
+- `manifest.json` — PWA manifest (name, icons, theme colors); linked from `index.html`.
+- `sw.js` — service worker: cache-first for the static shell, network-only (never cached) for the analytics endpoint and GitHub Contents API. Classic (non-module) script, so it hardcodes those two API hostnames rather than importing them from `config.js`.
+- `icons/` — `icon.svg` is the source PWA icon (hand-drawn `>` `_` terminal-prompt glyph); `icon-192.png`, `icon-512.png`, `apple-touch-icon.png` are rasterized from it. Regenerate by temporarily `npm install --save-dev sharp`, running a one-off script through `sharp(svg).resize(...).png().toFile(...)`, then uninstalling `sharp` again — no permanent image-processing dependency is kept in the repo.
 
 ## Adding a new terminal command
 

@@ -1,5 +1,6 @@
 import { Terminal } from './terminal.js';
 import { MochiRobot } from './mochi.js';
+import { registerServiceWorker } from './pwa.js';
 import { STATUS_BAR_HEIGHT, TERMINAL_FONT_SIZE, STATUS_BAR_FONT_SIZE, MAIN_COLOR, GLOW_COLOR, PIXEL_SIZE, BACKGROUND_COLOR, GITHUB_PROFILE_URL } from './config.js';
 
 /**
@@ -28,3 +29,4 @@ document.getElementById('github-link').href = GITHUB_PROFILE_URL;
 
 new Terminal();
 new MochiRobot();
+registerServiceWorker();
