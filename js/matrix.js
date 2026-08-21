@@ -3,6 +3,10 @@ import { onTripleTap } from './gestures.js';
 
 /**
  * Opens a fullscreen Matrix-style digital rain overlay in front of everything else.
+ * Also requests the Fullscreen API to hide the mobile browser's address bar/toolbar
+ * where supported (Android Chrome); iOS Safari doesn't support fullscreening an
+ * arbitrary element, so this is a no-op there (installed-PWA mode already hides
+ * browser chrome regardless of platform).
  * Closes on triple-tap anywhere on the overlay, or Escape key.
  * @returns {void}
  */
@@ -13,6 +17,7 @@ export const openMatrixRain = () => {
   const canvas = document.createElement('canvas');
   overlay.appendChild(canvas);
   document.body.appendChild(overlay);
+  overlay.requestFullscreen?.().catch(() => {});
 
   const ctx = canvas.getContext('2d');
   let drops = [];
@@ -52,6 +57,7 @@ export const openMatrixRain = () => {
     window.removeEventListener('resize', resize);
     document.removeEventListener('keydown', onKeydown);
     unbindTripleTap();
+    if (document.fullscreenElement === overlay) document.exitFullscreen?.().catch(() => {});
     overlay.remove();
   };
 
