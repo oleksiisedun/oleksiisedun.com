@@ -37,6 +37,8 @@ export const MATRIX_FONT_SIZE = 18; // px
 export const MATRIX_FRAME_INTERVAL_MS = 40;
 export const MATRIX_DROP_RESET_CHANCE = 0.975; // probability a column does NOT reset once past the bottom
 export const MATRIX_TRIPLE_TAP_WINDOW_MS = 600;
+// Whether to request fullscreen (hiding the mobile browser's address bar/toolbar) when the rain opens; off by default
+export const MATRIX_HIDE_BROWSER_CHROME = false;
 
 /**
  * @typedef {Object} CommandConfig

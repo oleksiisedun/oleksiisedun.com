@@ -1,12 +1,12 @@
-import { MATRIX_CHARS, MATRIX_COLOR, MATRIX_FONT_SIZE, MATRIX_FRAME_INTERVAL_MS, MATRIX_DROP_RESET_CHANCE, MATRIX_TRIPLE_TAP_WINDOW_MS } from './config.js';
+import { MATRIX_CHARS, MATRIX_COLOR, MATRIX_FONT_SIZE, MATRIX_FRAME_INTERVAL_MS, MATRIX_DROP_RESET_CHANCE, MATRIX_TRIPLE_TAP_WINDOW_MS, MATRIX_HIDE_BROWSER_CHROME } from './config.js';
 import { onTripleTap } from './gestures.js';
 
 /**
  * Opens a fullscreen Matrix-style digital rain overlay in front of everything else.
- * Also requests the Fullscreen API to hide the mobile browser's address bar/toolbar
- * where supported (Android Chrome); iOS Safari doesn't support fullscreening an
- * arbitrary element, so this is a no-op there (installed-PWA mode already hides
- * browser chrome regardless of platform).
+ * If MATRIX_HIDE_BROWSER_CHROME is enabled, also requests the Fullscreen API to hide
+ * the mobile browser's address bar/toolbar where supported (Android Chrome); iOS Safari
+ * doesn't support fullscreening an arbitrary element, so this is a no-op there
+ * (installed-PWA mode already hides browser chrome regardless of platform).
  * Closes on triple-tap anywhere on the overlay, or Escape key.
  * @returns {void}
  */
@@ -17,7 +17,7 @@ export const openMatrixRain = () => {
   const canvas = document.createElement('canvas');
   overlay.appendChild(canvas);
   document.body.appendChild(overlay);
-  overlay.requestFullscreen?.().catch(() => {});
+  if (MATRIX_HIDE_BROWSER_CHROME) overlay.requestFullscreen?.().catch(() => {});
 
   const ctx = canvas.getContext('2d');
   let drops = [];
