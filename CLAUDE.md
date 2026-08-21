@@ -15,9 +15,11 @@ npm run dev   # serves the static site via `serve .`
 - `js/terminal.js` — `Terminal` class: input handling, command dispatch, typewriter output, history.
 - `js/handlers.js` — async handlers for dynamic commands (`analytics`, `smoking`, `certificates`) and static-file/unknown-command fallbacks.
 - `js/templates.js` — HTML snippet generators for command output (e.g. analytics).
-- `js/mochi.js` / `css/mochi.css` — the animated robot avatar in the status bar.
+- `js/mochi.js` / `css/mochi.css` — the animated robot avatar in the status bar. Also binds the mobile-only Matrix rain easter egg (see Gotchas).
 - `js/script.js` — entry point; wires config values into CSS variables and bootstraps `Terminal`/`MochiRobot`.
 - `js/pdf-viewer.js` — `openPdfPreview()`: fullscreen overlay that previews a certificate PDF in an iframe (close on backdrop/Escape/button).
+- `js/matrix.js` — `openMatrixRain()`: fullscreen Matrix-style digital rain overlay (canvas-based), closed via `gestures.js`'s triple-tap or Escape.
+- `js/gestures.js` — `onTripleTap(element, callback, windowMs)`: reusable triple-tap detector used by both the Mochi trigger and the rain overlay's dismiss.
 - `js/pwa.js` — `registerServiceWorker()`: registers `sw.js` on `window.load`, called from `script.js`.
 - `css/style.css` — terminal/CRT visual styling.
 - `commands/*.txt` — static text content for simple commands (`help`, `skills`).
@@ -43,3 +45,4 @@ npm run dev   # serves the static site via `serve .`
 
 - GitHub serves raw PDFs (`download_url`) as `application/octet-stream` with `Content-Disposition: attachment`, which makes browsers download them instead of rendering inline. `pdf-viewer.js` works around this by fetching the PDF as a blob, forcing its MIME type to `application/pdf`, and loading it via an object URL in an iframe.
 - The PDF preview overlay is skipped on touch devices (`matchMedia('(hover: none) and (pointer: coarse)')`) — cert links fall through to a normal direct download there instead.
+- Easter egg: on touch devices, triple-tapping the Mochi robot opens a fullscreen Matrix digital rain overlay (`js/matrix.js`); triple-tapping anywhere while it's open closes it. It's not a terminal command, so it doesn't touch `COMMANDS`/`help.txt`. `.mochi-wrapper` has `pointer-events: none` so clicks pass through to the terminal; `css/style.css` re-enables `pointer-events: auto` on `.mochi-head` inside the mobile media query so the tap can be targeted, without changing desktop's click-through behavior.

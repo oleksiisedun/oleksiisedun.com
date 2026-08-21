@@ -30,6 +30,14 @@ export const MOCHI_INITIAL_BLINK_DELAY = 2000;
 export const SCROLL_REFLOW_DELAY = 50; // ms, allow DOM reflow before scrolling
 export const MOBILE_KEYBOARD_DELAY = 300; // ms, wait for mobile keyboard animation
 
+// Matrix rain tuning (triple-tap Mochi easter egg, mobile only)
+export const MATRIX_CHARS = 'ｦｱｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾔﾕﾗﾘﾜｲﾁﾄﾉﾌﾍﾓﾖﾙﾚﾛﾝ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+export const MATRIX_COLOR = '#00FF41';
+export const MATRIX_FONT_SIZE = 18; // px
+export const MATRIX_FRAME_INTERVAL_MS = 40;
+export const MATRIX_DROP_RESET_CHANCE = 0.975; // probability a column does NOT reset once past the bottom
+export const MATRIX_TRIPLE_TAP_WINDOW_MS = 600;
+
 /**
  * @typedef {Object} CommandConfig
  * @property {string|null} file - Static content filename under `commands/`, or `null` for a dynamic handler.

@@ -372,6 +372,28 @@ a:hover {
   }
 }
 
+/* --- MATRIX RAIN EASTER EGG --- */
+.matrix-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 3000;
+}
+
+.matrix-overlay canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Mochi's head is normally click-through (see .mochi-wrapper below);
+   re-enable touch targeting on mobile only, for the triple-tap easter egg. */
+@media (hover: none) and (pointer: coarse) {
+  .mochi-head {
+    pointer-events: auto;
+  }
+}
+
 /* Terminal scrolling is handled inside the .screen block */
 
 @media (hover: none) and (pointer: coarse) {

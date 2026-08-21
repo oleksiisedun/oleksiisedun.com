@@ -5,7 +5,10 @@ import {
   MOCHI_BLINK_MIN_INTERVAL,
   MOCHI_BLINK_MAX_INTERVAL,
   MOCHI_INITIAL_BLINK_DELAY,
+  MATRIX_TRIPLE_TAP_WINDOW_MS,
 } from './config.js';
+import { onTripleTap } from './gestures.js';
+import { openMatrixRain } from './matrix.js';
 
 export class MochiRobot {
   /**
@@ -17,16 +20,30 @@ export class MochiRobot {
     if (!this.eyes.length) return;
 
     this._blinkTimeout = null;
+    this._unbindTripleTap = null;
     this.init();
   }
 
   /**
-   * Binds movement events and starts the blink loop.
+   * Binds movement events, starts the blink loop, and wires up the mobile-only
+   * triple-tap easter egg on the robot's head.
    * @returns {void}
    */
   init() {
     this.bindEvents();
     this.startBlinking();
+    this.bindMatrixEasterEgg();
+  }
+
+  /**
+   * On touch devices, triple-tapping the robot's head opens the Matrix rain overlay.
+   * @returns {void}
+   */
+  bindMatrixEasterEgg() {
+    if (!window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
+    const head = document.querySelector('.mochi-head');
+    if (!head) return;
+    this._unbindTripleTap = onTripleTap(head, openMatrixRain, MATRIX_TRIPLE_TAP_WINDOW_MS);
   }
 
   /**
@@ -91,10 +108,11 @@ export class MochiRobot {
   }
 
   /**
-   * Cancels the pending blink timeout.
+   * Cancels the pending blink timeout and unbinds the triple-tap easter egg.
    * @returns {void}
    */
   destroy() {
     clearTimeout(this._blinkTimeout);
+    this._unbindTripleTap?.();
   }
 }
