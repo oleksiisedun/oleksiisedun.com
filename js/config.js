@@ -2,8 +2,8 @@ export const PROMPT_TEXT = 'guest@oleksiisedun:~';
 export const STATUS_BAR_HEIGHT = 75;
 export const TERMINAL_FONT_SIZE = "1.5rem";
 export const STATUS_BAR_FONT_SIZE = "16px";
-export const MAIN_COLOR = "#6A9955";
-export const GLOW_COLOR = "#3D5C33";
+export const MAIN_COLOR = "#00FF41";
+export const GLOW_COLOR = "#009927";
 export const PIXEL_SIZE = 1;
 export const BACKGROUND_COLOR = "#111111";
 
@@ -32,7 +32,7 @@ export const MOBILE_KEYBOARD_DELAY = 300; // ms, wait for mobile keyboard animat
 
 // Matrix rain tuning (triple-tap Mochi easter egg, mobile only)
 export const MATRIX_CHARS = 'ｦｱｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾔﾕﾗﾘﾜｲﾁﾄﾉﾌﾍﾓﾖﾙﾚﾛﾝ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-export const MATRIX_COLOR = '#00FF41';
+export const MATRIX_COLOR = MAIN_COLOR; // same authentic green as the rest of the theme
 export const MATRIX_FONT_SIZE = 18; // px
 export const MATRIX_FRAME_INTERVAL_MS = 40;
 export const MATRIX_DROP_RESET_CHANCE = 0.975; // probability a column does NOT reset once past the bottom
