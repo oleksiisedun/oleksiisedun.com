@@ -1,5 +1,5 @@
-import { ANALYTICS_ENDPOINT, CERTIFICATES_API_URL, COMMANDS, SMOKE_QUIT_DATE } from './config.js';
-import { analyticsConnectingTemplate, certificatesConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCertificatesTemplate, generateCvTemplate, generateUnknownCommandTemplate, sectionHeader, valueSpan } from './templates.js';
+import { ANALYTICS_ENDPOINT, COMMANDS, SMOKE_QUIT_DATE } from './config.js';
+import { analyticsConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCvTemplate, generateUnknownCommandTemplate, sectionHeader, valueSpan } from './templates.js';
 
 /**
  * Builds the "Haven't smoked for ..." message based on the time elapsed since the quit date.
@@ -57,26 +57,6 @@ const handleSmoking = (terminal) => {
 };
 
 /**
- * Fetches the list of certificate PDFs from GitHub and renders them as links.
- * @param {import('./terminal.js').Terminal} terminal - The terminal instance to render output into.
- * @returns {Promise<void>}
- */
-const handleCertificates = (terminal) =>
-  terminal.appendOutputLine(certificatesConnectingTemplate(), true)
-    .then(() => fetch(CERTIFICATES_API_URL))
-    .then(response => {
-      if (!response.ok) throw new Error('Failed to list certificates');
-      return response.json();
-    })
-    .then(files => {
-      const certificates = files
-        .filter(f => f.type === 'file' && f.name.toLowerCase().endsWith('.pdf'))
-        .map(f => ({ name: f.name.replace(/\.pdf$/i, ''), url: f.download_url }));
-      return terminal.appendOutputLine(generateCertificatesTemplate(certificates), true);
-    })
-    .catch(() => terminal.appendOutputLine(errorSpan('Error loading certificates.'), true));
-
-/**
  * Renders the CV link and an up-to-date-ness note into the terminal.
  * @param {import('./terminal.js').Terminal} terminal - The terminal instance to render output into.
  * @returns {Promise<void>}
@@ -91,7 +71,6 @@ const handleCv = (terminal) => terminal.appendOutputLine(generateCvTemplate(), t
 export const COMMAND_HANDLERS = {
   analytics: handleAnalytics,
   smoking: handleSmoking,
-  certificates: handleCertificates,
   cv: handleCv,
 };
 

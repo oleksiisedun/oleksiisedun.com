@@ -17,7 +17,6 @@ const CORE_ASSETS = [
   '/js/handlers.js',
   '/js/templates.js',
   '/js/mochi.js',
-  '/js/pdf-viewer.js',
   '/js/pwa.js',
   '/commands/help.txt',
   '/commands/skills.txt',
@@ -33,10 +32,10 @@ const OPTIONAL_ASSETS = [
   'https://code.iconify.design/3/3.1.0/iconify.min.js',
 ];
 
-// Dynamic API hosts: always network, never cached. Duplicated from
-// js/config.js's ANALYTICS_ENDPOINT / CERTIFICATES_API_URL — a classic-script
-// service worker can't import that ES module, so keep these two in sync by hand.
-const NETWORK_ONLY_HOSTS = ['analytics.oleksiisedun.workers.dev', 'api.github.com'];
+// Dynamic API host: always network, never cached. Duplicated from
+// js/config.js's ANALYTICS_ENDPOINT — a classic-script service worker
+// can't import that ES module, so keep this in sync by hand.
+const NETWORK_ONLY_HOSTS = ['analytics.oleksiisedun.workers.dev'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

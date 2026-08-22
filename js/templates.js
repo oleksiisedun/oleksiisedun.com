@@ -14,7 +14,7 @@ import { CSS_CLASS, CV_URL, GITHUB_PROFILE_URL } from './config.js';
  */
 
 /**
- * Renders a bracketed, themed section header (e.g. `[Certificates]`).
+ * Renders a bracketed, themed section header (e.g. `[CV]`).
  * @param {string} label
  * @returns {string}
  */
@@ -59,31 +59,6 @@ export const generateAnalyticsTemplate = (data) => {
  */
 export const analyticsConnectingTemplate = () =>
   `<span class="${CSS_CLASS.SECTION_HEADER}"><i class='fas fa-chart-line'></i> Connecting to Analytics Data Network...</span>`;
-
-/**
- * Renders the "loading certificates" message.
- * @returns {string} HTML markup for the loading message.
- */
-export const certificatesConnectingTemplate = () =>
-  `<span class="${CSS_CLASS.SECTION_HEADER}"><i class='fas fa-id-badge'></i> Loading Certificates...</span>`;
-
-/**
- * Renders a list of certificates as clickable links that open their PDFs in a preview overlay.
- * @param {{ name: string, url: string }[]} certificates
- * @returns {string}
- */
-export const generateCertificatesTemplate = (certificates) => {
-  if (!certificates || certificates.length === 0) {
-    return `${sectionHeader('Certificates')}\n\nNo certificates found.\n`;
-  }
-
-  let template = `${sectionHeader('Certificates')}\n\n`;
-  certificates.forEach(cert => {
-    template += `  - <a href="${cert.url}" data-pdf-url="${cert.url}" data-pdf-name="${cert.name}">${cert.name}</a>\n`;
-  });
-  template += `\n`;
-  return template;
-};
 
 /**
  * Strips the path/query after a Google Docs file ID, leaving just the bare doc link.

@@ -1,6 +1,5 @@
 import { PROMPT_TEXT, COMMANDS, TYPING_DELAY, SCROLL_REFLOW_DELAY, MOBILE_KEYBOARD_DELAY, CSS_CLASS } from './config.js';
 import { COMMAND_HANDLERS, handleStaticCommand, handleUnknownCommand } from './handlers.js';
-import { openPdfPreview } from './pdf-viewer.js';
 
 export class Terminal {
   /**
@@ -246,13 +245,5 @@ export class Terminal {
     });
 
     document.addEventListener('click', () => this.hiddenInput.focus());
-
-    this.outputDiv.addEventListener('click', (e) => {
-      const link = e.target.closest('[data-pdf-url]');
-      if (!link) return;
-      if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
-      e.preventDefault();
-      openPdfPreview(link.dataset.pdfUrl, link.dataset.pdfName);
-    });
   }
 }

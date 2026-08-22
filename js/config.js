@@ -14,7 +14,6 @@ export const SMOKE_QUIT_DATE = '25.02.2026';
 
 // External endpoints
 export const ANALYTICS_ENDPOINT = 'https://analytics.oleksiisedun.workers.dev/';
-export const CERTIFICATES_API_URL = 'https://api.github.com/repos/oleksiisedun/oleksiisedun.com/contents/certificates';
 export const CV_URL = 'https://docs.google.com/document/d/1efRpYiIXRPI25N7gRmi_7Q4_-C2c5ouLS8njl890wHQ/edit?usp=drive_link';
 export const GITHUB_PROFILE_URL = 'https://github.com/oleksiisedun';
 
@@ -52,7 +51,6 @@ export const COMMANDS = {
   skills: { file: 'skills.txt', description: 'My skills' },
   analytics: { file: null, description: 'Site analytics' },
   smoking: { file: null, description: 'Smoke-free tracker' },
-  certificates: { file: null, description: 'My certificates' },
   cv: { file: null, description: 'My CV / resume' },
   clear: { file: null, description: 'Clear the terminal' },
 };
