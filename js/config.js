@@ -14,13 +14,13 @@ export const TYPING_DELAY = 5;
  * @typedef {Object} TrackerConfig
  * @property {string} icon - Font Awesome icon class (e.g. `fa-smoking-ban`), shown next to the label.
  * @property {string} label - Short heading for the tracker.
- * @property {string} prefix - Sentence lead-in, followed by the computed elapsed duration (e.g. "Haven't smoked for").
+ * @property {string} prefix - Sentence lead-in, followed by the computed elapsed duration (e.g. "I haven't smoked for").
  * @property {string} date - Start date in `DD.MM.YYYY` format.
  */
 
 /** @type {TrackerConfig[]} */
 export const TRACKERS = [
-  { icon: 'fa-smoking-ban', label: 'Smoke-Free', prefix: "Haven't smoked for", date: '25.02.2026' },
+  { icon: 'fa-smoking-ban', label: 'Smoke-Free', prefix: "I haven't smoked for", date: '25.02.2026' },
   { icon: 'fa-laptop-code', label: 'Working in IT', prefix: 'I have been working in IT for', date: '12.12.2011' },
 ];
 
