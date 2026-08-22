@@ -54,6 +54,27 @@ export const generateAnalyticsTemplate = (data) => {
 };
 
 /**
+ * @typedef {Object} RenderedTracker
+ * @property {string} icon - Font Awesome icon class (e.g. `fa-smoking-ban`).
+ * @property {string} label - Short heading for the tracker.
+ * @property {string} sentence - Full HTML sentence describing the elapsed duration.
+ */
+
+/**
+ * Renders all life trackers as a single screen, one icon-labeled block per tracker.
+ * @param {RenderedTracker[]} trackers
+ * @returns {string} HTML markup for the trackers report.
+ */
+export const generateTrackersTemplate = (trackers) => {
+  let template = `${sectionHeader('Trackers')}\n\n`;
+  template += trackers
+    .map(({ icon, label, sentence }) => `<i class="fas ${icon}"></i> ${label}\n  ${sentence}`)
+    .join('\n\n');
+  template += '\n';
+  return template;
+};
+
+/**
  * Renders the "connecting to analytics" loading message.
  * @returns {string} HTML markup for the loading message.
  */

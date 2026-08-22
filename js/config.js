@@ -10,7 +10,19 @@ export const BACKGROUND_COLOR = "#111111";
 // Delay in ms between each typed character in the typewriter output effect; lower = faster
 export const TYPING_DELAY = 5;
 
-export const SMOKE_QUIT_DATE = '25.02.2026';
+/**
+ * @typedef {Object} TrackerConfig
+ * @property {string} icon - Font Awesome icon class (e.g. `fa-smoking-ban`), shown next to the label.
+ * @property {string} label - Short heading for the tracker.
+ * @property {string} prefix - Sentence lead-in, followed by the computed elapsed duration (e.g. "Haven't smoked for").
+ * @property {string} date - Start date in `DD.MM.YYYY` format.
+ */
+
+/** @type {TrackerConfig[]} */
+export const TRACKERS = [
+  { icon: 'fa-smoking-ban', label: 'Smoke-Free', prefix: "Haven't smoked for", date: '25.02.2026' },
+  { icon: 'fa-laptop-code', label: 'Working in IT', prefix: 'I have been working in IT for', date: '12.12.2011' },
+];
 
 // External endpoints
 export const ANALYTICS_ENDPOINT = 'https://analytics.oleksiisedun.workers.dev/';
@@ -50,7 +62,7 @@ export const COMMANDS = {
   help: { file: 'help.txt', description: 'List available commands' },
   skills: { file: 'skills.txt', description: 'My skills' },
   analytics: { file: null, description: 'Site analytics' },
-  smoking: { file: null, description: 'Smoke-free tracker' },
+  trackers: { file: null, description: 'Life trackers' },
   cv: { file: null, description: 'My CV / resume' },
   clear: { file: null, description: 'Clear the terminal' },
 };

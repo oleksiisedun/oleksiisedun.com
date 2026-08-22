@@ -13,7 +13,7 @@ npm run dev   # serves the static site via `serve .`
 - `index.html` — page shell: terminal screen + status bar (Mochi robot avatar).
 - `js/config.js` — central config: prompt text, colors, sizes, and the `COMMANDS` registry.
 - `js/terminal.js` — `Terminal` class: input handling, command dispatch, typewriter output, history.
-- `js/handlers.js` — async handlers for dynamic commands (`analytics`, `smoking`) and static-file/unknown-command fallbacks.
+- `js/handlers.js` — async handlers for dynamic commands (`analytics`, `trackers`) and static-file/unknown-command fallbacks.
 - `js/templates.js` — HTML snippet generators for command output (e.g. analytics).
 - `js/mochi.js` / `css/mochi.css` — the animated robot avatar in the status bar. Also binds the mobile-only Matrix rain easter egg (see Gotchas).
 - `js/script.js` — entry point; wires config values into CSS variables and bootstraps `Terminal`/`MochiRobot`.
@@ -31,7 +31,7 @@ npm run dev   # serves the static site via `serve .`
 
 1. Register it in `COMMANDS` in `js/config.js` (with a `file` for static `.txt` content, or `null` for a custom handler).
 2. If static, add the content file under `commands/`.
-3. If dynamic, add a handler to `COMMAND_HANDLERS` in `js/handlers.js` following the pattern of existing dynamic commands (`analytics`, `smoking`).
+3. If dynamic, add a handler to `COMMAND_HANDLERS` in `js/handlers.js` following the pattern of existing dynamic commands (`analytics`, `trackers`).
 4. Update `commands/help.txt` to document the new command.
 
 ## Deployment

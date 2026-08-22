@@ -1,16 +1,26 @@
-import { ANALYTICS_ENDPOINT, COMMANDS, SMOKE_QUIT_DATE } from './config.js';
-import { analyticsConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCvTemplate, generateUnknownCommandTemplate, sectionHeader, valueSpan } from './templates.js';
+import { ANALYTICS_ENDPOINT, COMMANDS, TRACKERS } from './config.js';
+import { analyticsConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCvTemplate, generateTrackersTemplate, generateUnknownCommandTemplate, valueSpan } from './templates.js';
 
 /**
- * Builds the "Haven't smoked for ..." message based on the time elapsed since the quit date.
- * @param {Date} quitDate - The date smoking was quit.
- * @returns {string} HTML markup for a human-readable elapsed-time message.
+ * Parses a `DD.MM.YYYY` date string into a Date.
+ * @param {string} dateStr
+ * @returns {Date}
  */
-export const getSmokeFreeMessage = (quitDate) => {
+const parseDate = (dateStr) => {
+  const [day, month, year] = dateStr.split('.').map(Number);
+  return new Date(year, month - 1, day);
+};
+
+/**
+ * Formats the time elapsed since `startDate` as a "X years Y months Z days" string.
+ * @param {Date} startDate
+ * @returns {string} HTML markup with the numeric values highlighted.
+ */
+export const formatElapsedDuration = (startDate) => {
   const now = new Date();
-  let years = now.getFullYear() - quitDate.getFullYear();
-  let months = now.getMonth() - quitDate.getMonth();
-  let days = now.getDate() - quitDate.getDate();
+  let years = now.getFullYear() - startDate.getFullYear();
+  let months = now.getMonth() - startDate.getMonth();
+  let days = now.getDate() - startDate.getDate();
 
   if (days < 0) {
     months--;
@@ -26,7 +36,7 @@ export const getSmokeFreeMessage = (quitDate) => {
   if (months > 0) parts.push(`${valueSpan(months)} month${months !== 1 ? 's' : ''}`);
   if (days > 0 || parts.length === 0) parts.push(`${valueSpan(days)} day${days !== 1 ? 's' : ''}`);
 
-  return `Haven't smoked for ${parts.join(' ')}`;
+  return parts.join(' ');
 };
 
 /**
@@ -47,13 +57,17 @@ const handleAnalytics = (terminal) =>
     .catch(err => terminal.appendOutputLine(errorSpan(`Connection failed: ${err.message}`), true));
 
 /**
- * Renders the smoke-free duration message into the terminal.
+ * Renders all configured life trackers into the terminal.
  * @param {import('./terminal.js').Terminal} terminal - The terminal instance to render output into.
  * @returns {Promise<void>}
  */
-const handleSmoking = (terminal) => {
-  const [day, month, year] = SMOKE_QUIT_DATE.split('.').map(Number);
-  return terminal.appendOutputLine(`${sectionHeader('Smoke-Free Tracker')}\n\n${getSmokeFreeMessage(new Date(year, month - 1, day))}\n`, true);
+const handleTrackers = (terminal) => {
+  const trackers = TRACKERS.map(({ icon, label, prefix, date }) => ({
+    icon,
+    label,
+    sentence: `${prefix} ${formatElapsedDuration(parseDate(date))}`,
+  }));
+  return terminal.appendOutputLine(generateTrackersTemplate(trackers), true);
 };
 
 /**
@@ -70,7 +84,7 @@ const handleCv = (terminal) => terminal.appendOutputLine(generateCvTemplate(), t
  */
 export const COMMAND_HANDLERS = {
   analytics: handleAnalytics,
-  smoking: handleSmoking,
+  trackers: handleTrackers,
   cv: handleCv,
 };
 
