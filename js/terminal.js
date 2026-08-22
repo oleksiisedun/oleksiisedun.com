@@ -1,6 +1,8 @@
 import { PROMPT_TEXT, COMMANDS, TYPING_DELAY, SCROLL_REFLOW_DELAY, MOBILE_KEYBOARD_DELAY, CSS_CLASS } from './config.js';
 import { COMMAND_HANDLERS, handleStaticCommand, handleUnknownCommand } from './handlers.js';
 
+const CYRILLIC_PATTERN = /[\u0400-\u04FF]/g;
+
 export class Terminal {
   /**
    * Sets up DOM references and starts the boot sequence.
@@ -200,6 +202,10 @@ export class Terminal {
    */
   bindEvents() {
     this.hiddenInput.addEventListener('input', () => {
+      const filtered = this.hiddenInput.value.replace(CYRILLIC_PATTERN, '');
+      if (filtered !== this.hiddenInput.value) {
+        this.setInput(filtered);
+      }
       this.typerSpan.textContent = this.hiddenInput.value;
       this.scrollToBottom();
     });
