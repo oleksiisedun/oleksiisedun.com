@@ -202,7 +202,7 @@ export class Terminal {
    */
   bindEvents() {
     this.hiddenInput.addEventListener('input', () => {
-      const filtered = this.hiddenInput.value.replace(CYRILLIC_PATTERN, '');
+      const filtered = this.hiddenInput.value.replace(CYRILLIC_PATTERN, '').toLowerCase();
       if (filtered !== this.hiddenInput.value) {
         this.setInput(filtered);
       }
