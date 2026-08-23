@@ -26,7 +26,6 @@ export const TRACKERS = [
 
 // External endpoints
 export const ANALYTICS_ENDPOINT = 'https://analytics.oleksiisedun.workers.dev/';
-export const CV_URL = 'https://docs.google.com/document/d/1efRpYiIXRPI25N7gRmi_7Q4_-C2c5ouLS8njl890wHQ/edit?usp=drive_link';
 export const GITHUB_PROFILE_URL = 'https://github.com/oleksiisedun';
 
 // Mochi avatar tuning
@@ -63,7 +62,6 @@ export const COMMANDS = {
   skills: { file: 'skills.txt', description: 'My skills' },
   analytics: { file: null, description: 'Site analytics' },
   trackers: { file: null, description: 'Life trackers' },
-  cv: { file: null, description: 'My CV / resume' },
   clear: { file: null, description: 'Clear the terminal' },
 };
 

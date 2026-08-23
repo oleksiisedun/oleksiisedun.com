@@ -4,7 +4,6 @@
   <span class="command-token">skills</span>        My skills
   <span class="command-token">analytics</span>     Site analytics
   <span class="command-token">trackers</span>      Life trackers
-  <span class="command-token">cv</span>            My CV / resume
   <span class="command-token">clear</span>         Clear the terminal
 
 Type a command name to run it.

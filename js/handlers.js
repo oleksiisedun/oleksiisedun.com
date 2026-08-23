@@ -1,5 +1,5 @@
 import { ANALYTICS_ENDPOINT, COMMANDS, TRACKERS } from './config.js';
-import { analyticsConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateCvTemplate, generateTrackersTemplate, generateUnknownCommandTemplate, valueSpan } from './templates.js';
+import { analyticsConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateTrackersTemplate, generateUnknownCommandTemplate, valueSpan } from './templates.js';
 
 /**
  * Parses a `DD.MM.YYYY` date string into a Date.
@@ -71,13 +71,6 @@ const handleTrackers = (terminal) => {
 };
 
 /**
- * Renders the CV link and an up-to-date-ness note into the terminal.
- * @param {import('./terminal.js').Terminal} terminal - The terminal instance to render output into.
- * @returns {Promise<void>}
- */
-const handleCv = (terminal) => terminal.appendOutputLine(generateCvTemplate(), true);
-
-/**
  * Map of dynamic command names to their async handlers.
  * Each handler renders its output into the given terminal and resolves when done.
  * @type {Object<string, (terminal: import('./terminal.js').Terminal) => Promise<void>>}
@@ -85,7 +78,6 @@ const handleCv = (terminal) => terminal.appendOutputLine(generateCvTemplate(), t
 export const COMMAND_HANDLERS = {
   analytics: handleAnalytics,
   trackers: handleTrackers,
-  cv: handleCv,
 };
 
 /**

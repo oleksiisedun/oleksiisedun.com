@@ -1,4 +1,4 @@
-import { CSS_CLASS, CV_URL, GITHUB_PROFILE_URL } from './config.js';
+import { CSS_CLASS } from './config.js';
 
 /**
  * @typedef {Object} CountryStat
@@ -80,24 +80,6 @@ export const generateTrackersTemplate = (trackers) => {
  */
 export const analyticsConnectingTemplate = () =>
   `<span class="${CSS_CLASS.SECTION_HEADER}"><i class='fas fa-chart-line'></i> Connecting to Analytics Data Network...</span>`;
-
-/**
- * Strips the path/query after a Google Docs file ID, leaving just the bare doc link.
- * @param {string} url
- * @returns {string}
- */
-const toShortGoogleDocsUrl = (url) => url.replace(/\/document\/d\/([^/?]+).*/, '/document/d/$1');
-
-/**
- * Renders the CV command's output: a link to the CV plus a note pointing to GitHub for the latest work.
- * @returns {string}
- */
-export const generateCvTemplate = () => {
-  const shortCvUrl = toShortGoogleDocsUrl(CV_URL);
-  return `${sectionHeader('CV')}\n\n` +
-    `View my CV: <a href="${shortCvUrl}" target="_blank" rel="noopener">${shortCvUrl}</a>\n\n` +
-    `<span class="${CSS_CLASS.NOTE_TEXT}">Note: I don't update this as often as GitHub — for my most current work, see my <a href="${GITHUB_PROFILE_URL}" target="_blank" rel="noopener">GitHub profile</a>.</span>\n`;
-};
 
 /**
  * Wraps a message in an error span.

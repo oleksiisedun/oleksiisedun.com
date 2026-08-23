@@ -7,7 +7,7 @@ Live at [oleksiisedun.com](https://oleksiisedun.com).
 ## Features
 
 - Terminal-style UI with a retro CRT monitor aesthetic
-- Commands: `help`, `skills`, `analytics`, `trackers`, `cv`, `clear`
+- Commands: `help`, `skills`, `analytics`, `trackers`, `clear`
 - Site analytics proxied through a Cloudflare Worker
 - Installable PWA: the terminal shell works offline; analytics always fetches live
 - Easter egg: triple-tap the Mochi robot on mobile for a fullscreen Matrix digital rain effect; triple-tap anywhere to dismiss
@@ -18,7 +18,7 @@ Plain HTML, CSS, and vanilla JavaScript. No framework, no build step — just st
 
 ## Architecture
 
-`script.js` bootstraps the app by reading `config.js` and wiring CSS variables, then instantiates `Terminal` and `MochiRobot`, and calls `registerServiceWorker()` from `pwa.js`. `Terminal` dispatches typed commands: static commands fetch `.txt` files from `commands/`; dynamic ones delegate to handlers in `handlers.js`. The `analytics` handler calls the Cloudflare Worker proxy; `trackers` and `cv` are self-contained. On mobile, `MochiRobot` also wires up a triple-tap easter egg (via the shared `gestures.js` tap detector) that opens a fullscreen Matrix rain overlay from `matrix.js`. `sw.js` caches the static shell for offline use and always lets analytics requests go straight to the network.
+`script.js` bootstraps the app by reading `config.js` and wiring CSS variables, then instantiates `Terminal` and `MochiRobot`, and calls `registerServiceWorker()` from `pwa.js`. `Terminal` dispatches typed commands: static commands fetch `.txt` files from `commands/`; dynamic ones delegate to handlers in `handlers.js`. The `analytics` handler calls the Cloudflare Worker proxy; `trackers` is self-contained. On mobile, `MochiRobot` also wires up a triple-tap easter egg (via the shared `gestures.js` tap detector) that opens a fullscreen Matrix rain overlay from `matrix.js`. `sw.js` caches the static shell for offline use and always lets analytics requests go straight to the network.
 
 ```mermaid
 graph TD
