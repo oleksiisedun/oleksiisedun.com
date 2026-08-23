@@ -25,8 +25,8 @@ export class MochiRobot {
   }
 
   /**
-   * Binds movement events, starts the blink loop, and wires up the mobile-only
-   * triple-tap easter egg on the robot's head.
+   * Binds movement events, starts the blink loop, and wires up the
+   * triple-tap/triple-click easter egg on the robot's head.
    * @returns {void}
    */
   init() {
@@ -36,11 +36,10 @@ export class MochiRobot {
   }
 
   /**
-   * On touch devices, triple-tapping the robot's head opens the Matrix rain overlay.
+   * Triple-tapping (touch) or triple-clicking (mouse) the robot's head opens the Matrix rain overlay.
    * @returns {void}
    */
   bindMatrixEasterEgg() {
-    if (!window.matchMedia('(hover: none) and (pointer: coarse)').matches) return;
     const head = document.querySelector('.mochi-head');
     if (!head) return;
     this._unbindTripleTap = onTripleTap(head, openMatrixRain, MATRIX_TRIPLE_TAP_WINDOW_MS);

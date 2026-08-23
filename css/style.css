@@ -294,11 +294,9 @@ a:hover {
 }
 
 /* Mochi's head is normally click-through (see .mochi-wrapper below);
-   re-enable touch targeting on mobile only, for the triple-tap easter egg. */
-@media (hover: none) and (pointer: coarse) {
-  .mochi-head {
-    pointer-events: auto;
-  }
+   re-enable targeting so the triple-tap/triple-click easter egg can be triggered. */
+.mochi-head {
+  pointer-events: auto;
 }
 
 /* Terminal scrolling is handled inside the .screen block */

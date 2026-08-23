@@ -40,7 +40,7 @@ export const MOCHI_INITIAL_BLINK_DELAY = 2000;
 export const SCROLL_REFLOW_DELAY = 50; // ms, allow DOM reflow before scrolling
 export const MOBILE_KEYBOARD_DELAY = 300; // ms, wait for mobile keyboard animation
 
-// Matrix rain tuning (triple-tap Mochi easter egg, mobile only)
+// Matrix rain tuning (triple-tap/triple-click Mochi easter egg)
 export const MATRIX_CHARS = 'ｦｱｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾔﾕﾗﾘﾜｲﾁﾄﾉﾌﾍﾓﾖﾙﾚﾛﾝ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 export const MATRIX_COLOR = MAIN_COLOR; // same authentic green as the rest of the theme
 export const MATRIX_FONT_SIZE = 18; // px
