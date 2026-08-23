@@ -1,11 +1,11 @@
 <span class="section-header">[Skills]</span>
 
-  - Playwright
-  - Node.js
-  - TypeScript
-  - JavaScript
-  - RegEx
-  - Apps Script
-  - Anthropic Claude
-  - Linux
-  - CI/CD
+  <i class="fas fa-masks-theater"></i> Playwright
+  <i class="fab fa-node-js"></i> Node.js
+  <i class="fas fa-code"></i> TypeScript
+  <i class="fab fa-js"></i> JavaScript
+  <i class="fas fa-asterisk"></i> RegEx
+  <i class="fas fa-file-code"></i> Apps Script
+  <i class="fas fa-robot"></i> Anthropic Claude
+  <i class="fab fa-linux"></i> Linux
+  <i class="fas fa-infinity"></i> CI/CD
