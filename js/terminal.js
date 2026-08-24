@@ -250,6 +250,10 @@ export class Terminal {
       }
     });
 
-    document.addEventListener('click', () => this.hiddenInput.focus());
+    document.addEventListener('click', (e) => {
+      // Don't steal focus (and pop the mobile keyboard) for taps on the Mochi avatar
+      if (e.target.closest('.mochi-head')) return;
+      this.hiddenInput.focus();
+    });
   }
 }
