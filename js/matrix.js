@@ -3,6 +3,8 @@ import { onTripleTap } from './gestures.js';
 
 /**
  * Opens a fullscreen Matrix-style digital rain overlay in front of everything else.
+ * Blurs the currently focused element first, so the mobile on-screen keyboard
+ * (e.g. left open from the terminal's hidden input) is dismissed.
  * If MATRIX_HIDE_BROWSER_CHROME is enabled, also requests the Fullscreen API to hide
  * the mobile browser's address bar/toolbar where supported (Android Chrome); iOS Safari
  * doesn't support fullscreening an arbitrary element, so this is a no-op there
@@ -11,6 +13,9 @@ import { onTripleTap } from './gestures.js';
  * @returns {void}
  */
 export const openMatrixRain = () => {
+  // Dismiss the mobile on-screen keyboard if it's open (e.g. hidden-input was focused)
+  document.activeElement?.blur();
+
   const overlay = document.createElement('div');
   overlay.className = 'matrix-overlay';
 
