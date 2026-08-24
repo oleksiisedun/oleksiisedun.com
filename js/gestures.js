@@ -1,7 +1,10 @@
 /**
  * Invokes `callback` when `element` receives three taps or clicks within `windowMs` of each other.
  * Listens on `pointerdown` so a single handler covers both touch taps and mouse clicks.
- * Calls preventDefault on each tap to suppress the emulated click (avoids stray focus/scroll side effects).
+ * Calls preventDefault on each tap to suppress default touch behavior (scrolling, double-tap zoom,
+ * text selection). Note this does NOT suppress the click event that still follows a touch tap even
+ * when pointerdown was prevented — callers that care about that click (e.g. to avoid it stealing
+ * focus elsewhere) need to filter it separately.
  * @param {Element} element - The element to listen for taps/clicks on.
  * @param {() => void} callback - Called once three taps/clicks land within the window.
  * @param {number} windowMs - Maximum gap in ms between consecutive taps/clicks for them to count together.

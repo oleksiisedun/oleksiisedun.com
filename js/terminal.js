@@ -251,8 +251,15 @@ export class Terminal {
     });
 
     document.addEventListener('click', (e) => {
-      // Don't steal focus (and pop the mobile keyboard) for taps on the Mochi avatar
-      if (e.target.closest('.mochi-head')) return;
+      // Don't steal focus for taps on the Mochi avatar or the Matrix rain overlay.
+      // Explicitly blur (rather than just skipping focus()) so the hidden input's
+      // DOM focus state can't linger stale after a non-JS keyboard dismissal (e.g.
+      // Android's back button), which some mobile browsers reinterpret as a cue to
+      // re-show the keyboard on the next unrelated tap.
+      if (e.target.closest('.mochi-head') || e.target.closest('.matrix-overlay')) {
+        this.hiddenInput.blur();
+        return;
+      }
       this.hiddenInput.focus();
     });
   }

@@ -1,7 +1,7 @@
 // Classic (non-module) service worker: kept dependency-free so it runs in every
 // browser without relying on module-worker support.
 
-const CACHE_NAME = 'oleksiisedun-shell-v3';
+const CACHE_NAME = 'oleksiisedun-shell-v4';
 
 // Same-origin shell files needed for the terminal to load offline. Must all
 // succeed at install time (cache.addAll is atomic).
