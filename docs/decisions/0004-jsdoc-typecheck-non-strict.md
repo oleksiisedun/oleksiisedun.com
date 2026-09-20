@@ -10,7 +10,7 @@ already exist, but nothing verified them. Full `strict` mode reported about 40 i
 
 ## Decision
 
-`tsconfig.json` runs `tsc --noEmit` with `allowJs`, `checkJs` and `strict: false`, over `js/` only. It validates JSDoc
+`tsconfig.json` runs `tsc --noEmit` with `allowJs`, `checkJs` and `strict: false`, over `src/js/` only. It validates JSDoc
 types, import paths and property access. Null-safety is not enforced, and DOM lookups need a
 `/** @type {HTMLInputElement} */` cast where the element type matters.
 

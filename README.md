@@ -59,5 +59,5 @@ Non-obvious design choices are documented in [docs/decisions/](docs/decisions/).
 
 ## Deployment
 
-- The static site deploys via GitHub Pages (custom domain in `CNAME`).
+- The static site (`src/`) deploys via GitHub Pages using `.github/workflows/deploy.yml`, which uploads `src/` as the Pages artifact (Pages source must be set to "GitHub Actions"). The custom domain lives in `src/CNAME`.
 - `worker/worker.js` is a separate Cloudflare Worker, deployed independently — it's not part of the static site build.

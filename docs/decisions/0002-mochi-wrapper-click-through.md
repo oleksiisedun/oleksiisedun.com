@@ -11,7 +11,7 @@ Matrix rain easter egg needs the robot's head to receive `pointerdown` for the t
 ## Decision
 
 - `.mochi-wrapper` has `pointer-events: none` so clicks pass through to whatever is underneath.
-- `.mochi-head` sets `pointer-events: auto` unconditionally (in `css/style.css`), so only the visible head is a target.
+- `.mochi-head` sets `pointer-events: auto` unconditionally (in `src/css/style.css`), so only the visible head is a target.
 - The global click handler in `terminal.js` skips refocusing the hidden input for taps on `.mochi-head` or
   `.matrix-overlay`, and blurs it instead (avoids the mobile keyboard reopening).
 

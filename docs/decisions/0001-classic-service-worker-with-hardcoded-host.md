@@ -4,7 +4,7 @@ Status: accepted
 
 ## Context
 
-The rest of the site is ES modules and shares constants through `js/config.js`. `sw.js` looks like it should import
+The rest of the site is ES modules and shares constants through `src/js/config.js`. `sw.js` looks like it should import
 `ANALYTICS_ENDPOINT` from there, and look like a module too.
 
 ## Decision

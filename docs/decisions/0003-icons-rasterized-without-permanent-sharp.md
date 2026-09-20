@@ -4,7 +4,7 @@ Status: accepted
 
 ## Context
 
-`icons/icon.svg` is the hand-drawn source for the PWA icons. The PNGs (`icon-192.png`, `icon-512.png`,
+`src/icons/icon.svg` is the hand-drawn source for the PWA icons. The PNGs (`icon-192.png`, `icon-512.png`,
 `apple-touch-icon.png`) must be derived from it, since manifests and iOS need raster icons. The icons change rarely,
 and the project is otherwise a static site with no image tooling.
 
