@@ -72,7 +72,7 @@ export default {
         const cfResponse = await fetch('https://api.cloudflare.com/client/v4/graphql', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${env.CF_API_TOKEN}`,
+            Authorization: `Bearer ${env.CF_API_TOKEN}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ query }),
@@ -94,7 +94,7 @@ export default {
         const stats = {
           totalViews: analytics?.count || 0,
           totalVisits: analytics?.sum?.visits || 0,
-          topCountries: accountData.topCountries.map(c => ({
+          topCountries: accountData.topCountries.map((c) => ({
             country: c.dimensions.countryName || 'Unknown',
             views: c.sum?.visits || 0,
           })),
@@ -109,7 +109,6 @@ export default {
         });
 
         ctx.waitUntil(cache.put(cacheKey, response.clone()));
-
       } catch (error) {
         return new Response(JSON.stringify({ error: error.message }), {
           status: 500,

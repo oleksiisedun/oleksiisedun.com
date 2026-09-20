@@ -1,4 +1,12 @@
-import { MATRIX_CHARS, MATRIX_COLOR, MATRIX_FONT_SIZE, MATRIX_FRAME_INTERVAL_MS, MATRIX_DROP_RESET_CHANCE, MATRIX_TRIPLE_TAP_WINDOW_MS, MATRIX_HIDE_BROWSER_CHROME } from './config.js';
+import {
+  MATRIX_CHARS,
+  MATRIX_COLOR,
+  MATRIX_FONT_SIZE,
+  MATRIX_FRAME_INTERVAL_MS,
+  MATRIX_DROP_RESET_CHANCE,
+  MATRIX_TRIPLE_TAP_WINDOW_MS,
+  MATRIX_HIDE_BROWSER_CHROME,
+} from './config.js';
 import { onTripleTap } from './gestures.js';
 
 /**
@@ -14,7 +22,7 @@ import { onTripleTap } from './gestures.js';
  */
 export const openMatrixRain = () => {
   // Dismiss the mobile on-screen keyboard if it's open (e.g. hidden-input was focused)
-  document.activeElement?.blur();
+  /** @type {HTMLElement|null} */ (document.activeElement)?.blur();
 
   const overlay = document.createElement('div');
   overlay.className = 'matrix-overlay';
@@ -27,14 +35,20 @@ export const openMatrixRain = () => {
   const ctx = canvas.getContext('2d');
   let drops = [];
 
+  /**
+   * Sizes the canvas to the viewport and re-seeds the rain columns.
+   */
   const resize = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     const columns = Math.floor(canvas.width / MATRIX_FONT_SIZE);
-    drops = Array.from({ length: columns }, () => Math.floor(Math.random() * -canvas.height / MATRIX_FONT_SIZE));
+    drops = Array.from({ length: columns }, () => Math.floor((Math.random() * -canvas.height) / MATRIX_FONT_SIZE));
   };
   resize();
 
+  /**
+   * Paints one frame: fades the previous one and advances every rain column.
+   */
   const draw = () => {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -57,6 +71,9 @@ export const openMatrixRain = () => {
   const intervalId = setInterval(draw, MATRIX_FRAME_INTERVAL_MS);
   window.addEventListener('resize', resize);
 
+  /**
+   * Stops the animation, unbinds listeners and removes the overlay.
+   */
   const close = () => {
     clearInterval(intervalId);
     window.removeEventListener('resize', resize);
@@ -66,6 +83,10 @@ export const openMatrixRain = () => {
     overlay.remove();
   };
 
+  /**
+   * Closes the overlay on Escape.
+   * @param {KeyboardEvent} e
+   */
   const onKeydown = (e) => {
     if (e.key === 'Escape') close();
   };

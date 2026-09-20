@@ -1,5 +1,12 @@
 import { ANALYTICS_ENDPOINT, COMMANDS, TRACKERS } from './config.js';
-import { analyticsConnectingTemplate, errorSpan, generateAnalyticsTemplate, generateTrackersTemplate, generateUnknownCommandTemplate, valueSpan } from './templates.js';
+import {
+  analyticsConnectingTemplate,
+  errorSpan,
+  generateAnalyticsTemplate,
+  generateTrackersTemplate,
+  generateUnknownCommandTemplate,
+  valueSpan,
+} from './templates.js';
 
 /**
  * Parses a `DD.MM.YYYY` date string into a Date.
@@ -45,16 +52,17 @@ export const formatElapsedDuration = (startDate) => {
  * @returns {Promise<void>}
  */
 const handleAnalytics = (terminal) =>
-  terminal.appendOutputLine(analyticsConnectingTemplate(), true)
+  terminal
+    .appendOutputLine(analyticsConnectingTemplate(), true)
     .then(() => fetch(ANALYTICS_ENDPOINT))
-    .then(response => response.json())
-    .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       if (data.error) {
         return terminal.appendOutputLine(errorSpan(`Error fetching analytics: ${data.error}`), true);
       }
       return terminal.appendOutputLine(generateAnalyticsTemplate(data), true);
     })
-    .catch(err => terminal.appendOutputLine(errorSpan(`Connection failed: ${err.message}`), true));
+    .catch((err) => terminal.appendOutputLine(errorSpan(`Connection failed: ${err.message}`), true));
 
 /**
  * Renders all configured life trackers into the terminal.
@@ -73,7 +81,7 @@ const handleTrackers = (terminal) => {
 /**
  * Map of dynamic command names to their async handlers.
  * Each handler renders its output into the given terminal and resolves when done.
- * @type {Object<string, (terminal: import('./terminal.js').Terminal) => Promise<void>>}
+ * @type {Record<string, (terminal: import('./terminal.js').Terminal) => Promise<void>>}
  */
 export const COMMAND_HANDLERS = {
   analytics: handleAnalytics,
@@ -88,11 +96,11 @@ export const COMMAND_HANDLERS = {
  */
 export const handleStaticCommand = (terminal, command) =>
   fetch(`/commands/${COMMANDS[command].file}`)
-    .then(response => {
+    .then((response) => {
       if (!response.ok) throw new Error('File not found');
       return response.text();
     })
-    .then(text => terminal.appendOutputLine(text, true))
+    .then((text) => terminal.appendOutputLine(text, true))
     .catch(() => terminal.appendOutputLine(errorSpan('Error loading command.'), true));
 
 /**

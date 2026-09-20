@@ -1,17 +1,17 @@
 export const PROMPT_TEXT = 'guest@oleksiisedun:~';
 export const STATUS_BAR_HEIGHT = 75;
-export const TERMINAL_FONT_SIZE = "1.5rem";
-export const STATUS_BAR_FONT_SIZE = "16px";
-export const MAIN_COLOR = "#00FF41";
-export const GLOW_COLOR = "#009927";
+export const TERMINAL_FONT_SIZE = '1.5rem';
+export const STATUS_BAR_FONT_SIZE = '16px';
+export const MAIN_COLOR = '#00FF41';
+export const GLOW_COLOR = '#009927';
 export const PIXEL_SIZE = 1;
-export const BACKGROUND_COLOR = "#111111";
+export const BACKGROUND_COLOR = '#111111';
 
 // Delay in ms between each typed character in the typewriter output effect; lower = faster
 export const TYPING_DELAY = 5;
 
 /**
- * @typedef {Object} TrackerConfig
+ * @typedef {object} TrackerConfig
  * @property {string} icon - Font Awesome icon class (e.g. `fa-smoking-ban`), shown next to the label.
  * @property {string} label - Short heading for the tracker.
  * @property {string} prefix - Sentence lead-in, followed by the computed elapsed duration (e.g. "I haven't smoked for").
@@ -51,12 +51,12 @@ export const MATRIX_TRIPLE_TAP_WINDOW_MS = 600;
 export const MATRIX_HIDE_BROWSER_CHROME = false;
 
 /**
- * @typedef {Object} CommandConfig
+ * @typedef {object} CommandConfig
  * @property {string|null} file - Static content filename under `commands/`, or `null` for a dynamic handler.
  * @property {string} description - Short description shown in `help`.
  */
 
-/** @type {Object<string, CommandConfig>} */
+/** @type {Record<string, CommandConfig>} */
 export const COMMANDS = {
   help: { file: 'help.txt', description: 'List available commands' },
   skills: { file: 'skills.txt', description: 'My skills' },

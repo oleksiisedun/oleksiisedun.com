@@ -16,7 +16,7 @@ export class MochiRobot {
    * behaviour. Does nothing if no `.eye` elements are present in the DOM.
    */
   constructor() {
-    this.eyes = document.querySelectorAll('.eye');
+    this.eyes = /** @type {NodeListOf<HTMLElement>} */ (document.querySelectorAll('.eye'));
     if (!this.eyes.length) return;
 
     this._blinkTimeout = null;
@@ -52,7 +52,7 @@ export class MochiRobot {
    * @returns {void}
    */
   handleMove(clientX, clientY) {
-    this.eyes.forEach(eye => {
+    this.eyes.forEach((eye) => {
       const rect = eye.getBoundingClientRect();
       const eyeCenterX = rect.left + rect.width / 2;
       const eyeCenterY = rect.top + rect.height / 2;
@@ -76,6 +76,10 @@ export class MochiRobot {
       this.handleMove(e.clientX, e.clientY);
     });
 
+    /**
+     * Points the eyes at the first active touch.
+     * @param {TouchEvent} e
+     */
     const onTouch = (e) => {
       const touch = e.touches[0];
       this.handleMove(touch.clientX, touch.clientY);
@@ -90,7 +94,7 @@ export class MochiRobot {
    * @returns {void}
    */
   triggerBlink = () => {
-    this.eyes.forEach(eye => {
+    this.eyes.forEach((eye) => {
       eye.classList.add('blink');
       setTimeout(() => eye.classList.remove('blink'), MOCHI_BLINK_DURATION);
     });

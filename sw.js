@@ -45,11 +45,9 @@ self.addEventListener('install', (event) => {
     (async () => {
       const cache = await caches.open(CACHE_NAME);
       await cache.addAll(CORE_ASSETS);
-      await Promise.all(
-        OPTIONAL_ASSETS.map((url) => cache.add(url).catch(() => {}))
-      );
+      await Promise.all(OPTIONAL_ASSETS.map((url) => cache.add(url).catch(() => {})));
       await self.skipWaiting();
-    })()
+    })(),
   );
 });
 
@@ -57,11 +55,9 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     (async () => {
       const names = await caches.keys();
-      await Promise.all(
-        names.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name))
-      );
+      await Promise.all(names.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name)));
       await self.clients.claim();
-    })()
+    })(),
   );
 });
 
@@ -82,6 +78,6 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => cached);
       return cached || network;
-    })()
+    })(),
   );
 });

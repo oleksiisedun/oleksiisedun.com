@@ -1,13 +1,13 @@
 import { CSS_CLASS } from './config.js';
 
 /**
- * @typedef {Object} CountryStat
+ * @typedef {object} CountryStat
  * @property {string} country - The country name.
  * @property {number} views - The number of views from that country.
  */
 
 /**
- * @typedef {Object} AnalyticsData
+ * @typedef {object} AnalyticsData
  * @property {number} [totalVisits] - Total unique visitors.
  * @property {number} [totalViews] - Total page views.
  * @property {CountryStat[]} [topCountries] - Top countries by views.
@@ -38,12 +38,12 @@ export const generateAnalyticsTemplate = (data) => {
   template += `Page Views      : ${valueSpan(data.totalViews || 0)}\n\n`;
 
   if (data.topCountries && data.topCountries.length > 0) {
-    const maxLen = Math.max(...data.topCountries.map(c => c.country.length));
-    const maxViews = Math.max(...data.topCountries.map(c => String(c.views).length));
+    const maxLen = Math.max(...data.topCountries.map((c) => c.country.length));
+    const maxViews = Math.max(...data.topCountries.map((c) => String(c.views).length));
     const separator = '-'.repeat(maxLen + maxViews + 5);
     template += `Views by Top Countries:\n`;
     template += `${separator}\n`;
-    data.topCountries.forEach(c => {
+    data.topCountries.forEach((c) => {
       template += `${c.country.padEnd(maxLen)} | ${valueSpan(c.views)}\n`;
     });
     template += separator;
@@ -54,7 +54,7 @@ export const generateAnalyticsTemplate = (data) => {
 };
 
 /**
- * @typedef {Object} RenderedTracker
+ * @typedef {object} RenderedTracker
  * @property {string} icon - Font Awesome icon class (e.g. `fa-smoking-ban`).
  * @property {string} label - Short heading for the tracker.
  * @property {string} sentence - Full HTML sentence describing the elapsed duration.
@@ -91,22 +91,25 @@ export const errorSpan = (message) => `<span class="${CSS_CLASS.ERROR_TEXT}">${m
 /**
  * Renders a "command not found" message with a grid of available commands.
  * @param {string} command - The unrecognized command name.
- * @param {Object<string, unknown>} commands - The COMMANDS registry (keys are command names).
+ * @param {Record<string, unknown>} commands - The COMMANDS registry (keys are command names).
  * @returns {string} HTML markup for the error message.
  */
 export const generateUnknownCommandTemplate = (command, commands) => {
   const names = Object.keys(commands);
-  const maxLen = Math.max(...names.map(n => n.length));
+  const maxLen = Math.max(...names.map((n) => n.length));
   const columns = 3;
 
   let rows = '';
   for (let i = 0; i < names.length; i += columns) {
-    rows += '  ' + names.slice(i, i + columns)
-      .map(n => `<span class="${CSS_CLASS.COMMAND_TOKEN}">${n.padEnd(maxLen)}</span>`)
-      .join('   ') + '\n';
+    const cells = names
+      .slice(i, i + columns)
+      .map((n) => `<span class="${CSS_CLASS.COMMAND_TOKEN}">${n.padEnd(maxLen)}</span>`);
+    rows += `  ${cells.join('   ')}\n`;
   }
 
-  return `${errorSpan(`Command not found: ${command}`)}\n\n` +
+  return (
+    `${errorSpan(`Command not found: ${command}`)}\n\n` +
     `Available commands:\n${rows}\n` +
-    `Type 'help' for more information.\n`;
+    `Type 'help' for more information.\n`
+  );
 };

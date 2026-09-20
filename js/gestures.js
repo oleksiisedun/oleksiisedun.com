@@ -13,10 +13,14 @@
 export const onTripleTap = (element, callback, windowMs) => {
   let tapTimes = [];
 
+  /**
+   * Records a tap and fires the callback once three land within the window.
+   * @param {PointerEvent} e
+   */
   const onPointerDown = (e) => {
     e.preventDefault();
     const now = Date.now();
-    tapTimes = tapTimes.filter(t => now - t < windowMs);
+    tapTimes = tapTimes.filter((t) => now - t < windowMs);
     tapTimes.push(now);
     if (tapTimes.length >= 3) {
       tapTimes = [];

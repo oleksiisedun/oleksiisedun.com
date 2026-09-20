@@ -1,4 +1,11 @@
-import { PROMPT_TEXT, COMMANDS, TYPING_DELAY, SCROLL_REFLOW_DELAY, MOBILE_KEYBOARD_DELAY, CSS_CLASS } from './config.js';
+import {
+  PROMPT_TEXT,
+  COMMANDS,
+  TYPING_DELAY,
+  SCROLL_REFLOW_DELAY,
+  MOBILE_KEYBOARD_DELAY,
+  CSS_CLASS,
+} from './config.js';
 import { COMMAND_HANDLERS, handleStaticCommand, handleUnknownCommand } from './handlers.js';
 
 const CYRILLIC_PATTERN = /[\u0400-\u04FF]/g;
@@ -9,10 +16,10 @@ export class Terminal {
    */
   constructor() {
     this.outputDiv = document.getElementById('output');
-    this.hiddenInput = document.getElementById('hidden-input');
+    this.hiddenInput = /** @type {HTMLInputElement} */ (document.getElementById('hidden-input'));
     this.typerSpan = document.getElementById('typer');
     this.promptSpan = document.querySelector('.command-line .prompt');
-    this.commandLine = document.querySelector('.command-line');
+    this.commandLine = /** @type {HTMLElement} */ (document.querySelector('.command-line'));
     this.terminalElement = document.getElementById('terminal');
     this.commandHistory = [];
     this.historyIndex = 0;
@@ -80,6 +87,9 @@ export class Terminal {
   typeWriter(text, targetElement, speed, callback, isHTML = false) {
     if (!isHTML) {
       let i = 0;
+      /**
+       * Types the next character, then reschedules itself until the text is exhausted.
+       */
       const type = () => {
         if (i < text.length) {
           targetElement.textContent += text.charAt(i++);
@@ -98,9 +108,13 @@ export class Terminal {
     let m;
     while ((m = regex.exec(text)) !== null) tokens.push(m[0]);
 
-    let ti = 0, ci = 0;
+    let ti = 0,
+      ci = 0;
     let currentOut = '';
 
+    /**
+     * Reveals the next token: tags instantly, text one character at a time.
+     */
     const type = () => {
       if (ti >= tokens.length) {
         if (callback) callback();
@@ -191,8 +205,9 @@ export class Terminal {
     blankLine.className = 'output-line';
     this.outputDiv.appendChild(blankLine);
 
-    const action = COMMAND_HANDLERS[command]?.(this)
-      ?? (COMMANDS[command]?.file ? handleStaticCommand(this, command) : handleUnknownCommand(this, command));
+    const action =
+      COMMAND_HANDLERS[command]?.(this) ??
+      (COMMANDS[command]?.file ? handleStaticCommand(this, command) : handleUnknownCommand(this, command));
     action.finally(() => this.setPromptReady(true));
   }
 
@@ -237,7 +252,7 @@ export class Terminal {
         e.preventDefault();
         const currentInput = this.hiddenInput.value.toLowerCase();
         if (!currentInput) return;
-        const matches = Object.keys(COMMANDS).filter(cmd => cmd.startsWith(currentInput));
+        const matches = Object.keys(COMMANDS).filter((cmd) => cmd.startsWith(currentInput));
         if (matches.length === 1) {
           this.setInput(matches[0]);
         } else if (matches.length > 1) {
@@ -256,7 +271,8 @@ export class Terminal {
       // DOM focus state can't linger stale after a non-JS keyboard dismissal (e.g.
       // Android's back button), which some mobile browsers reinterpret as a cue to
       // re-show the keyboard on the next unrelated tap.
-      if (e.target.closest('.mochi-head') || e.target.closest('.matrix-overlay')) {
+      const target = /** @type {Element} */ (e.target);
+      if (target.closest('.mochi-head') || target.closest('.matrix-overlay')) {
         this.hiddenInput.blur();
         return;
       }
