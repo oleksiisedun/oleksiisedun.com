@@ -1,7 +1,7 @@
 // Classic (non-module) service worker: kept dependency-free so it runs in every
 // browser without relying on module-worker support.
 
-const CACHE_NAME = 'oleksiisedun-shell-v4';
+const CACHE_NAME = 'oleksiisedun-shell-v5';
 
 // Same-origin shell files needed for the terminal to load offline. Must all
 // succeed at install time (cache.addAll is atomic).
@@ -17,9 +17,12 @@ const CORE_ASSETS = [
   '/js/handlers.js',
   '/js/templates.js',
   '/js/mochi.js',
+  '/js/gestures.js',
+  '/js/matrix.js',
   '/js/pwa.js',
   '/commands/help.txt',
   '/commands/skills.txt',
+  '/icons/icon.svg',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/apple-touch-icon.png',
