@@ -17,10 +17,10 @@ Run `check` after edits. Individual scripts:
 - `npm run lint:css` — Stylelint (`recommended` + `color-no-hex`): raw hex colors belong only in the `:root` token block in `src/css/style.css`; use `var(--…)` elsewhere.
 - `npm run typecheck` — `tsc` over `src/js/` with `checkJs` (non-strict), validating the JSDoc types. DOM lookups need a `/** @type {…} */` cast.
 - `npm run format:check` / `npm run format` — Prettier for `.js`/`.mjs`/`.json` (CSS, HTML and Markdown are not Prettier-formatted).
-- `npm run check:sw` — `scripts/check-sw.mjs`: every shell file is in `sw.js`'s `CORE_ASSETS`, the analytics host in `sw.js` matches `ANALYTICS_ENDPOINT`, and `CACHE_NAME` is bumped when a precached file changed (vs `HEAD` by default, or a ref passed as the first argument).
+- `npm run check:sw` — `scripts/check-sw.mjs`: every shell file is in `sw.js`'s `CORE_ASSETS`, the analytics host in `sw.js` matches `ANALYTICS_ENDPOINT`, and `CACHE_NAME` is bumped when a precached file changed (vs `HEAD` by default, so it only sees uncommitted changes; after committing, run `npm run check:sw -- origin/main`).
 - `npm test` — Node's built-in runner (`node --test`, no extra dependency) over `tests/*.test.js`: elapsed-duration math (`handlers.js`), `templates.js` output, `worker/worker.js` (CORS, caching, error paths, mocked upstream) and `scripts/check-sw.mjs` (against a fixture site). DOM-heavy code (`terminal.js`, `mochi.js`, `matrix.js`, `gestures.js`) is deliberately not unit-tested. Add a test alongside any change to the logic above.
 
-CI (`.github/workflows/check.yml`) runs the same checks on pushes to `main` and on PRs. `.github/workflows/deploy.yml` publishes `src/` to GitHub Pages on pushes to `main`.
+CI (`.github/workflows/check.yml`) runs the same checks on pushes to `main` and on PRs, except `check:sw` runs against the PR base / pre-push commit rather than `HEAD`. `.github/workflows/deploy.yml` publishes `src/` to GitHub Pages on pushes to `main`.
 
 ## Architecture
 
@@ -43,7 +43,7 @@ CI (`.github/workflows/check.yml`) runs the same checks on pushes to `main` and 
 
 ## Adding a new terminal command
 
-1. Register it in `COMMANDS` in `src/js/config.js` (with a `file` for static `.txt` content, or `null` for a custom handler).
+1. Register it in `COMMANDS` in `src/js/config.js` (with a `file` for static `.txt` content, or `null` for a custom handler; built-ins like `clear` are special-cased in `terminal.js` instead).
 2. If static, add the content file under `src/commands/`.
 3. If dynamic, add a handler to `COMMAND_HANDLERS` in `src/js/handlers.js` following the pattern of existing dynamic commands (`analytics`, `trackers`).
 4. Update `src/commands/help.txt` to document the new command.
