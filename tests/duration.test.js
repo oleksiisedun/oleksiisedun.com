@@ -1,6 +1,6 @@
 import { afterEach, describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
-import { formatElapsedDuration } from '../js/handlers.js';
+import { formatElapsedDuration } from '../src/js/handlers.js';
 
 /**
  * Freezes `Date` at a local calendar date for the duration of a test.

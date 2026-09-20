@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Personal terminal-style portfolio",
   "scripts": {
-    "dev": "serve .",
+    "dev": "serve src",
     "lint": "eslint .",
-    "lint:css": "stylelint \"css/**/*.css\"",
+    "lint:css": "stylelint \"src/css/**/*.css\"",
     "typecheck": "tsc -p .",
     "format": "prettier --write \"**/*.{js,mjs,json}\"",
     "format:check": "prettier --check \"**/*.{js,mjs,json}\"",

@@ -7,7 +7,7 @@ import {
   generateUnknownCommandTemplate,
   sectionHeader,
   valueSpan,
-} from '../js/templates.js';
+} from '../src/js/templates.js';
 
 /**
  * Strips HTML tags so assertions read as the text the user sees.

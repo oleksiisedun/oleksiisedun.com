@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Guards the service worker invariants that are easy to break silently:
-//  1. every shell file (js/css/commands + assets index.html and the manifest reference) is precached,
+//  1. every shell file (under src/) (js/css/commands + assets index.html and the manifest reference) is precached,
 //  2. sw.js's hardcoded analytics host matches ANALYTICS_ENDPOINT in js/config.js,
 //  3. CACHE_NAME is bumped whenever a precached file changes vs. a base git ref.
 //
@@ -12,6 +12,8 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const ROOT = new URL('..', import.meta.url).pathname;
+const SITE_DIR = 'src';
+const SITE = join(ROOT, SITE_DIR);
 const errors = [];
 
 /**
@@ -35,12 +37,12 @@ const readCacheName = (source) => source.match(/const CACHE_NAME = '([^']+)'/)?.
 
 /**
  * Lists files in a directory (non-recursive) as root-relative URL paths, e.g. `/js/config.js`.
- * @param {string} dir - Directory relative to the repo root.
+ * @param {string} dir - Directory relative to the site root (`src/`).
  * @param {string} ext - File extension to include, e.g. `.js`.
  * @returns {string[]} URL paths.
  */
 const listShellFiles = (dir, ext) =>
-  readdirSync(join(ROOT, dir))
+  readdirSync(join(SITE, dir))
     .filter((f) => f.endsWith(ext))
     .map((f) => `/${dir}/${f}`);
 
@@ -49,16 +51,16 @@ const listShellFiles = (dir, ext) =>
  * @returns {string[]} URL paths.
  */
 const listReferencedAssets = () => {
-  const html = readFileSync(join(ROOT, 'index.html'), 'utf8');
+  const html = readFileSync(join(SITE, 'index.html'), 'utf8');
   const fromHtml = [...html.matchAll(/(?:href|src)="(?!https?:|mailto:|#)([^"#?]+)"/g)].map((m) =>
     m[1].startsWith('/') ? m[1] : `/${m[1]}`,
   );
-  const manifest = JSON.parse(readFileSync(join(ROOT, 'manifest.json'), 'utf8'));
+  const manifest = JSON.parse(readFileSync(join(SITE, 'manifest.json'), 'utf8'));
   const fromManifest = (manifest.icons ?? []).map((icon) => `/${icon.src.replace(/^\.?\//, '')}`);
   return [...fromHtml, ...fromManifest];
 };
 
-const swSource = readFileSync(join(ROOT, 'sw.js'), 'utf8');
+const swSource = readFileSync(join(SITE, 'sw.js'), 'utf8');
 const coreAssets = new Set(readArrayConst(swSource, 'CORE_ASSETS'));
 
 // 1. Precache completeness
@@ -75,12 +77,12 @@ for (const path of new Set(expected)) {
   if (!coreAssets.has(path)) errors.push(`sw.js CORE_ASSETS is missing ${path}`);
 }
 for (const path of coreAssets) {
-  if (path !== '/' && !existsSync(join(ROOT, path)))
+  if (path !== '/' && !existsSync(join(SITE, path)))
     errors.push(`sw.js CORE_ASSETS lists ${path}, which does not exist`);
 }
 
 // 2. Analytics host in sync with config.js
-const { ANALYTICS_ENDPOINT } = await import(pathToFileURL(join(ROOT, 'js/config.js')).href);
+const { ANALYTICS_ENDPOINT } = await import(pathToFileURL(join(SITE, 'js/config.js')).href);
 const configHost = new URL(ANALYTICS_ENDPOINT).hostname;
 if (!readArrayConst(swSource, 'NETWORK_ONLY_HOSTS').includes(configHost)) {
   errors.push(`sw.js NETWORK_ONLY_HOSTS does not include ${configHost} (ANALYTICS_ENDPOINT in js/config.js)`);
@@ -89,12 +91,15 @@ if (!readArrayConst(swSource, 'NETWORK_ONLY_HOSTS').includes(configHost)) {
 // 3. CACHE_NAME bumped when a precached file changed
 const baseRef = process.argv[2] ?? 'HEAD';
 try {
-  const changed = execFileSync('git', ['diff', '--name-only', baseRef], { cwd: ROOT, encoding: 'utf8' })
+  const changed = execFileSync('git', ['diff', '--name-only', `--relative=${SITE_DIR}`, baseRef], {
+    cwd: ROOT,
+    encoding: 'utf8',
+  })
     .split('\n')
     .filter(Boolean);
   const changedShell = changed.filter((f) => f !== 'sw.js' && coreAssets.has(`/${f}`));
   if (changedShell.length > 0) {
-    const baseSw = execFileSync('git', ['show', `${baseRef}:sw.js`], { cwd: ROOT, encoding: 'utf8' });
+    const baseSw = execFileSync('git', ['show', `${baseRef}:${SITE_DIR}/sw.js`], { cwd: ROOT, encoding: 'utf8' });
     if (readCacheName(baseSw) === readCacheName(swSource)) {
       errors.push(
         `CACHE_NAME "${readCacheName(swSource)}" not bumped, but precached files changed vs ${baseRef}: ${changedShell.join(', ')}`,

@@ -35,8 +35,8 @@ export default [
       'jsdoc/check-types': 'error',
     },
   },
-  { files: ['js/**/*.js'], languageOptions: { sourceType: 'module', globals: globals.browser } },
-  { files: ['sw.js'], languageOptions: { sourceType: 'script', globals: globals.serviceworker } },
+  { files: ['src/js/**/*.js'], languageOptions: { sourceType: 'module', globals: globals.browser } },
+  { files: ['src/sw.js'], languageOptions: { sourceType: 'script', globals: globals.serviceworker } },
   { files: ['worker/**/*.js'], languageOptions: { sourceType: 'module', globals: globals.serviceworker } },
   {
     files: ['scripts/**/*.mjs', 'tests/**/*.js', 'eslint.config.js'],

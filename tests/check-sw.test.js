@@ -8,22 +8,23 @@ import { join } from 'node:path';
 const SCRIPT = new URL('../scripts/check-sw.mjs', import.meta.url).pathname;
 
 /**
- * Builds a minimal valid site (index, manifest, one js/css/commands file, sw.js) in a fresh temp dir.
+ * Builds a minimal valid site (index, manifest, one js/css/commands file, sw.js under `src/`) in a fresh temp dir.
  * The script resolves its root from its own location, so a copy of it is placed inside the fixture.
  * @returns {string} Path of the fixture root.
  */
 const makeFixture = () => {
   const root = mkdtempSync(join(tmpdir(), 'check-sw-'));
-  for (const dir of ['scripts', 'js', 'css', 'commands', 'icons']) mkdirSync(join(root, dir));
+  mkdirSync(join(root, 'scripts'));
+  for (const dir of ['js', 'css', 'commands', 'icons']) mkdirSync(join(root, 'src', dir), { recursive: true });
   cpSync(SCRIPT, join(root, 'scripts/check-sw.mjs'));
   writeFileSync(join(root, 'package.json'), '{"type":"module"}');
-  writeFileSync(join(root, 'index.html'), '<link href="css/a.css"><script src="js/a.js"></script>');
-  writeFileSync(join(root, 'manifest.json'), '{"icons":[{"src":"/icons/i.png"}]}');
-  writeFileSync(join(root, 'js/a.js'), '');
-  writeFileSync(join(root, 'js/config.js'), "export const ANALYTICS_ENDPOINT = 'https://api.example.dev/';");
-  writeFileSync(join(root, 'css/a.css'), '');
-  writeFileSync(join(root, 'commands/help.txt'), '');
-  writeFileSync(join(root, 'icons/i.png'), '');
+  writeFileSync(join(root, 'src/index.html'), '<link href="css/a.css"><script src="js/a.js"></script>');
+  writeFileSync(join(root, 'src/manifest.json'), '{"icons":[{"src":"/icons/i.png"}]}');
+  writeFileSync(join(root, 'src/js/a.js'), '');
+  writeFileSync(join(root, 'src/js/config.js'), "export const ANALYTICS_ENDPOINT = 'https://api.example.dev/';");
+  writeFileSync(join(root, 'src/css/a.css'), '');
+  writeFileSync(join(root, 'src/commands/help.txt'), '');
+  writeFileSync(join(root, 'src/icons/i.png'), '');
   writeSw(root);
   return root;
 };
@@ -48,7 +49,7 @@ const writeSw = (root, { omit = [], extra = [], host = 'api.example.dev' } = {})
     .filter((a) => !omit.includes(a))
     .concat(extra);
   writeFileSync(
-    join(root, 'sw.js'),
+    join(root, 'src/sw.js'),
     `const CACHE_NAME = 'v1';\nconst CORE_ASSETS = [\n${assets.map((a) => `  '${a}',`).join('\n')}\n];\n` +
       `const NETWORK_ONLY_HOSTS = ['${host}'];\n`,
   );
