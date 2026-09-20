@@ -38,5 +38,8 @@ export default [
   { files: ['js/**/*.js'], languageOptions: { sourceType: 'module', globals: globals.browser } },
   { files: ['sw.js'], languageOptions: { sourceType: 'script', globals: globals.serviceworker } },
   { files: ['worker/**/*.js'], languageOptions: { sourceType: 'module', globals: globals.serviceworker } },
-  { files: ['scripts/**/*.mjs', 'eslint.config.js'], languageOptions: { sourceType: 'module', globals: globals.node } },
+  {
+    files: ['scripts/**/*.mjs', 'tests/**/*.js', 'eslint.config.js'],
+    languageOptions: { sourceType: 'module', globals: globals.node },
+  },
 ];

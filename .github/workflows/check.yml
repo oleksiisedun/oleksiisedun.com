@@ -21,5 +21,6 @@ jobs:
       - run: npm run lint:css
       - run: npm run typecheck
       - run: npm run format:check
+      - run: npm test
       # Compare against the PR base, or the previous commit on a push to main.
       - run: node scripts/check-sw.mjs ${{ github.event.pull_request.base.sha || github.event.before }}

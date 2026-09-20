@@ -8,7 +8,7 @@ Setup, architecture overview (with diagram) and deployment live in [README.md](R
 
 ```
 npm run dev     # serves the static site via `serve .`
-npm run check   # aggregate: lint + lint:css + typecheck + format:check + check:sw (seconds, no network)
+npm run check   # aggregate: lint + lint:css + typecheck + format:check + check:sw + test (seconds, no network)
 ```
 
 Run `check` after edits. Individual scripts:
@@ -18,6 +18,7 @@ Run `check` after edits. Individual scripts:
 - `npm run typecheck` — `tsc` over `js/` with `checkJs` (non-strict), validating the JSDoc types. DOM lookups need a `/** @type {…} */` cast.
 - `npm run format:check` / `npm run format` — Prettier for `.js`/`.mjs`/`.json` (CSS, HTML and Markdown are not Prettier-formatted).
 - `npm run check:sw` — `scripts/check-sw.mjs`: every shell file is in `sw.js`'s `CORE_ASSETS`, the analytics host in `sw.js` matches `ANALYTICS_ENDPOINT`, and `CACHE_NAME` is bumped when a precached file changed (vs `HEAD` by default, or a ref passed as the first argument).
+- `npm test` — Node's built-in runner (`node --test`, no extra dependency) over `tests/*.test.js`: elapsed-duration math (`handlers.js`), `templates.js` output, `worker/worker.js` (CORS, caching, error paths, mocked upstream) and `scripts/check-sw.mjs` (against a fixture site). DOM-heavy code (`terminal.js`, `mochi.js`, `matrix.js`, `gestures.js`) is deliberately not unit-tested. Add a test alongside any change to the logic above.
 
 CI (`.github/workflows/check.yml`) runs the same checks on pushes to `main` and on PRs.
 

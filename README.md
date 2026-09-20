@@ -48,7 +48,7 @@ graph TD
 ```
 npm install
 npm run dev     # serves the static site via `serve .`
-npm run check   # lint, CSS lint, type check, format check, service-worker check
+npm run check   # lint, CSS lint, type check, format check, service-worker check, unit tests
 ```
 
 See [CLAUDE.md](CLAUDE.md#checks) for what each check covers.
