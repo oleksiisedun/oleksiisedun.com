@@ -10,7 +10,7 @@ Live at [oleksiisedun.com](https://oleksiisedun.com).
 - Commands: `help`, `skills`, `analytics`, `trackers`, `clear`
 - Site analytics proxied through a Cloudflare Worker
 - Installable PWA: the terminal shell works offline; analytics always fetches live
-- Easter egg: triple-tap the Mochi robot on mobile for a fullscreen Matrix digital rain effect; triple-tap anywhere to dismiss
+- Easter egg: triple-tap (touch) or triple-click (mouse) the Mochi robot for a fullscreen Matrix digital rain effect; triple-tap/click anywhere or press Escape to dismiss
 
 ## Tech
 
@@ -18,7 +18,7 @@ Plain HTML, CSS, and vanilla JavaScript. No framework, no build step — just st
 
 ## Architecture
 
-`script.js` bootstraps the app by reading `config.js` and wiring CSS variables, then instantiates `Terminal` and `MochiRobot`, and calls `registerServiceWorker()` from `pwa.js`. `Terminal` dispatches typed commands: static commands fetch `.txt` files from `commands/`; dynamic ones delegate to handlers in `handlers.js`. The `analytics` handler calls the Cloudflare Worker proxy; `trackers` is self-contained. On mobile, `MochiRobot` also wires up a triple-tap easter egg (via the shared `gestures.js` tap detector) that opens a fullscreen Matrix rain overlay from `matrix.js`. `sw.js` caches the static shell for offline use and always lets analytics requests go straight to the network.
+`script.js` bootstraps the app by reading `config.js` and wiring CSS variables, then instantiates `Terminal` and `MochiRobot`, and calls `registerServiceWorker()` from `pwa.js`. `Terminal` dispatches typed commands: static commands fetch `.txt` files from `commands/`; dynamic ones delegate to handlers in `handlers.js`. The `analytics` handler calls the Cloudflare Worker proxy; `trackers` is self-contained. `MochiRobot` also wires up a triple-tap/click easter egg (via the shared `gestures.js` tap detector) that opens a fullscreen Matrix rain overlay from `matrix.js`. `sw.js` caches the static shell for offline use and always lets analytics requests go straight to the network.
 
 ```mermaid
 graph TD
@@ -30,7 +30,7 @@ graph TD
   Terminal -->|static commands| StaticFiles[("commands/*.txt\n(help, skills)")]
   Terminal -->|dynamic commands| Handlers["handlers.js\n(COMMAND_HANDLERS)"]
 
-  Mochi -->|triple-tap, mobile only| Gestures["gestures.js\n(onTripleTap)"]
+  Mochi -->|triple-tap or click| Gestures["gestures.js\n(onTripleTap)"]
   Mochi -->|opens| Matrix["matrix.js\n(fullscreen rain overlay)"]
   Matrix -->|triple-tap to close| Gestures
 
@@ -43,15 +43,27 @@ graph TD
   SW -.->|precaches| Shell[("index.html, css/, js/,\ncommands/, manifest.json, icons/")]
 ```
 
-## Run locally
+## Getting started
+
+Requires Node.js 20.19+ (CI uses 22).
 
 ```
 npm install
-npm run dev     # serves the static site via `serve .`
-npm run check   # lint, CSS lint, type check, format check, service-worker check, unit tests
+npm run dev     # serves src/ at http://localhost:3000
+npm run check   # aggregate of everything below (seconds, no network)
 ```
 
-See [CLAUDE.md](CLAUDE.md#checks) for what each check covers.
+Individual checks: `npm run lint` (ESLint), `lint:css` (Stylelint), `typecheck` (`tsc` over the JSDoc types), `format:check` (Prettier), `check:sw` (service-worker precache and cache-version check), `test` (Node's built-in runner). Details in [CLAUDE.md](CLAUDE.md#commands).
+
+## Usage
+
+Type a command at the prompt and press Enter:
+
+```
+$ help        # list available commands
+$ skills      # my skills
+$ analytics   # live site stats (needs the Worker to be reachable)
+```
 
 ## Decision records
 
