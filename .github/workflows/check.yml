@@ -1,0 +1,25 @@
+name: Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # check-sw diffs against the base commit
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run lint:css
+      - run: npm run typecheck
+      - run: npm run format:check
+      # Compare against the PR base, or the previous commit on a push to main.
+      - run: node scripts/check-sw.mjs ${{ github.event.pull_request.base.sha || github.event.before }}
