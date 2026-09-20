@@ -55,6 +55,35 @@ describe('formatElapsedDuration', () => {
     assert.equal(plain(formatElapsedDuration(new Date(2025, 10, 20))), '1 month 16 days');
   });
 
+  describe('month-end start dates', () => {
+    const cases = [
+      { today: [2026, 2, 27], start: [2026, 1, 31], expected: '27 days' },
+      { today: [2026, 2, 28], start: [2026, 1, 31], expected: '1 month' }, // clamped to 28 Feb
+      { today: [2026, 3, 1], start: [2026, 1, 31], expected: '1 month 1 day' },
+      { today: [2026, 3, 1], start: [2026, 1, 30], expected: '1 month 1 day' },
+      { today: [2026, 3, 31], start: [2026, 1, 31], expected: '2 months' },
+      { today: [2028, 2, 29], start: [2028, 1, 31], expected: '1 month' }, // clamped to 29 Feb (leap year)
+      { today: [2028, 2, 28], start: [2028, 1, 31], expected: '28 days' },
+      { today: [2027, 2, 28], start: [2026, 2, 28], expected: '1 year' },
+      { today: [2027, 2, 27], start: [2024, 2, 29], expected: '2 years 11 months 29 days' },
+      { today: [2027, 2, 28], start: [2024, 2, 29], expected: '3 years' }, // 29 Feb clamped to 28 Feb
+    ];
+    for (const { today, start, expected } of cases) {
+      it(`${start.join('-')} -> ${today.join('-')}: ${expected}`, () => {
+        freezeToday(...today);
+        assert.equal(plain(formatElapsedDuration(new Date(start[0], start[1] - 1, start[2]))), expected);
+      });
+    }
+  });
+
+  it('never reports a negative day count for any start day', () => {
+    freezeToday(2026, 3, 1);
+    for (let day = 1; day <= 31; day++) {
+      const out = plain(formatElapsedDuration(new Date(2026, 0, day)));
+      assert.doesNotMatch(out, /-\d/, `start day ${day}: ${out}`);
+    }
+  });
+
   it('shows "0 days" when the start date is today', () => {
     freezeToday(2026, 9, 20);
     assert.equal(plain(formatElapsedDuration(new Date(2026, 8, 20))), '0 days');

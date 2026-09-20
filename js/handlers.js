@@ -18,25 +18,51 @@ const parseDate = (dateStr) => {
   return new Date(year, month - 1, day);
 };
 
+const MS_PER_DAY = 86_400_000;
+
+/**
+ * Adds whole calendar months to a date, clamping the day to the target month's length
+ * (e.g. 31 Jan + 1 month = 28 Feb, or 29 Feb in a leap year).
+ * @param {Date} date
+ * @param {number} months
+ * @returns {Date}
+ */
+const addMonthsClamped = (date, months) => {
+  const firstOfTarget = new Date(date.getFullYear(), date.getMonth() + months, 1);
+  const daysInTarget = new Date(firstOfTarget.getFullYear(), firstOfTarget.getMonth() + 1, 0).getDate();
+  return new Date(firstOfTarget.getFullYear(), firstOfTarget.getMonth(), Math.min(date.getDate(), daysInTarget));
+};
+
+/**
+ * Whole days between two local calendar dates. Uses UTC components so DST shifts can't skew the count.
+ * @param {Date} from
+ * @param {Date} to
+ * @returns {number}
+ */
+const daysBetween = (from, to) =>
+  Math.round(
+    (Date.UTC(to.getFullYear(), to.getMonth(), to.getDate()) -
+      Date.UTC(from.getFullYear(), from.getMonth(), from.getDate())) /
+      MS_PER_DAY,
+  );
+
 /**
  * Formats the time elapsed since `startDate` as a "X years Y months Z days" string.
+ * Months are whole calendar months with the day clamped to month end, so a 31 Jan start reaches
+ * "1 month" on 28 Feb (29 Feb in a leap year) and the day count is never negative.
  * @param {Date} startDate
  * @returns {string} HTML markup with the numeric values highlighted.
  */
 export const formatElapsedDuration = (startDate) => {
   const now = new Date();
-  let years = now.getFullYear() - startDate.getFullYear();
-  let months = now.getMonth() - startDate.getMonth();
-  let days = now.getDate() - startDate.getDate();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  if (days < 0) {
-    months--;
-    days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
-  }
-  if (months < 0) {
-    years--;
-    months += 12;
-  }
+  let totalMonths = (today.getFullYear() - startDate.getFullYear()) * 12 + today.getMonth() - startDate.getMonth();
+  if (addMonthsClamped(startDate, totalMonths) > today) totalMonths--;
+
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
+  const days = daysBetween(addMonthsClamped(startDate, totalMonths), today);
 
   const parts = [];
   if (years > 0) parts.push(`${valueSpan(years)} year${years !== 1 ? 's' : ''}`);
