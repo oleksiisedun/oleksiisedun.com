@@ -1,17 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
 
 :root {
+  /* stylelint-disable color-no-hex -- design tokens are the one place raw colors belong */
+  /* Theme defaults; js/script.js overrides these from config.js at startup. */
+  --main-color: #00ff41;
+  --main-color-rgb: 0, 255, 65;
+  --glow-color: #009927;
+
   --bg-color: #111;
-  --text-color: var(--main-color, #00FF41);
-  --prompt-color: var(--main-color, #00FF41);
-  --error-color: #C96A6A;
-  --art-color: var(--main-color, #00FF41);
+  --text-color: var(--main-color);
+  --prompt-color: var(--main-color);
+  --error-color: #c96a6a;
+  --art-color: var(--main-color);
   --font-stack: 'VT323', monospace;
   --radius-lg: 2rem;
   --radius-md: 1rem;
   --radius-sm: 0.5rem;
   --value-color: #fff;
-  --note-color: rgba(var(--main-color-rgb, 0, 255, 65), 0.6);
+  --note-color: rgba(var(--main-color-rgb), 0.6);
+
+  /* Surfaces (monitor bezel, CRT screen, Matrix overlay) */
+  --black: #000;
+  --surface-monitor: #050505;
+  --surface-screen: #001100;
+  --surface-screen-center: #002200;
+  --surface-mochi-edge: #2a2a2a;
+  --surface-mochi-gradient: #222;
+  /* stylelint-enable color-no-hex */
 }
 
 body {
@@ -32,7 +47,7 @@ body {
 .monitor {
   width: 80vw;
   height: 70vh;
-  background: #050505;
+  background: var(--surface-monitor);
   border-radius: var(--radius-lg);
   padding: 2rem;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
@@ -43,8 +58,8 @@ body {
 .screen {
   width: 100%;
   height: 100%;
-  background-color: #001100;
-  background-image: radial-gradient(circle at center, #002200 0%, #000000 100%);
+  background-color: var(--surface-screen);
+  background-image: radial-gradient(circle at center, var(--surface-screen-center) 0%, var(--black) 100%);
   border-radius: var(--radius-md);
   position: relative;
   overflow: hidden;
@@ -60,7 +75,7 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   font-size: var(--terminal-font-size, 2rem);
-  text-shadow: 0 0 1px var(--glow-color, #009927);
+  text-shadow: 0 0 1px var(--glow-color);
   position: relative;
   z-index: 1;
   animation: flicker 0.5s infinite;
@@ -136,7 +151,7 @@ body {
   background-color: var(--text-color);
   vertical-align: middle;
   margin-left: 1px;
-  box-shadow: 0 0 2px var(--main-color, #00FF41), 0 0 5px rgba(var(--main-color-rgb, 0, 255, 65), 0.4);
+  box-shadow: 0 0 2px var(--main-color), 0 0 5px rgba(var(--main-color-rgb), 0.4);
   animation: blink 1s step-end infinite;
 }
 
@@ -198,7 +213,7 @@ a:hover {
   bottom: 0;
   right: 0;
   background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.12) 50%),
-              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(var(--main-color-rgb, 0, 255, 65), 0.01), rgba(0, 0, 255, 0.03));
+              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(var(--main-color-rgb), 0.01), rgba(0, 0, 255, 0.03));
   z-index: 2;
   background-size: 100% var(--scanline-height, 4px), var(--scanline-width, 6px) 100%;
   pointer-events: none;
@@ -226,9 +241,9 @@ a:hover {
 }
 
 @keyframes scroll-line {
-  0% { transform: translateY(-100%); background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(var(--main-color-rgb, 0, 255, 65), 0.025) 50%, rgba(0,0,0,0) 100%); opacity: 0.5; }
+  0% { transform: translateY(-100%); background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(var(--main-color-rgb), 0.025) 50%, rgba(0,0,0,0) 100%); opacity: 0.5; }
   10% { opacity: 0.15; }
-  100% { transform: translateY(100%); background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(var(--main-color-rgb, 0, 255, 65), 0.025) 50%, rgba(0,0,0,0) 100%); opacity: 0; }
+  100% { transform: translateY(100%); background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(var(--main-color-rgb), 0.025) 50%, rgba(0,0,0,0) 100%); opacity: 0; }
 }
 
 /* --- UPDATED STATUS BAR --- */
@@ -283,7 +298,7 @@ a:hover {
 .matrix-overlay {
   position: fixed;
   inset: 0;
-  background: #000;
+  background: var(--black);
   z-index: 3000;
 }
 
