@@ -31,7 +31,8 @@ graph TD
   Terminal -->|dynamic commands| Handlers["handlers.js\n(COMMAND_HANDLERS)"]
 
   Mochi -->|triple-tap, mobile only| Gestures["gestures.js\n(onTripleTap)"]
-  Gestures --> Matrix["matrix.js\n(fullscreen rain overlay)"]
+  Mochi -->|opens| Matrix["matrix.js\n(fullscreen rain overlay)"]
+  Matrix -->|triple-tap to close| Gestures
 
   Handlers -->|analytics| Worker["worker/worker.js\n(Cloudflare Worker)"]
   Worker -->|proxies| CFAnalytics[("Cloudflare\nAnalytics GraphQL")]
@@ -39,15 +40,22 @@ graph TD
   Handlers --> Templates["templates.js\n(HTML snippet generators)"]
 
   PWA -->|registers| SW["sw.js\n(cache-first shell,\nnetwork-only APIs)"]
-  SW -.->|precaches| Manifest[("manifest.json + icons/")]
+  SW -.->|precaches| Shell[("index.html, css/, js/,\ncommands/, manifest.json, icons/")]
 ```
 
 ## Run locally
 
 ```
 npm install
-npm run dev   # serves the static site via `serve .`
+npm run dev     # serves the static site via `serve .`
+npm run check   # lint, CSS lint, type check, format check, service-worker check
 ```
+
+See [CLAUDE.md](CLAUDE.md#checks) for what each check covers.
+
+## Decision records
+
+Non-obvious design choices are documented in [docs/decisions/](docs/decisions/).
 
 ## Deployment
 
