@@ -15,7 +15,7 @@ Run `check` after edits. Individual scripts:
 
 - `npm run lint` — ESLint: modern-JS rules (`no-var`, `prefer-const`, `prefer-arrow-callback`, `prefer-template`) and typed JSDoc on every function (including nested arrow helpers).
 - `npm run lint:css` — Stylelint (`recommended` + `color-no-hex`): raw hex colors belong only in the `:root` token block in `src/css/style.css`; use `var(--…)` elsewhere.
-- `npm run typecheck` — `tsc` over `src/js/` with `checkJs` (non-strict), validating the JSDoc types. DOM lookups need a `/** @type {…} */` cast.
+- `npm run typecheck` — `tsc` over `src/js/` with `checkJs` (non-strict), validating the JSDoc types. DOM lookups need a `/** @type {…} */` cast. ([ADR 0004](docs/decisions/0004-jsdoc-typecheck-non-strict.md))
 - `npm run format:check` / `npm run format` — Prettier for `.js`/`.mjs`/`.json` (CSS, HTML and Markdown are not Prettier-formatted).
 - `npm run check:sw` — `scripts/check-sw.mjs`: every shell file is in `sw.js`'s `CORE_ASSETS`, the analytics host in `sw.js` matches `ANALYTICS_ENDPOINT`, and `CACHE_NAME` is bumped when a precached file changed (vs `HEAD` by default, so it only sees uncommitted changes; after committing, run `npm run check:sw -- origin/main`).
 - `npm test` — Node's built-in runner (`node --test`, no extra dependency) over `tests/*.test.js`: elapsed-duration math (`handlers.js`), `templates.js` output, `worker/worker.js` (CORS, caching, error paths, mocked upstream) and `scripts/check-sw.mjs` (against a fixture site). DOM-heavy code (`terminal.js`, `mochi.js`, `matrix.js`, `gestures.js`) is deliberately not unit-tested. Add a test alongside any change to the logic above.
