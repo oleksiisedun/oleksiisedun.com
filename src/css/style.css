@@ -18,6 +18,8 @@
   --radius-sm: 0.5rem;
   --value-color: #fff;
   --note-color: rgba(var(--main-color-rgb), 0.6);
+  --shadow-color: rgba(0, 0, 0, 0.2);
+  --shadow-color-heavy: rgba(0, 0, 0, 0.8);
 
   /* Surfaces (monitor bezel, CRT screen, Matrix overlay) */
   --black: #000;
@@ -80,7 +82,7 @@ body {
   z-index: 1;
   animation: flicker 0.5s infinite;
   scrollbar-width: thin;
-  scrollbar-color: var(--text-color) rgba(0, 0, 0, 0.2);
+  scrollbar-color: var(--text-color) var(--shadow-color);
 }
 
 /* Custom Scrollbar for WebKit */
@@ -88,7 +90,7 @@ body {
   width: 8px;
 }
 #terminal::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--shadow-color);
   border-radius: 4px;
 }
 #terminal::-webkit-scrollbar-thumb {
