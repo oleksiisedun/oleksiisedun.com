@@ -144,6 +144,16 @@ export class Terminal {
   }
 
   /**
+   * Creates a new `.output-line` div, without appending it to the terminal.
+   * @returns {HTMLDivElement}
+   */
+  createOutputLine() {
+    const line = document.createElement('div');
+    line.className = 'output-line';
+    return line;
+  }
+
+  /**
    * Appends a new output line to the terminal, typing it out unless `content` is a DOM node.
    * @param {string|Node} content - The text/HTML to type out, or a DOM node to insert directly.
    * @param {boolean} [isHTML=false] - Whether `content` is HTML markup (ignored if `content` is a Node).
@@ -152,8 +162,7 @@ export class Terminal {
    */
   appendOutputLine(content, isHTML = false, isError = false) {
     return new Promise((resolve) => {
-      const line = document.createElement('div');
-      line.className = 'output-line';
+      const line = this.createOutputLine();
       if (isError) line.classList.add(CSS_CLASS.ERROR_TEXT);
 
       this.outputDiv.appendChild(line);
@@ -181,8 +190,7 @@ export class Terminal {
 
     const command = commandInput.toLowerCase();
 
-    const historyLine = document.createElement('div');
-    historyLine.className = 'output-line';
+    const historyLine = this.createOutputLine();
     historyLine.innerHTML = `<span class="prompt">${PROMPT_TEXT}</span>`;
     historyLine.appendChild(document.createTextNode(commandInput));
     this.outputDiv.appendChild(historyLine);
@@ -201,8 +209,7 @@ export class Terminal {
       return;
     }
 
-    const blankLine = document.createElement('div');
-    blankLine.className = 'output-line';
+    const blankLine = this.createOutputLine();
     this.outputDiv.appendChild(blankLine);
 
     const action =
@@ -256,8 +263,7 @@ export class Terminal {
         if (matches.length === 1) {
           this.setInput(matches[0]);
         } else if (matches.length > 1) {
-          const hint = document.createElement('div');
-          hint.className = 'output-line';
+          const hint = this.createOutputLine();
           hint.textContent = matches.join('   ');
           this.outputDiv.appendChild(hint);
           this.scrollToBottom();
